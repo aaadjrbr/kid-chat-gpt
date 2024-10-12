@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kid Chat App - Profiles</title>
     <link rel="stylesheet" href="styles/profiles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Protest+Strike&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@100;300;400;500;700;800;900&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Protest+Strike&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -14,8 +16,8 @@
     <button id="logout-button">Logout</button>
     </div>
 
-    <h2>Who is there?</h2>
-    <br/><br/>
+    <h2 class="title1">Who is there?</h2>
+    <br/>
     <div id="profiles-container"></div>
     <div class="center-container">
         <div id="options-container"></div>
@@ -24,38 +26,40 @@
 
     <!-- Toggle Button for Add New Profile Form -->
     <div class="add-user-btn-container">
-        <button id="toggle-add-profile">Add New Profile</button>
+        <button id="toggle-add-profile">➕ Add New Profile</button>
     </div>
     <br/>
 
     <!-- Add New Profile Form, initially hidden -->
     <form id="add-profile-form" style="display: none; text-align: center;">
-        <input type="text" id="kid-name" placeholder="Kid's Name" required>
-        <input type="number" id="kid-age" placeholder="Kid's Age" required>
+        <input class="gradient-border" type="text" id="kid-name" placeholder="Kid's Name" required>
+        <input class="gradient-border" type="number" id="kid-age" placeholder="Kid's Age" required>
         <div id="image-selection">
-            <p>Choose an Image:</p>
+            <p class="modal-options">Choose an Image:</p>
             <div id="image-gallery">
                 <!-- Images will be loaded here via JavaScript -->
             </div>
         </div>
-        <button type="submit">Add Profile</button>
+        <br/>
+        <button type="submit" class="toggle-add-profile2">✨ Add Profile</button>
     </form>
 
     <!-- Modal for editing a profile -->
     <div id="edit-modal" class="modal">
         <div class="modal-content">
             <span class="close-button">&times;</span>
-            <h3>✏️ Edit Profile</h3>
-            <input type="text" id="edit-kid-name" placeholder="Kid's Name">
+            <h3 class="modal-title">✏️ Edit Profile</h3>
+            <input class="gradient-border" type="text" id="edit-kid-name" placeholder="Kid's Name">
+            <input class="gradient-border" type="number" id="edit-kid-age" placeholder="Kid's Age">
             <div id="edit-image-selection">
-                <p>Choose a New Image:</p>
+                <p class="modal-options">Choose a New Image:</p>
                 <div id="edit-image-gallery">
                     <!-- Images will be loaded here via JavaScript -->
                 </div>
             </div>
             <br/>
             <button id="save-changes-button">💾 Save</button>
-            <button id="delete-profile-button" style="background-color: red; color: white;">❌ Delete Profile</button>
+            <button id="delete-profile-button">❌ Delete Profile</button>
         </div>
     </div>
     <br/><br/>
@@ -82,7 +86,19 @@
             const toggleButton = document.getElementById('toggle-add-profile');
             const addProfileForm = document.getElementById('add-profile-form');
             toggleButton.addEventListener('click', () => {
-                addProfileForm.style.display = addProfileForm.style.display === 'none' ? 'block' : 'none';
+                if (addProfileForm.classList.contains('fade-in')) {
+                    addProfileForm.classList.remove('fade-in');
+                    addProfileForm.classList.add('fade-out');
+                    setTimeout(() => {
+                        addProfileForm.style.display = 'none';
+                    }, 500); // Match this with the CSS transition time
+                } else {
+                    addProfileForm.style.display = 'block';
+                    setTimeout(() => {
+                        addProfileForm.classList.remove('fade-out');
+                        addProfileForm.classList.add('fade-in');
+                    }, 10); // A tiny delay ensures the CSS transition is triggered
+                }
             });
     
             // Logout button functionality

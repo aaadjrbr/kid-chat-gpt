@@ -11,6 +11,9 @@ let currentKidId = null; // Used to track which kid is being edited
 export async function loadProfiles() {
     try {
         console.log("Loading profiles...");
+        
+        // Display loading message
+        profilesContainer.innerHTML = '<p class="loading-txt">⏳ Loading...</p>';
 
         // Check if a user is authenticated
         onAuthStateChanged(auth, async (user) => {
@@ -19,7 +22,7 @@ export async function loadProfiles() {
                 const kidsRef = collection(db, `parents/${parentId}/kids`);
                 const querySnapshot = await getDocs(kidsRef);
 
-                profilesContainer.innerHTML = '';
+                profilesContainer.innerHTML = ''; // Clear the "Loading..." message
 
                 if (querySnapshot.empty) {
                     profilesContainer.innerHTML = '<p>No profiles found. Please add a profile.</p>';
@@ -33,18 +36,18 @@ export async function loadProfiles() {
                     const profileDiv = document.createElement('div');
                     profileDiv.classList.add('profile-item');
                     profileDiv.innerHTML = `
-                    <img src="images/${kid.image || 'default.png'}" alt="${kid.name}" class="profile-image">
-                    <span>${kid.name}</span>
+                    <img src="images/${kid.image || 'default.webp'}" alt="${kid.name}" class="profile-image">
+                    <span class="kid-name-circle">${kid.name}</span>
                     `;                
                     
                     const optionsContainer = document.createElement('div'); // Create options container here
                     optionsContainer.classList.add('profile-options');
                     optionsContainer.style.display = 'none'; // Hide options by default
                     optionsContainer.innerHTML = `
-                        <button onclick="viewChatHistory('${kidId}', '${kid.name}')">Chat History</button>
-                        <button onclick="startNewChat('${kidId}', '${kid.name}')">New Chat</button>
+                        <button onclick="viewChatHistory('${kidId}', '${kid.name}', event)">📝 Chat History</button>
+                        <button onclick="startNewChat('${kidId}', '${kid.name}', event)">✨ New Chat</button>
                     `;
-                    profileDiv.appendChild(optionsContainer);
+                    profileDiv.appendChild(optionsContainer);                    
                 
                     profileDiv.addEventListener('click', () => {
                         loadChatOptions(kidId, kid.name, profileDiv, editButton); // Pass the correct profileDiv and editButton
@@ -107,6 +110,7 @@ export async function deleteProfile(kidId) {
 function openEditModal(kidId, kid) {
     currentKidId = kidId; // Set the current kid's ID for later use
     document.getElementById('edit-kid-name').value = kid.name;
+    document.getElementById('edit-kid-age').value = kid.age; // Populate the current age value
     document.querySelector(`#edit-image-gallery .selected`)?.classList.remove('selected');
     document.querySelector(`#edit-image-gallery [data-image="${kid.image || 'default.png'}"]`)?.classList.add('selected');
     document.getElementById('edit-modal').style.display = 'block';
@@ -163,14 +167,14 @@ setupDeleteButton();
 export { deleteProfileHandler };
 
 // Function to edit a profile
-export async function editProfile(kidId, newName, newImage) {
+export async function editProfile(kidId, newName, newAge, newImage) {
     try {
         const user = auth.currentUser;
         if (!user) return;
         const parentId = user.uid;
         const kidRef = doc(db, `parents/${parentId}/kids/${kidId}`);
-        await updateDoc(kidRef, { name: newName, image: newImage });
-        console.log(`Profile updated: ${newName}, Image: ${newImage}`);
+        await updateDoc(kidRef, { name: newName, age: newAge, image: newImage }); // Update age along with other fields
+        console.log(`Profile updated: ${newName}, Age: ${newAge}, Image: ${newImage}`);
     } catch (error) {
         console.error("Error updating profile:", error);
     }
@@ -190,18 +194,47 @@ export function loadChatOptions(kidId, kidName, profileDiv, editButton) {
         return;
     }
 
-    // Toggle visibility of the options container
-    if (optionsContainer.style.display === 'block') {
+// Toggle visibility with fade-in/fade-out effect
+if (optionsContainer.classList.contains('show')) {
+    // Fade out options
+    optionsContainer.classList.remove('show');
+    setTimeout(() => {
         optionsContainer.style.display = 'none';
-        editButton.style.display = 'inline-block'; // Show the edit button again when options are hidden
-    } else {
-        optionsContainer.style.display = 'block';
-        editButton.style.display = 'none'; // Hide the edit button when options are shown
-    }
+    }, 5); // Delay for the fade-out effect to complete
+
+    // Fade in edit button
+    editButton.classList.remove('hide');
+    setTimeout(() => {
+        editButton.style.display = 'inline-block';
+    }, 5); // Delay for the fade-in effect
+
+    // Fade in profile image and name
+    profileDiv.querySelector('.profile-image').classList.remove('hide');
+    profileDiv.querySelector('.kid-name-circle').classList.remove('hide');
+} else {
+    // Display the options with fade-in effect
+    optionsContainer.style.display = 'block';
+    setTimeout(() => {
+        optionsContainer.classList.add('show');
+    }, 5); // Slight delay to trigger the fade-in
+
+    // Fade out edit button
+    editButton.classList.add('hide');
+    setTimeout(() => {
+        editButton.style.display = 'none';
+    }, 5); // Delay for the fade-out effect to complete
+
+    // Fade out profile image and name
+    profileDiv.querySelector('.profile-image').classList.add('hide');
+    profileDiv.querySelector('.kid-name-circle').classList.add('hide');
+}
+
+
 }
 
 // Function to navigate to the chat page
-export function startNewChat(kidId, kidName) {
+export function startNewChat(kidId, kidName, event) {
+    event.stopPropagation(); // Prevent click from triggering the profile options
     console.log(`Navigating to chat.html with kidId=${kidId}, kidName=${kidName}`);
     if (!kidId || !kidName) {
         console.error("Missing kidId or kidName.");
@@ -211,7 +244,8 @@ export function startNewChat(kidId, kidName) {
 }
 
 // Function to navigate to the history page
-export function viewChatHistory(kidId, kidName) {
+export function viewChatHistory(kidId, kidName, event) {
+    event.stopPropagation(); // Prevent click from triggering the profile options
     console.log(`Navigating to history.html with kidId=${kidId}, kidName=${kidName}`);
     if (!kidId || !kidName) {
         console.error("Missing kidId or kidName.");

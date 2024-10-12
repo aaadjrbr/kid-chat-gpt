@@ -2,16 +2,87 @@
 
 /* General styling */
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
+    font-family: "Open Sans", sans-serif;
+    font-weight: 400;
+    background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
     margin: 0;
     padding: 20px;
-    color: #333;
+    color: #000000;
+}
+
+button, input {
+    font-family: "Open Sans", sans-serif;
+    font-weight: 500;
+}
+
+button#toggle-add-profile, .toggle-add-profile2 {
+    background-image: linear-gradient(to right, #6a11cb, #2575fc);
+}
+
+button#toggle-add-profile:hover, .toggle-add-profile2:hover {
+    background-image: linear-gradient(to right, #2575fc, #6a11cb);
+}
+
+button#save-changes-button {
+    background-image: linear-gradient(to right, #6a11cb, #2575fc);
+}
+
+button#save-changes-button:hover {
+    background-image: linear-gradient(to right, #2575fc, #6a11cb);
+}
+
+button#delete-profile-button {
+    background-color: #e34949;
+    color: white;
+}
+
+button#delete-profile-button:hover {
+    background-color: #df2f2f;
 }
 
 h2 {
     text-align: center;
     margin-bottom: 20px;
+}
+
+.modal-title {
+    color: #6a11cb;
+    font-size: 1.4em;
+    font-weight: 600;
+}
+
+.modal-options {
+    color: #6a11cb;
+    font-size: 1.2em;
+    font-weight: 600;
+}
+
+.title1 {
+    font-family: "Protest Strike", sans-serif;
+    font-size: 2.6em;
+    color: #6a11cb;
+    font-weight: 400;
+}
+
+form#add-profile-form {
+    background-color: #d5eaf8;
+    border: 3px solid #6a11cb;
+    padding: 20px;
+    text-align: center;
+    border-radius: 25px;
+}
+
+#add-profile-form {
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out; /* Smooth transition for fading */
+}
+
+#add-profile-form.fade-in {
+    opacity: 1;
+}
+
+#add-profile-form.fade-out {
+    opacity: 0;
 }
 
 /* Profiles container */
@@ -23,22 +94,61 @@ h2 {
 }
 
 .profile-options {
+    opacity: 0;
+    transition: opacity 0.3s ease;
     margin-top: 10px;
     display: none; /* Initially hide the options */
     text-align: center; /* Align the options nicely inside the profile */
 }
 
+/* When the profile options are visible */
+.profile-options.show {
+    z-index: 2;
+    display: block;
+    opacity: 1;
+    margin-top: -100px;
+}
+
 .profile-options button {
-    font-size: 0.8em;
+    background-image: linear-gradient(to right, #6a11cb, #2575fc);
+    font-size: 0.9em;
     padding: 10px;
     border-radius: 15px;
     margin: 5px;
+    transition: opacity 0.5s ease;
+}
+
+.profile-options button:hover {
+    background-image: linear-gradient(to right, #2575fc, #6a11cb);
+}
+
+.edit-button {
+    opacity: 1;
+    transition: opacity 0.5s ease;
+}
+
+.edit-button.hide {
+    opacity: 0;
+}
+
+.profile-image, .kid-name-circle {
+    opacity: 1;
+    transition: opacity 0.2s ease;
+}
+
+.profile-image.hide, .kid-name-circle.hide {
+    opacity: 0;
+}
+
+.loading-txt {
+    font-size: 1.3em;
+    color: #6a11cb;
 }
 
 /* Profile item styling */
 .profile-item {
-    background-color: #fff;
-    border: 2px solid #007bff;
+    background-image: linear-gradient(to right, #6b11cb2f, #2574fc34);
+    border: 4px solid #6a11cb;
     border-radius: 50%;
     padding: 20px;
     width: 150px;
@@ -54,15 +164,17 @@ h2 {
 }
 
 .profile-item:hover {
-    background-color: #f1f9ff;
+    background-image: linear-gradient(to right, #2574fc1c, #6b11cb2a);
     transform: scale(1.05);
 }
 
 /* Kid name styling inside the profile */
 .profile-item span {
-    font-size: 16px;
-    font-weight: bold;
+    display: block;
     margin-top: 10px;
+    color: #6a11cb;
+    font-size: 1.1em;
+    font-weight: 900;
 }
 
 /* Center the options-container using text-align */
@@ -81,10 +193,26 @@ h2 {
     margin-top: 20px; /* Optional: add some spacing from the top */
 }
 
+.gradient-border {
+    padding: 10px;
+    font-size: 0.9em;
+    border: 2px solid;
+    border-image-slice: 1;
+    margin-bottom: 6px;
+    border-width: 2px;
+    border-image-source: linear-gradient(to right, #6a11cb, #2575fc);
+    transition: border-color 0.4s ease;
+    outline: none;
+}
+
+.gradient-border:focus {
+    border-image-source: linear-gradient(to right, #2575fc, #6a11cb);
+}
+
 button.edit-button {
     background: none;
-    color: #000;
-    font-size: 0.8em;
+    color: #6a11cb;
+    font-size: 1.1em;
     margin-top: 10px;
 }
 
@@ -162,6 +290,7 @@ button:hover {
 /* Profile image styling */
 .profile-image {
     border-radius: 50%;
+    border: 3px solid #ffffff6b;
     width: 80px;
     height: 80px;
 }
@@ -177,6 +306,7 @@ button:hover {
 .gallery-image {
     width: 60px;
     height: 60px;
+    border: 3px solid #ffffff6b !important;
     cursor: pointer;
     margin: 5px;
     border-radius: 50%;
@@ -189,7 +319,7 @@ button:hover {
 }
 
 .gallery-image.selected {
-    border: 4px solid #1bff1b;
+    border: 3px solid #6a11cb !important;
 }
 
 /* Modal styling */
@@ -200,7 +330,8 @@ button:hover {
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 1;
-    background-color: #fff;
+    background-color: #d5eaf8;
+    border: 3px solid #6a11cb !important;
     padding: 10px;
     border-radius: 25px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -214,15 +345,15 @@ button:hover {
 
 .close-button {
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: 5px;
+    right: 20px;
     cursor: pointer;
     font-size: 2em;
-    color: #aaa;
+    color: #6a11cb;
 }
 
 .close-button:hover {
-    color: #000;
+    color: #ff0000;
 }
 
 .logout-container {
