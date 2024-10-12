@@ -9,11 +9,12 @@
 </head>
 <body>
     <h2>Chat History for <span id="kid-name"></span></h2>
-<div class="button-go-back-container">
-    <a class="button-go-back" style="text-align: center; text-decoration: none;" href="./profiles.html">
-        <span>Go back</span>
-    </a>
-</div>
+    <div class="button-go-back-container">
+        <a class="button-go-back" style="text-align: center; text-decoration: none;" href="./profiles.html">
+            <span>Go back</span>
+        </a>
+    </div>
+    <h3>Click to select a day/month/year:</h3>
     <input type="month" id="month-picker" />
     <div id="day-picker-container"></div>
     <div id="history-container">
@@ -43,6 +44,21 @@
             onAuthStateChanged(auth, (user) => {
                 if (user) {
                     const parentId = user.uid; // Get the actual authenticated parent ID
+
+                    // Set the current month and day when the page loads
+                    const today = new Date();
+                    const year = today.getFullYear();
+                    const month = String(today.getMonth() + 1).padStart(2, '0'); // Month starts at 0
+                    const day = today.getDate();
+
+                    // Set the month-picker to the current month
+                    document.getElementById('month-picker').value = `${year}-${month}`;
+
+                    // Display the days for the current month
+                    displayDaysForMonth(year, month, parentId);
+
+                    // Automatically display chat history for the current day
+                    displayChatHistoryByDay(parentId, kidId, year, month, day);
 
                     // Event listener for month picker
                     document.getElementById('month-picker').addEventListener('change', (event) => {
