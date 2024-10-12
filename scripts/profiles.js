@@ -29,25 +29,38 @@ export async function loadProfiles() {
                 querySnapshot.forEach(doc => {
                     const kid = doc.data();
                     const kidId = doc.id;
-
+                
                     const profileDiv = document.createElement('div');
                     profileDiv.classList.add('profile-item');
                     profileDiv.innerHTML = `
-                        <img src="images/${kid.image || 'default.png'}" alt="${kid.name}" class="profile-image">
-                        <span>${kid.name}</span>
+                    <img src="images/${kid.image || 'default.png'}" alt="${kid.name}" class="profile-image">
+                    <span>${kid.name}</span>
+                    `;                
+                    
+                    const optionsContainer = document.createElement('div'); // Create options container here
+                    optionsContainer.classList.add('profile-options');
+                    optionsContainer.style.display = 'none'; // Hide options by default
+                    optionsContainer.innerHTML = `
+                        <button onclick="viewChatHistory('${kidId}', '${kid.name}')">Chat History</button>
+                        <button onclick="startNewChat('${kidId}', '${kid.name}')">New Chat</button>
                     `;
+                    profileDiv.appendChild(optionsContainer);
+                
                     profileDiv.addEventListener('click', () => {
-                        loadChatOptions(kidId, kid.name);
+                        loadChatOptions(kidId, kid.name, profileDiv, editButton); // Pass the correct profileDiv and editButton
                     });
-
+                
                     const editButton = document.createElement('button');
                     editButton.textContent = "•••";
                     editButton.classList.add('edit-button');
-                    editButton.addEventListener('click', () => openEditModal(kidId, kid));
+                    editButton.addEventListener('click', (event) => {
+                        event.stopPropagation(); // Prevent click from propagating to profileDiv
+                        openEditModal(kidId, kid);
+                    });
                     profileDiv.appendChild(editButton);
-
+                
                     profilesContainer.appendChild(profileDiv);
-                });
+                });                
             } else {
                 window.location.href = 'index.html';
             }
@@ -164,13 +177,27 @@ export async function editProfile(kidId, newName, newImage) {
 }
 
 // Function to load chat options for a selected profile
-export function loadChatOptions(kidId, kidName) {
-    const optionsContainer = document.getElementById('options-container');
-    optionsContainer.innerHTML = `
-        <h3>Chat Options for ${kidName}</h3>
-        <button onclick="viewChatHistory('${kidId}', '${kidName}')">View Chat History</button>
-        <button onclick="startNewChat('${kidId}', '${kidName}')">Start New Chat</button>
-    `;
+export function loadChatOptions(kidId, kidName, profileDiv, editButton) {
+    if (!profileDiv) {
+        console.error('Profile div is not defined');
+        return; // Avoid proceeding if profileDiv is not defined
+    }
+
+    const optionsContainer = profileDiv.querySelector('.profile-options');
+
+    if (!optionsContainer) {
+        console.error('Options container not found');
+        return;
+    }
+
+    // Toggle visibility of the options container
+    if (optionsContainer.style.display === 'block') {
+        optionsContainer.style.display = 'none';
+        editButton.style.display = 'inline-block'; // Show the edit button again when options are hidden
+    } else {
+        optionsContainer.style.display = 'block';
+        editButton.style.display = 'none'; // Hide the edit button when options are shown
+    }
 }
 
 // Function to navigate to the chat page

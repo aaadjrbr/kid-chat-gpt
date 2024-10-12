@@ -19,7 +19,20 @@ h2 {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 15px;
+    gap: 30px;
+}
+
+.profile-options {
+    margin-top: 10px;
+    display: none; /* Initially hide the options */
+    text-align: center; /* Align the options nicely inside the profile */
+}
+
+.profile-options button {
+    font-size: 0.8em;
+    padding: 10px;
+    border-radius: 15px;
+    margin: 5px;
 }
 
 /* Profile item styling */
