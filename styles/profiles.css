@@ -1,0 +1,256 @@
+/* styles/profiles.css */
+
+/* General styling */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 20px;
+    color: #333;
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Profiles container */
+#profiles-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+}
+
+/* Profile item styling */
+.profile-item {
+    background-color: #fff;
+    border: 2px solid #007bff;
+    border-radius: 50%;
+    padding: 20px;
+    width: 150px;
+    height: 150px;
+    text-align: center;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, background-color 0.3s;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.profile-item:hover {
+    background-color: #f1f9ff;
+    transform: scale(1.05);
+}
+
+/* Kid name styling inside the profile */
+.profile-item span {
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+/* Center the options-container using text-align */
+.center-container {
+    text-align: center;
+}
+
+#options-container {
+    display: inline-block; /* Allows the container to be centered within the parent */
+}
+
+/* Center the button inside the container */
+.add-user-btn-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px; /* Optional: add some spacing from the top */
+}
+
+button.edit-button {
+    background: none;
+    color: #000;
+    font-size: 0.8em;
+    margin-top: 10px;
+}
+
+button.edit-button:hover {
+    background: none;
+    transform: scale(1.05);
+}
+
+/* Button styling */
+button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+/* "Add Profile" button styling */
+.add-profile-button {
+    background-color: #28a745;
+    margin-top: 20px;
+}
+
+.add-profile-button:hover {
+    background-color: #218838;
+}
+
+/* Responsive styling */
+@media (max-width: 768px) {
+    #profiles-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .profile-item {
+        width: 80%;
+        height: auto;
+        border-radius: 20px;
+    }
+
+    #options-container {
+        flex-direction: column;
+        align-items: center;
+    }
+}
+
+/* Profile item styling */
+.profile-item {
+    background-color: #fff;
+    border-radius: 50%;
+    width: 150px;
+    height: 150px;
+    text-align: center;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.3s;
+}
+
+.profile-item:hover {
+    transform: scale(1.05);
+}
+
+/* Profile image styling */
+.profile-image {
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+}
+
+/* Profile name styling */
+.profile-item span {
+    display: block;
+    margin-top: 10px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.gallery-image {
+    width: 60px;
+    height: 60px;
+    cursor: pointer;
+    margin: 5px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    transition: transform 0.2s, border-color 0.3s;
+}
+
+.gallery-image:hover {
+    transform: scale(1.1);
+}
+
+.gallery-image.selected {
+    border: 4px solid #1bff1b;
+}
+
+/* Modal styling */
+.modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 25px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 80%;
+    text-align: center;
+}
+
+.modal-content {
+    margin: 10px;
+}
+
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    font-size: 2em;
+    color: #aaa;
+}
+
+.close-button:hover {
+    color: #000;
+}
+
+.logout-container {
+    text-align: right;
+    margin-top: 20px; /* Add some space above the button */
+    margin-left: 20px; /* Optional: add left margin to position the button */
+}
+
+#logout-button {
+    background-color: #ff4d4d; /* Red color for the button */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+#logout-button:hover {
+    background-color: #e60000; /* Darker red on hover */
+}
+
+.info-bottom {
+    text-align: center; /* Center align the content */
+    margin-top: 20px; /* Add some space above */
+}
+
+.info-bottom a {
+    text-decoration: none; /* Remove underline from links */
+    color: #333; /* Set a default color */
+    margin: 0 10px; /* Add some horizontal spacing */
+}
+
+.info-bottom p {
+    display: inline-block; /* Display the <p> elements inline */
+    margin: 0; /* Remove default margins */
+    font-size: 16px; /* Set font size */
+    font-weight: bold; /* Make text bold */
+}
+
+.info-bottom a:hover p {
+    color: #007bff; /* Change color on hover */
+}

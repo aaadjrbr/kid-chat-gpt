@@ -1,0 +1,79 @@
+<!-- history.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat History</title>
+    <link rel="stylesheet" href="styles/history.css">
+</head>
+<body>
+    <h2>Chat History for <span id="kid-name"></span></h2>
+<div class="button-go-back-container">
+    <a class="button-go-back" style="text-align: center; text-decoration: none;" href="./profiles.html">
+        <span>Go back</span>
+    </a>
+</div>
+    <input type="month" id="month-picker" />
+    <div id="day-picker-container"></div>
+    <div id="history-container">
+        <br/><br/>
+    </div>
+
+    <!-- Include Firebase and history.js -->
+    <script src="scripts/firebase-config.js" type="module"></script>
+    <script type="module">
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js";
+        import { displayChatHistoryByDay } from './scripts/history.js';
+
+        const auth = getAuth();
+
+        // Get the URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const kidId = urlParams.get('kidId');
+        const kidName = urlParams.get('kidName');
+
+        if (!kidId) {
+            console.error("Kid ID is missing in the URL parameters.");
+            document.getElementById('history-container').innerHTML = '<p>Error loading chat history. Please select a valid profile.</p>';
+        } else {
+            document.getElementById('kid-name').textContent = kidName;
+
+            // Fetch authenticated user
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    const parentId = user.uid; // Get the actual authenticated parent ID
+
+                    // Event listener for month picker
+                    document.getElementById('month-picker').addEventListener('change', (event) => {
+                        const selectedMonth = event.target.value; // Format: YYYY-MM
+                        if (selectedMonth) {
+                            const [year, month] = selectedMonth.split('-');
+                            displayDaysForMonth(year, month, parentId);
+                        }
+                    });
+                } else {
+                    console.error("User not authenticated.");
+                    window.location.href = 'index.html'; // Redirect to login if not authenticated
+                }
+            });
+        }
+
+        function displayDaysForMonth(year, month, parentId) {
+            const dayPickerContainer = document.getElementById('day-picker-container');
+            dayPickerContainer.innerHTML = ''; // Clear previous days
+
+            const daysInMonth = new Date(year, month, 0).getDate();
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayButton = document.createElement('button');
+                dayButton.textContent = `${day}`;
+                dayButton.classList.add('day-button');
+                dayButton.addEventListener('click', () => {
+                    displayChatHistoryByDay(parentId, kidId, parseInt(year), parseInt(month), day);
+                });
+                dayPickerContainer.appendChild(dayButton);
+            }
+        }
+    </script>
+</body>
+</html>

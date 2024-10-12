@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kid Chat App - Login</title>
+    <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+    <h1>Welcome to Kid Chat App</h1>
+    
+    <!-- Login Form -->
+    <form id="login-form">
+        <input type="email" id="email" placeholder="Parent Email" required>
+        <div class="password-container">
+            <input type="password" id="password" placeholder="Password" required>
+            <span class="toggle-password" id="toggle-password">&#128065;</span>
+        </div>
+        <button type="submit">Login</button>
+        <p id="error-message" style="color: red; display: none;"></p>
+        <a href="#" id="forgot-password-link">Forgot Password?</a> <!-- Forgot Password Link -->
+    </form>
+
+    <!-- Password Reset Form, initially hidden -->
+    <form id="password-reset-form" style="display: none;">
+        <input type="email" id="reset-email" placeholder="Enter your email" required>
+        <button type="submit">Reset Password</button>
+        <p id="reset-error-message" style="color: red; display: none;"></p>
+        <p id="reset-success-message" style="color: green; display: none;"></p>
+        <a href="#" id="i-remember">I remember!</a>
+    </form>
+
+    <!-- Toggle to create a new profile -->
+    <div class="center-container">
+        <button id="toggle-create-account">Create New Account</button>
+    </div>
+
+    <!-- Create Account Form, initially hidden -->
+    <form id="create-account-form" style="display: none;">
+        <input type="email" id="new-email" placeholder="Enter New Email" required>
+        <div class="password-container">
+            <input type="password" id="new-account-password" placeholder="Password" required>
+            <span class="toggle-password" id="toggle-new-account-password">&#128065;</span>
+        </div>
+        <div class="password-container">
+            <input type="password" id="confirm-account-password" placeholder="Confirm Password" required>
+            <span class="toggle-password" id="toggle-confirm-account-password">&#128065;</span>
+        </div>
+        <button type="submit">Create Account</button>
+        <p id="create-error-message" style="color: red; display: none;"></p>
+    </form>
+
+    <script src="scripts/firebase-config.js" type="module"></script>
+    <script src="scripts/auth.js" type="module"></script>
+</body>
+</html>

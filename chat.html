@@ -1,0 +1,26 @@
+<!-- chat.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kid Chat App - Chat</title>
+    <link rel="stylesheet" href="styles/chat.css">
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="chat-container">
+        <a class="button-go-back" style="text-align: center; text-decoration: none;" href="./profiles.html">
+            <span>Go back</span>
+        </a>
+        <div id="messages"></div>
+        <div id="thinking" style="display: none;">🤔 Thinking...</div>
+        <div id="input-container">
+            <input type="text" id="user-input" placeholder="Type a message...">
+            <button id="send-btn">Send</button>
+        </div>
+    </div>
+
+    <script src="scripts/chat.js" type="module"></script>
+</body>
+</html>

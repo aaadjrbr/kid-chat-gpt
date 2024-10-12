@@ -1,0 +1,118 @@
+<!-- profiles.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kid Chat App - Profiles</title>
+    <link rel="stylesheet" href="styles/profiles.css">
+</head>
+<body>
+
+    <!-- Add this above or below the existing content -->
+    <div class="logout-container">
+    <button id="logout-button">Logout</button>
+    </div>
+
+    <h2>Who is there?</h2>
+    <div id="profiles-container"></div>
+    <div class="center-container">
+        <div id="options-container"></div>
+    </div>
+    <br/>
+
+    <!-- Toggle Button for Add New Profile Form -->
+    <div class="add-user-btn-container">
+        <button id="toggle-add-profile">Add New Profile</button>
+    </div>
+    <br/>
+
+    <!-- Add New Profile Form, initially hidden -->
+    <form id="add-profile-form" style="display: none; text-align: center;">
+        <input type="text" id="kid-name" placeholder="Kid's Name" required>
+        <input type="number" id="kid-age" placeholder="Kid's Age" required>
+        <div id="image-selection">
+            <p>Choose an Image:</p>
+            <div id="image-gallery">
+                <!-- Images will be loaded here via JavaScript -->
+            </div>
+        </div>
+        <button type="submit">Add Profile</button>
+    </form>
+
+    <!-- Modal for editing a profile -->
+    <div id="edit-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h3>✏️ Edit Profile</h3>
+            <input type="text" id="edit-kid-name" placeholder="Kid's Name">
+            <div id="edit-image-selection">
+                <p>Choose a New Image:</p>
+                <div id="edit-image-gallery">
+                    <!-- Images will be loaded here via JavaScript -->
+                </div>
+            </div>
+            <br/>
+            <button id="save-changes-button">💾 Save</button>
+            <button id="delete-profile-button" style="background-color: red; color: white;">❌ Delete Profile</button>
+        </div>
+    </div>
+    <br/><br/>
+<div class="info-bottom">
+    <a href="#"><p>Parents</p></a> | <a href="#"><p>About us</p></a>
+</div>
+    <br/>
+
+
+    <script src="scripts/firebase-config.js" type="module"></script>
+    <script type="module">
+        import { loadProfiles, addProfile, viewChatHistory, startNewChat, setupImageGallery, deleteProfileHandler } from './scripts/profiles.js';
+        import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js";
+    
+        window.viewChatHistory = viewChatHistory;
+        window.startNewChat = startNewChat;
+    
+        document.addEventListener('DOMContentLoaded', () => {
+            loadProfiles();
+            setupImageGallery('image-gallery'); // Set up image gallery for adding a profile
+            setupImageGallery('edit-image-gallery'); // Set up image gallery for editing a profile
+    
+            // Toggle Add Profile Form
+            const toggleButton = document.getElementById('toggle-add-profile');
+            const addProfileForm = document.getElementById('add-profile-form');
+            toggleButton.addEventListener('click', () => {
+                addProfileForm.style.display = addProfileForm.style.display === 'none' ? 'block' : 'none';
+            });
+    
+            // Logout button functionality
+            const logoutButton = document.getElementById('logout-button');
+            const auth = getAuth();
+            logoutButton.addEventListener('click', () => {
+                signOut(auth)
+                    .then(() => {
+                        // Redirect to a specific page after successful logout
+                        window.location.href = 'index.html'; // Change to your desired page
+                    })
+                    .catch((error) => {
+                        console.error("Error logging out:", error);
+                    });
+            });
+        });
+    
+        // Handle form submission to add a new profile
+        document.getElementById('add-profile-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const kidName = document.getElementById('kid-name').value;
+            const kidAge = parseInt(document.getElementById('kid-age').value);
+            const selectedImage = document.querySelector('#image-gallery .selected')?.dataset.image || 'default.webp';
+            await addProfile(kidName, kidAge, selectedImage);
+            document.getElementById('add-profile-form').reset();
+            loadProfiles();
+        });
+    
+        // Use deleteProfileHandler for handling profile deletion
+        document.getElementById('delete-profile-button').addEventListener('click', deleteProfileHandler);
+    </script>    
+        
+</body>
+</html>
