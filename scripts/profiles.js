@@ -119,10 +119,17 @@ function openEditModal(kidId, kid) {
 // Function to save changes
 document.getElementById('save-changes-button').addEventListener('click', async () => {
     const newName = document.getElementById('edit-kid-name').value;
+    const newAge = document.getElementById('edit-kid-age').value; // Add age input here
     const newImage = document.querySelector('#edit-image-gallery .selected')?.dataset.image || 'default.png';
-    await editProfile(currentKidId, newName, newImage);
-    document.getElementById('edit-modal').style.display = 'none';
-    loadProfiles();
+    
+    // Ensure that all fields are present before updating
+    if (newName && newAge && newImage) {
+        await editProfile(currentKidId, newName, newAge, newImage); // Pass all parameters correctly
+        document.getElementById('edit-modal').style.display = 'none';
+        loadProfiles();
+    } else {
+        console.error('Missing required fields for profile update.');
+    }
 });
 
 // Function to set up the delete button event listener
