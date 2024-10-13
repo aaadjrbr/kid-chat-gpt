@@ -1,7 +1,7 @@
 // chat.js
 
 import { db } from './firebase-config.js';
-import { collection, addDoc, getDocs, setDoc, doc, serverTimestamp, getDoc } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
+import { collection, addDoc, getDocs, setDoc, doc, serverTimestamp, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js";
 import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-functions.js";
 
@@ -16,10 +16,21 @@ let parentId = null;
 let kidName = "";
 let kidAge = null; // Age will be fetched from the database
 let currentChatSessionRef = null; // Reference to the current chat session
+let userTokens = 30; // Default number of tokens per hour for a normal user.
+let isPremium = false; // Default, will be updated based on the user's profile.
+let isGold = false; // Check if user has gold status
+let tokenInterval = null; // To keep track of the token reset.
+
+// Badge Element for Status
+const badgeContainer = document.createElement('div');
+badgeContainer.id = 'user-badge';
 
 // Get URL parameters to retrieve the selected kid's info
 const urlParams = new URLSearchParams(window.location.search);
 const kidId = urlParams.get('kidId');
+
+// Append the badgeContainer to the 'hello-container' instead of 'chat-container'
+document.querySelector('.badge1').appendChild(badgeContainer);
 
 // Check if kidId is defined
 if (!kidId) {
@@ -31,25 +42,87 @@ if (!kidId) {
     onAuthStateChanged(auth, (user) => {
         if (user) {
             parentId = user.uid; // Get the authenticated user's ID
-            // Fetch kid data from the database before allowing messages
-            fetchKidData().then(() => {
-                // Add event listeners for sending messages
-                sendBtn.addEventListener('click', sendMessage);
-                userInput.addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter') {
-                        sendMessage();
-                    }
+            initializeChat();
+            // Set up polling mechanism to refresh the user profile every 5 minutes
+            setInterval(() => {
+                fetchUserProfile().then(() => {
+                    console.log("Profile updated from Firestore. Tokens: ", userTokens);
                 });
-            }).catch((error) => {
-                console.error("Error fetching kid data:", error);
-                displayMessage("Unable to load chat. Please try again later.", "bot");
-            });
+            }, 5 * 60 * 1000); // Refresh every 5 minutes
         } else {
             console.error("No user is signed in.");
             displayMessage("Please sign in to access the chat.", "bot");
             sendBtn.disabled = true;
         }
     });
+}
+
+async function initializeChat() {
+    try {
+        await fetchUserProfile();
+        await fetchKidData();
+        // Add event listeners for sending messages.
+        sendBtn.addEventListener('click', sendMessage);
+        userInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        // Start the hourly token reset interval.
+        tokenInterval = setInterval(() => {
+            userTokens = isPremium ? 100 : (isGold ? Infinity : 30);
+            updateTokenBar();
+        }, 60 * 60 * 1000); // Reset every hour.
+
+    } catch (error) {
+        console.error("Initialization error:", error);
+        displayMessage("Unable to load chat. Please try again later.", "bot");
+    }
+}
+
+async function fetchUserProfile() {
+    try {
+        const userProfileRef = doc(db, `userProfiles/${parentId}`);
+        const userProfileSnapshot = await getDoc(userProfileRef);
+
+        if (userProfileSnapshot.exists()) {
+            const userProfile = userProfileSnapshot.data();
+            isPremium = userProfile.isPremium === true;
+            isGold = userProfile.isGold === true;
+
+            userTokens = userProfile.tokens !== undefined ? userProfile.tokens : (isPremium ? 100 : 30);
+
+            // Update Badge
+            if (isGold) {
+                badgeContainer.textContent = "Gold";
+                badgeContainer.className = "badge gold";
+            } else if (isPremium) {
+                badgeContainer.textContent = "Premium";
+                badgeContainer.className = "badge premium";
+            } else {
+                badgeContainer.textContent = "Free";
+                badgeContainer.className = "badge free";
+            }
+
+            console.log("Fetched User Profile:", userTokens);
+            updateTokenBar(); // Ensure token bar is updated after fetching
+        } else {
+            // Default to free user if profile not found
+            console.warn("User profile not found. Assuming user is not premium.");
+            isPremium = false;
+            isGold = false;
+            userTokens = 30;
+
+            console.log("User is not premium, 30 tokens assigned.");
+            badgeContainer.textContent = "Free User";
+            badgeContainer.className = "badge free";
+
+            updateTokenBar(); // Update bar for default values
+        }
+    } catch (error) {
+        console.error("Error fetching user profile:", error);
+    }
 }
 
 let conversationContext = [];
@@ -283,12 +356,31 @@ function stopMicAnimation() {
 }
 
 async function sendMessage() {
-    const message = userInput.value.trim().toLowerCase(); // Convert to lowercase for easier comparison
+    if (userTokens <= 0) {
+        const resetTime = getNextResetTime();
+        displayMessage(`Uh-oh! Looks like you've used up all your magic chat tokens for now! ✨ Don't worry, they'll be back soon! Come back at ${resetTime} and let's keep having fun! 🚀`, "bot");
+        return;
+    }
+
+    const message = userInput.value.trim().toLowerCase();
     if (message === '') return;
 
-    // If no chat session is active, start a new chat session
+    // If no chat session is active, start a new chat session.
     if (!currentChatSessionRef) {
         await startNewChatSession();
+    }
+
+    // Deduct one token for each message sent.
+    userTokens--;
+    updateTokenBar();
+
+    // Update Firestore with the new token count immediately
+    try {
+        const userProfileRef = doc(db, `userProfiles/${parentId}`);
+        await updateDoc(userProfileRef, { tokens: userTokens });
+        console.log("Tokens updated in Firestore:", userTokens);
+    } catch (error) {
+        console.error("Error updating tokens in Firestore:", error);
     }
 
     displayMessage(message, 'user');
@@ -311,6 +403,52 @@ async function sendMessage() {
         removeTypingMessage();
         displayMessage("Oops! Something went wrong. Please try again later.", "bot");
     }
+}
+
+tokenInterval = setInterval(async () => {
+    userTokens = isPremium ? 100 : 30;
+    updateTokenBar();
+    
+    // Update Firestore
+    try {
+        const userProfileRef = doc(db, `userProfiles/${parentId}`);
+        await updateDoc(userProfileRef, { tokens: userTokens });
+    } catch (error) {
+        console.error("Error resetting tokens in Firestore:", error);
+    }
+}, 60 * 60 * 1000); // Reset every hour.
+
+function updateTokenBar() {
+    const tokenBar = document.getElementById('token-bar');
+    let tokenPercentage;
+
+    if (isGold) {
+        // For Gold users, hide the bar and set it to unlimited status
+        tokenBar.style.width = "100%";
+        tokenBar.style.backgroundColor = 'gold';
+        document.getElementById("input-container").style.display = "block";
+        return;
+    }
+
+    tokenPercentage = (userTokens / (isPremium ? 100 : 30)) * 100;
+    tokenBar.style.width = `${tokenPercentage}%`;
+
+    if (userTokens <= 0) {
+        tokenBar.style.backgroundColor = 'red';
+        document.getElementById("input-container").style.display = "none"; // Hide input container
+        displayMessage(`Oopsie! Looks like you've used all your magic tokens for today! 🌟 But don't worry, they'll magically refill soon! Come back at ${getNextResetTime()} to keep the fun going! 🚀`, "bot");
+    } else if (tokenPercentage < 20) {
+        tokenBar.style.backgroundColor = 'orange';
+    } else {
+        tokenBar.style.backgroundColor = '#6a82fb'; // Default color
+        document.getElementById("input-container").style.display = "block"; // Show input container
+    }
+}
+
+function getNextResetTime() {
+    const now = new Date();
+    now.setHours(now.getHours() + 1, 0, 0, 0); // Set to the start of the next hour
+    return now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 }
 
 async function generateImage(prompt) {
