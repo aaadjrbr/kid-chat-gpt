@@ -13,9 +13,9 @@ body {
 
 /* Chat Container Styling */
 #chat-container {
-    background-color: #ffffff;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(240, 245, 255, 0.95)); /* Soft white to light bluish gradient */
     border-radius: 15px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15), 0 6px 20px rgba(100, 150, 255, 0.2); /* Softer shadow with a subtle blue glow */
     max-width: 800px;
     margin: 20px auto;
     width: 90%;
@@ -23,6 +23,7 @@ body {
     flex-direction: column;
     height: 80vh; /* Fixed height for chat */
     overflow: hidden; /* Prevents chat container from expanding */
+    transition: all 0.3s ease-in-out; /* Smooth transition for any future hover effects */
 }
 
 /* Messages Container Styling */
@@ -115,13 +116,6 @@ body {
     word-wrap: break-word; /* Ensures text wraps within the balloon */
 }
 
-.hello-container {
-    margin-top: 20px;
-    background: linear-gradient(135deg, #6a82fb, #fc5c7d);
-    padding: 10px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
-}
-
 /* "Thinking..." Style */
 #thinking {
     font-style: italic;
@@ -186,19 +180,29 @@ img {
     }
 }
 
+.hello-container {
+    display: flex;
+    justify-content: center; /* Aligns the content inside the container horizontally */
+    align-items: center; /* Aligns content vertically */
+    width: 90%;
+    margin: 20px auto; /* Centers the container horizontally */
+    border-radius: 20px;
+    background: linear-gradient(135deg, #6a82fb, #fc5c7d);
+    padding: 10px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
 #kid-name-display {
     font-size: 1.4em;
     text-align: center;
-    font-weight: 600;
-    background: #fff; /* Futuristic purple gradient */
-    -webkit-background-clip: text; /* For WebKit browsers */
-    background-clip: text; /* Standard property */
-    color: transparent; /* Makes the gradient visible inside the text */
+    font-family: "Kiwi Maru", serif;
+    font-weight: 400;
+    color: #ffffff; /* Matches the end color of the gradient */
     letter-spacing: 1px;
 }
 
 .cursor {
-    font-weight: bold;
+    font-weight: 400;
     color: #ffffff; /* Matches the end color of the gradient */
     animation: blink 0.7s steps(1) infinite;
 }
@@ -210,42 +214,70 @@ img {
 }
 
 /* Microphone button and wave styles */
-#mic-btn {
-    background-color: #4a00e0;
-    color: #fff;
+#mic-btn, #send-btn {
+    margin-left: 10px;
     padding: 10px;
-    border-radius: 50%;
+    border-radius: 5px;
+    background-image: linear-gradient(to right, #6a11cb, #2575fc);
     border: none;
     cursor: pointer;
-    font-size: 24px;
+    font-size: 1em;
+    color: white;
+    z-index: 2; /* Ensure buttons are above the wave */
+    position: relative; /* Ensure they stay positioned correctly */
 }
 
-#mic-btn:hover {
-    background-color: #4b00e0e8;
+#mic-btn:hover, #send-btn:hover {
+    background-image: linear-gradient(to right, #2575fc, #6a11cb);
 }
 
 /* Waves animation container */
-#waves {
-    display: none; /* Hidden by default */
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background-color: rgba(0, 0, 255, 0.5);
-    animation: wave 1.5s ease-out infinite;
+#input-container {
+    position: relative;
+    display: flex;
+    align-items: center;
 }
 
-/* Keyframes for wave animation */
-@keyframes wave {
+#user-input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    position: relative;
+    z-index: 1;
+}
+
+.wave-container {
+    display: none;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 0;
+    background: linear-gradient(135deg, rgba(0, 150, 255, 0.4), rgba(100, 0, 255, 0.4));
+    background-image: radial-gradient(circle at center, rgba(0, 120, 255, 0.6) 20%, transparent 20%);
+    background-size: 30px 30px;
+    animation: rippleAnimation 6s infinite ease-in-out;
+    border-radius: 15px;
+    pointer-events: none;
+    overflow: hidden;
+    box-shadow: 0 0 20px rgba(35, 255, 83, 0.4), 0 0 40px rgba(0, 4, 255, 0.5); /* More subtle glow */
+    transition: all 0.5s ease;
+}
+
+@keyframes rippleAnimation {
     0% {
-        transform: scale(0.6);
+        background-size: 10px 10px;
+        opacity: 0.6;
+    }
+    50% {
+        background-size: 120px 120px;
         opacity: 1;
     }
     100% {
-        transform: scale(1.6);
-        opacity: 0;
+        background-size: 10px 10px;
+        opacity: 0.6;
     }
 }

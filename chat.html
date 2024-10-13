@@ -7,6 +7,7 @@
     <title>Kid Chat App - Chat</title>
     <link rel="stylesheet" href="styles/chat.css">
     <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Kiwi+Maru:wght@300;400;500&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -23,11 +24,9 @@
         <div id="input-container">
             <input type="text" id="user-input" placeholder="Type a message...">
             <button id="send-btn">Send</button>
-            <button id="mic-btn">
-                🎤
-                <div id="mic-waves" class="waves"></div> <!-- Animated waves will appear here -->
-            </button>
-        </div>                
+            <button id="mic-btn">🎤</button>
+            <div id="mic-waves" class="wave-container"></div>
+        </div>                        
     </div>
     <script src="scripts/chat.js" type="module"></script>
 </body>

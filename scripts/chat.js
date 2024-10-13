@@ -66,22 +66,29 @@ async function fetchKidData() {
             kidAge = kidData.age;
 
             // Start typing effect with the fetched kid name
-            typeMessage(`Hey, ${kidName}!`);
+            typeMultipleMessages([
+                `Hey, ${kidName}! 👋`,
+                `Being ${kidAge} is great! ✨`,
+                `Why is the sky blue? 🌈`,
+                `Can fish fly? 🐟✈️`,
+                `Teach me math! ➗🧮`,
+                `Help me with English 📚`
+            ], 10000, "Keep learning! 💭"); // Default message for the pause                               
 
             // Customize the conversation context based on age
             conversationContext = [
                 { 
                     role: "system", 
-                    content: `You are a friendly assistant talking to a kid named ${kidName} who is ${kidAge} years old. Use simple and short sentences, include emojis to make it fun 🎉, and avoid any inappropriate topics. Keep the conversation light and playful! 😊`
+                    content: `You are a friendly robot named Cody, talking to a kid named ${kidName} who is ${kidAge} years old. Use simple words and short sentences, include fun emojis like 🎉 and 🚀, and avoid any serious or inappropriate topics. Keep the conversation light, playful, and fun! 😊`
                 },
                 { 
                     role: "system", 
-                    content: `When answering questions, be engaging and enthusiastic. Use emojis where appropriate, like ✨, 🚀, 🐶, 🏆. Keep your responses positive and friendly.` 
+                    content: `When answering questions, say you are a robot named Cody. Be engaging, friendly, and enthusiastic. Use emojis like ✨, 🐶, and 🏆 to make it exciting! Keep your responses positive and simple for a ${kidAge}-year-old to understand.`
                 },
                 { 
                     role: "system", 
-                    content: `For difficult questions, explain in a way that is easy for a ${kidAge}-year-old to understand. Use examples or stories if it helps make the answer simpler.` 
-                }
+                    content: `If the kid asks a hard question, explain it in a way that is easy for a ${kidAge}-year-old to understand. Use simple examples or fun stories to help make the answer clearer.`
+                }                
             ];            
         } else {
             throw new Error("Kid data not found.");
@@ -93,7 +100,7 @@ async function fetchKidData() {
 }
 
 // Function to simulate typing effect for the name
-function typeMessage(message) {
+function typeMessage(message, delayBeforeErase = 2000, callback) {
     const kidNameElement = document.getElementById('kid-name');
     const cursorElement = document.createElement('span');
     cursorElement.classList.add('cursor');
@@ -101,15 +108,70 @@ function typeMessage(message) {
 
     let index = 0;
 
+    // Clear previous message before typing the new one
+    kidNameElement.textContent = '';
+
+    // Typing effect
     const typingInterval = setInterval(() => {
         if (index < message.length) {
             kidNameElement.textContent += message.charAt(index);
             index++;
         } else {
             clearInterval(typingInterval);
-            cursorElement.style.display = 'none'; // Remove the cursor after typing is done
+            cursorElement.style.display = 'none'; // Hide the cursor when typing is done
+
+            // Delay before erasing
+            setTimeout(() => {
+                eraseMessage(callback);
+            }, delayBeforeErase);
         }
     }, 100); // Adjust typing speed here
+
+    // Erasing effect
+    function eraseMessage(callback) {
+        cursorElement.style.display = ''; // Show the cursor again during erasing
+        const erasingInterval = setInterval(() => {
+            if (kidNameElement.textContent.length > 0) {
+                kidNameElement.textContent = kidNameElement.textContent.slice(0, -1);
+            } else {
+                clearInterval(erasingInterval);
+                cursorElement.style.display = 'none'; // Hide the cursor again after erasing
+                callback(); // Call the callback to move to the next message
+            }
+        }, 50); // Adjust erasing speed here
+    }
+}
+
+// Call typeMessage for different messages in a loop with a pause on the first message
+function typeMultipleMessages(messages, pauseDuration = 5000, defaultMessage = "Taking a short break...") {
+    let i = 0; // Message index
+    let isDefaultMessageShown = false;
+
+    function nextMessage() {
+        if (isDefaultMessageShown) {
+            // Show default message before restarting the loop
+            typeMessage(defaultMessage, pauseDuration, () => {
+                isDefaultMessageShown = false; // Reset the flag
+                nextMessage(); // Restart the normal message loop
+            });
+        } else {
+            // Display the current message and erase it after typing
+            typeMessage(messages[i], 2000, () => {
+                i++; // Move to the next message
+
+                if (i === messages.length) {
+                    i = 0; // Reset to the first message after the last one
+                    isDefaultMessageShown = true; // Set the flag to show default message
+                    nextMessage(); // Show default message after finishing the loop
+                } else {
+                    nextMessage(); // Continue to the next message in the loop
+                }
+            });
+        }
+    }
+
+    // Start typing the first message
+    nextMessage();
 }
 
 async function startNewChatSession() {
