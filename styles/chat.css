@@ -31,9 +31,8 @@ body {
     flex: 1;
     padding: 15px;
     overflow-y: auto; /* Adds scrolling */
-    margin-bottom: 10px;
-    background-color: #fafafa;
-    border-radius: 15px 15px 0 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(240, 245, 255, 0.95)); /* Soft white to light bluish gradient */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15), 0 6px 20px rgba(100, 150, 255, 0.2); /* Softer shadow with a subtle blue glow */
 }
 
 /* Input Field Container */
@@ -42,9 +41,13 @@ body {
     display: flex;
     padding: 10px;
     gap: 10px;
-    background-color: #fff;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(240, 245, 255, 0.95)); /* Soft white to light bluish gradient */
     border-top: 1px solid #ccc;
     border-radius: 0 0 15px 15px;
+}
+
+input#user-input:hover {
+    background: #c7edf642;
 }
 
 /* Chat Input Field Styling */
@@ -155,7 +158,7 @@ button, input[type="text"], input[type="number"] {
 /* Responsive Styling */
 @media (max-width: 768px) {
     #chat-container {
-        height: 70vh;
+        height: 75vh;
     }
 
     #user-input {
@@ -224,10 +227,58 @@ img {
 }
 
 /* Microphone button and wave styles */
-#mic-btn, #send-btn {
-    margin-left: 10px;
-    padding: 10px;
+
+/* Style the input wrapper */
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+/* Style the input field */
+#user-input {
+    width: 100%;
+    padding-right: 40px; /* Ensure space for the mic button */
+    box-sizing: border-box;
+    height: 40px;
+    font-size: 16px;
+    border: 1px solid #ccc;
     border-radius: 5px;
+    padding-left: 10px;
+    z-index: 1;
+}
+
+/* Style the microphone button */
+.mic-button {
+    position: absolute;
+    right: 10px;
+    background: none !important;
+    border: none;
+    cursor: pointer;
+    font-size: 24px;
+    color: #888;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+}
+
+/* Style the mic icon inside the button */
+.mic-button .material-icons {
+    font-size: 24px;
+    color: #888;
+}
+
+.mic-button:hover, .material-icons:hover {
+    color: red;
+}
+
+/* Style for Send and Mic buttons */
+#send-btn {
+    margin-left: 5px;
+    padding: 10px;
+    border-radius: 15px;
     background-image: linear-gradient(to right, #6a11cb, #2575fc);
     border: none;
     cursor: pointer;
@@ -237,7 +288,8 @@ img {
     position: relative; /* Ensure they stay positioned correctly */
 }
 
-#mic-btn:hover, #send-btn:hover {
+/* Hover effect for buttons */
+#send-btn:hover {
     background-image: linear-gradient(to right, #2575fc, #6a11cb);
 }
 
@@ -246,16 +298,6 @@ img {
     position: relative;
     display: flex;
     align-items: center;
-}
-
-#user-input {
-    width: 100%;
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    font-size: 16px;
-    position: relative;
-    z-index: 1;
 }
 
 .wave-container {
@@ -270,7 +312,6 @@ img {
     background-image: radial-gradient(circle at center, rgba(0, 120, 255, 0.6) 20%, transparent 20%);
     background-size: 30px 30px;
     animation: rippleAnimation 6s infinite ease-in-out;
-    border-radius: 15px;
     pointer-events: none;
     overflow: hidden;
     box-shadow: 0 0 20px rgba(35, 255, 83, 0.4), 0 0 40px rgba(0, 4, 255, 0.5); /* More subtle glow */
