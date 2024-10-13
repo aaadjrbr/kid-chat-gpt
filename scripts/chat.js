@@ -20,6 +20,7 @@ let userTokens = 30; // Default number of tokens per hour for a normal user.
 let isPremium = false; // Default, will be updated based on the user's profile.
 let isGold = false; // Check if user has gold status
 let tokenInterval = null; // To keep track of the token reset.
+let tokensDepletedTimestamp = null; // Timestamp for when tokens run out.
 
 // Badge Element for Status
 const badgeContainer = document.createElement('div');
@@ -69,12 +70,12 @@ async function initializeChat() {
             }
         });
 
-        // Start the hourly token reset interval.
-        tokenInterval = setInterval(() => {
-            userTokens = isPremium ? 100 : (isGold ? Infinity : 30);
+        // Check if user has remaining tokens
+        if (userTokens > 0) {
             updateTokenBar();
-        }, 60 * 60 * 1000); // Reset every hour.
-
+        } else {
+            startTokenRefillTimer();
+        }
     } catch (error) {
         console.error("Initialization error:", error);
         displayMessage("Unable to load chat. Please try again later.", "bot");
@@ -387,6 +388,9 @@ async function sendMessage() {
     if (userTokens <= 0) {
         const resetTime = getNextResetTime();
         displayMessage(`Uh-oh! Looks like you've used up all your magic chat tokens for now! ✨ Don't worry, they'll be back soon! Come back at ${resetTime} and let's keep having fun! 🚀`, "bot");
+        if (!tokenInterval) {
+            startTokenRefillTimer(); // Start the refill timer when tokens reach zero
+        }
         return;
     }
 
@@ -407,6 +411,11 @@ async function sendMessage() {
         const userProfileRef = doc(db, `userProfiles/${parentId}`);
         await updateDoc(userProfileRef, { tokens: userTokens });
         console.log("Tokens updated in Firestore:", userTokens);
+
+        // If tokens run out, start the refill timer
+        if (userTokens <= 0 && !tokenInterval) {
+            startTokenRefillTimer();
+        }
     } catch (error) {
         console.error("Error updating tokens in Firestore:", error);
     }
@@ -433,18 +442,30 @@ async function sendMessage() {
     }
 }
 
-tokenInterval = setInterval(async () => {
-    userTokens = isPremium ? 100 : 30;
-    updateTokenBar();
-    
-    // Update Firestore
-    try {
-        const userProfileRef = doc(db, `userProfiles/${parentId}`);
-        await updateDoc(userProfileRef, { tokens: userTokens });
-    } catch (error) {
-        console.error("Error resetting tokens in Firestore:", error);
+// Function to start token refill timer only when tokens reach zero
+function startTokenRefillTimer() {
+    if (!tokensDepletedTimestamp) {
+        tokensDepletedTimestamp = Date.now(); // Set the time when tokens are depleted
     }
-}, 60 * 60 * 1000); // Reset every hour.
+
+    // Set a timeout for 1 hour after tokens run out
+    tokenInterval = setTimeout(async () => {
+        // Refill tokens after 1 hour
+        userTokens = isPremium ? 100 : 30; // Refill tokens based on user type
+        updateTokenBar();
+
+        // Update Firestore after refilling tokens
+        try {
+            const userProfileRef = doc(db, `userProfiles/${parentId}`);
+            await updateDoc(userProfileRef, { tokens: userTokens });
+            console.log("Tokens refilled in Firestore:", userTokens);
+        } catch (error) {
+            console.error("Error refilling tokens in Firestore:", error);
+        }
+
+        tokensDepletedTimestamp = null; // Reset the timestamp after refilling
+    }, 60 * 60 * 1000); // 1 hour in milliseconds
+}
 
 function updateTokenBar() {
     const tokenBar = document.getElementById('token-bar');
@@ -475,10 +496,12 @@ function updateTokenBar() {
 
 function getNextResetTime() {
     const now = new Date();
-    now.setHours(now.getHours() + 1, 0, 0, 0); // Set to the start of the next hour
+    now.setHours(now.getHours(), now.getMinutes(), 0, 0); // Use the current time
 
-    let hours = now.getHours();
-    const minutes = now.getMinutes().toString().padStart(2, '0');
+    const resetTime = new Date(now.getTime() + 60 * 60 * 1000); // Add exactly 1 hour
+
+    let hours = resetTime.getHours();
+    const minutes = resetTime.getMinutes().toString().padStart(2, '0');
     const ampm = hours >= 12 ? 'PM' : 'AM';
 
     hours = hours % 12;
