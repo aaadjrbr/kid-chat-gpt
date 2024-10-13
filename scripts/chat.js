@@ -295,24 +295,13 @@ async function sendMessage() {
     conversationContext.push({ role: "user", content: message });
 
     try {
-        displayMessage("Thinking...", 'typing');
+        displayTypingMessage("", 'typing'); // Cody starts thinking
         let response;
 
-        // Commented out the code that detects image generation requests
-        // const imageKeywords = ['generate image', 'generate an image', 'create image', 'make a picture', 'draw', 'illustrate', 'create an image'];
-        // const isImageRequest = imageKeywords.some(keyword => message.includes(keyword));
+        response = await getChatResponse(); // Call text generation function
+        displayTypingMessage(response, 'bot'); // Display text response
 
-        // if (isImageRequest) {
-        //     const description = message.split(imageKeywords.find(keyword => message.includes(keyword)))[1].trim();
-        //     response = await generateImage(description); // Call image generation function
-        //     displayImage(response, 'bot'); // Display the image
-        // } else {
-            // Use GPT-3.5 for normal chat responses
-            response = await getChatResponse(); // Call text generation function
-            displayTypingMessage(response, 'bot'); // Display text response
-        // }
-        
-        removeTypingMessage();
+        removeTypingMessage(); // Cody is done thinking
         await saveMessageToCurrentChat(response, 'bot');
     } catch (error) {
         console.error("Error sending message:", error);
@@ -403,6 +392,11 @@ function displayTypingMessage(text, sender) {
     messagesContainer.appendChild(messageDiv);
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
+    // Show the "Thinking..." message and disable the input field
+    document.getElementById('thinking').style.display = 'block';
+    userInput.disabled = true;
+    sendBtn.disabled = true; // Disable send button
+
     const typingInterval = setInterval(() => {
         if (index < text.length) {
             messageDiv.textContent += text.charAt(index);
@@ -418,6 +412,10 @@ function removeTypingMessage() {
     if (typingMessage) {
         typingMessage.remove();
     }
+    // Hide the "Thinking..." message and enable the input field again
+    document.getElementById('thinking').style.display = 'none';
+    userInput.disabled = false;
+    sendBtn.disabled = false; // Enable send button
 }
 
 async function getChatResponse() {

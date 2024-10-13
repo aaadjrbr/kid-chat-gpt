@@ -118,9 +118,19 @@ body {
 
 /* "Thinking..." Style */
 #thinking {
-    font-style: italic;
-    color: #888;
+    background: linear-gradient(135deg, #6a82fb, #6a82fbb9);
+    padding: 8px;
     margin-bottom: 10px;
+    color: white;
+    border-radius: 20px 20px 20px 0;
+    float: left;
+    clear: both;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    font-family: 'Roboto', sans-serif;
+    max-width: 110px;
+    word-wrap: break-word;
+    margin-left: 10px;
+    display: none; /* Hidden by default */
 }
 
 /* Scroll Bar Styling */
