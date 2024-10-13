@@ -97,12 +97,24 @@ async function fetchUserProfile() {
             if (isGold) {
                 badgeContainer.textContent = "Gold";
                 badgeContainer.className = "badge gold";
+                conversationContext.push({
+                    role: "system",
+                    content: "This user is a Gold member, which means they have unlimited tokens! 🌟 Keep chatting as much as you like!"
+                });
             } else if (isPremium) {
                 badgeContainer.textContent = "Premium";
                 badgeContainer.className = "badge premium";
+                conversationContext.push({
+                    role: "system",
+                    content: "This user is a Premium member with 100 tokens per hour. Be encouraging and let them know how many tokens they have left if they ask."
+                });
             } else {
                 badgeContainer.textContent = "Free";
                 badgeContainer.className = "badge free";
+                conversationContext.push({
+                    role: "system",
+                    content: "This user is a Free member with 30 tokens per hour. Be encouraging and let them know how many tokens they have left if they ask."
+                });
             }
 
             console.log("Fetched User Profile:", userTokens);
@@ -117,6 +129,12 @@ async function fetchUserProfile() {
             console.log("User is not premium, 30 tokens assigned.");
             badgeContainer.textContent = "Free User";
             badgeContainer.className = "badge free";
+
+            // Add default Free status to conversationContext
+            conversationContext.push({
+                role: "system",
+                content: "This user is a Free member with 30 tokens per hour. Be encouraging and let them know how many tokens they have left if they ask."
+            });
 
             updateTokenBar(); // Update bar for default values
         }
@@ -168,6 +186,16 @@ async function fetchKidData() {
                 { 
                     role: "system", 
                     content: `If the kid asks a hard question, explain it in a way that is easy for a ${kidAge}-year-old to understand. Use simple examples or fun stories to help make the answer clearer.`
+                },
+                {
+                    role: "system",
+                    content: `You are aware of the user's current subscription status and token availability. If they ask about how many tokens they have, answer them accurately. 
+
+                    - If they are a Gold member, they have unlimited tokens. You should say something like: "You're a Gold member, which means you have unlimited tokens! 🌟 Keep chatting as much as you like!"
+                    - If they are a Premium member, let them know they have 100 tokens per hour.
+                    - If they are a Free user, tell them they have 30 tokens per hour. Keep them informed if they are running low.
+                    - Always provide an encouraging and positive response regarding their token count, especially if they are running out. For example, "You still have ${userTokens} tokens left! Keep going, you're doing great!" or "Uh-oh, you have just a few tokens left, but they'll refill soon! 🌟"
+                    `
                 }                                                              
             ];            
         } else {
