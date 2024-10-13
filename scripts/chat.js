@@ -486,37 +486,37 @@ async function checkTokenRefillTime() {
 }
 
 // Function to handle when tokens reach zero
+let refillTime = null; // Declared globally for the countdown
+
 async function startTokenRefillTimer() {
     const userProfileRef = doc(db, `userProfiles/${parentId}`);
     const userProfileSnapshot = await getDoc(userProfileRef);
     const userProfile = userProfileSnapshot.data();
 
-    // If tokensDepletedTimestamp is not set, store the current server time
     if (!userProfile.tokensDepletedTimestamp) {
         await updateDoc(userProfileRef, {
             tokensDepletedTimestamp: serverTimestamp() // Store depletion time using Firebase server time
         });
         console.log('Tokens depleted, timestamp saved');
         
-        // Set refillTime to 1 hour from now
+        // Calculate 1 hour from now and set it to refillTime
         refillTime = Date.now() + 60 * 60 * 1000;
     } else {
         // Use the existing tokensDepletedTimestamp from Firestore
-        const tokensDepletedTimestamp = userProfile.tokensDepletedTimestamp.toMillis(); // Convert to milliseconds
-        refillTime = tokensDepletedTimestamp + 60 * 60 * 1000; // Add 1 hour
+        const tokensDepletedTimestamp = userProfile.tokensDepletedTimestamp.toMillis();
+        refillTime = tokensDepletedTimestamp + 60 * 60 * 1000;
     }
 
-    // Now start the countdown interval
+    // Start the local countdown for the UI
     const countdownInterval = setInterval(() => {
         const timeLeft = refillTime - Date.now();
-
         if (timeLeft <= 0) {
             userTokens = isPremium ? 100 : 30;
             clearInterval(countdownInterval);
-            refillTime = null;  // Reset refill time
-            updateTokenBar();
+            refillTime = null;
+            updateTokenBar(); // Update the front-end bar
 
-            // Update Firestore after refilling tokens
+            // Reset tokens and timestamp in Firebase
             updateDoc(userProfileRef, { tokens: userTokens, tokensDepletedTimestamp: null });
             console.log("Tokens refilled.");
         } else {
@@ -524,7 +524,7 @@ async function startTokenRefillTimer() {
             const secondsLeft = Math.floor((timeLeft % 60000) / 1000);
             console.log(`Tokens will refill in ${minutesLeft} minutes and ${secondsLeft} seconds`);
         }
-    }, 1000);
+    }, 1000); // Update the countdown every second
 }
 
 // Function to display the fixed refill time

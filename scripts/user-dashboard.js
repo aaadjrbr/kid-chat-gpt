@@ -1,5 +1,5 @@
 import { db } from './firebase-config.js';
-import { getDocs, collection, updateDoc, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
+import { getDocs, collection, updateDoc, doc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js";
 
 // Check if the user is logged in
@@ -76,27 +76,19 @@ document.addEventListener('DOMContentLoaded', () => {
             const freeButton = userBox.querySelector('.btn-free');
             freeButton.addEventListener('click', () => updateStatus(user.id, 'free'));
     
+            // Add event listener for Instant Refill
+            const refillButton = userBox.querySelector('.btn-refill');
+            refillButton.addEventListener('click', () => refillTokens(user.id));
+    
             userContainer.appendChild(userBox);
         });
-    }    
+    }       
 
     searchBar.addEventListener('input', (e) => {
         const searchTerm = e.target.value.toLowerCase();
         const filteredUsers = users.filter(user => user.name.toLowerCase().includes(searchTerm));
         displayUsers(filteredUsers);
-    });
-
-    window.refillTokens = async function(userId) {
-        try {
-            await updateDoc(doc(db, 'userProfiles', userId), {
-                tokens: 30
-            });
-            alert('Tokens refilled!');
-            fetchUsers();
-        } catch (error) {
-            console.error('Error refilling tokens:', error);
-        }
-    };    
+    });   
 
     window.updateStatus = async function(userId, status) {
         try {
@@ -118,6 +110,19 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Error updating status:', error);
         }
     };
+
+    window.refillTokens = async function(userId) {
+        try {
+            await updateDoc(doc(db, 'userProfiles', userId), {
+                tokens: 30,  // Reset tokens to 30
+                tokensDepletedTimestamp: null  // Reset the timestamp so the chat logic isn't affected
+            });
+            alert('Tokens refilled!');
+            fetchUsers();  // Refresh the list of users
+        } catch (error) {
+            console.error('Error refilling tokens:', error);
+        }
+    };          
     
     window.removeUser = async function(userId) {
         if (confirm('Are you sure you want to remove this user?')) {
