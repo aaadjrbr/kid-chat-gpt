@@ -448,7 +448,15 @@ function updateTokenBar() {
 function getNextResetTime() {
     const now = new Date();
     now.setHours(now.getHours() + 1, 0, 0, 0); // Set to the start of the next hour
-    return now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+    let hours = now.getHours();
+    const minutes = now.getMinutes().toString().padStart(2, '0');
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+
+    hours = hours % 12;
+    hours = hours ? hours : 12; // The hour '0' should be '12'
+
+    return `${hours}:${minutes} ${ampm}`;
 }
 
 async function generateImage(prompt) {
