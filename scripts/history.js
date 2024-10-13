@@ -4,9 +4,22 @@ import { collection, getDocs, query, where, orderBy } from "https://www.gstatic.
 const botName = "Friendly Robot";
 let kidName = "User";
 
-// Fetch chat sessions for a specific day within the current month
-export async function displayChatHistoryByDay(parentId, kidId, year, month, day = null) {
-    console.log(`Fetching chat sessions for parentId: ${parentId}, kidId: ${kidId}, Year: ${year}, Month: ${month}, Day: ${day || 'entire month'}`);
+// Cache key for session storage
+const CACHE_KEY = "chatHistoryCache";
+
+// Fetch chat sessions for a specific day within the current month and cache them
+export async function displayChatHistoryByDay(parentId, kidId, year, month, day) {
+    console.log(`Fetching chat sessions for parentId: ${parentId}, kidId: ${kidId}, Year: ${year}, Month: ${month}, Day: ${day}`);
+
+    // Check if the data is already in the session cache
+    const cacheKey = `${parentId}_${kidId}_${year}_${month}_${day}`;
+    const cachedData = sessionStorage.getItem(cacheKey);
+    
+    if (cachedData) {
+        console.log("Using cached data for chat sessions.");
+        renderChatHistory(JSON.parse(cachedData), parentId, kidId, year, month, day);
+        return;
+    }
 
     const urlParams = new URLSearchParams(window.location.search);
     kidName = urlParams.get('kidName') || "User";
@@ -24,29 +37,42 @@ export async function displayChatHistoryByDay(parentId, kidId, year, month, day 
     );
 
     const chatSnapshot = await getDocs(q);
+    if (!chatSnapshot.empty) {
+        // Save chat data to the cache
+        const chatSessions = chatSnapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+        }));
+        sessionStorage.setItem(cacheKey, JSON.stringify(chatSessions));
+        console.log("Caching chat sessions for this day.");
+
+        // Render chat history after caching
+        renderChatHistory(chatSessions, parentId, kidId, year, month, day);
+    } else {
+        const historyContainer = document.getElementById('history-container');
+        historyContainer.innerHTML = '<p>No chat history available for this day.</p>';
+    }
+}
+
+// Function to render the chat history from the cache or query
+function renderChatHistory(chatSessions, parentId, kidId, year, month, day) {
     const historyContainer = document.getElementById('history-container');
     historyContainer.innerHTML = ''; // Clear previous results
 
     const historyHeader = document.createElement('h3');
-    historyHeader.textContent = `You are seeing the history for ${month}/${day}/${year}`;
+    historyHeader.textContent = `Chat history for ${month}/${day}/${year}`;
     historyContainer.appendChild(historyHeader);
-
-    if (chatSnapshot.empty) {
-        historyContainer.innerHTML += '<p>No chat history available for this day.</p>';
-        return;
-    }
 
     const sessionsContainer = document.createElement('div');
     sessionsContainer.classList.add('sessions-container');
 
     const sessionsList = document.createElement('ul');
-    chatSnapshot.forEach(doc => {
-        const session = doc.data();
+    chatSessions.forEach(session => {
         const sessionItem = document.createElement('li');
         const sessionTime = new Date(session.dateStarted.seconds * 1000).toLocaleTimeString();
         sessionItem.textContent = `Chat started at ${sessionTime}`;
         sessionItem.addEventListener('click', () => {
-            loadChatMessages(parentId, kidId, doc.id, year, month, day);
+            loadChatMessages(parentId, kidId, session.id, year, month, day); // Pass parentId, kidId correctly here
         });
         sessionsList.appendChild(sessionItem);
     });
@@ -68,7 +94,7 @@ async function loadChatMessages(parentId, kidId, chatId, year, month, day) {
 
     // Update header to indicate the selected day
     const historyHeader = document.createElement('h3');
-    historyHeader.textContent = `You are seeing the history for ${month}/${day}/${year}`;
+    historyHeader.textContent = `Chat messages for ${month}/${day}/${year}`;
     historyContainer.appendChild(historyHeader);
 
     const messagesContainer = document.createElement('div');
@@ -105,29 +131,19 @@ async function loadChatMessages(parentId, kidId, chatId, year, month, day) {
 
     historyContainer.appendChild(messagesContainer);
 
+    // Add the "Go Back" button to go back to the list of sessions for the same day
     const goBackButton = document.createElement('button');
     goBackButton.textContent = "Go Back";
     goBackButton.classList.add('go-back-button');
     goBackButton.addEventListener('click', () => {
-        displayChatHistoryByDay(parentId, kidId, year, month);
+        // Re-render the chat sessions for the same day from cache
+        const cacheKey = `${parentId}_${kidId}_${year}_${month}_${day}`;
+        const cachedData = sessionStorage.getItem(cacheKey);
+        if (cachedData) {
+            console.log("Using cached data to go back.");
+            renderChatHistory(JSON.parse(cachedData), parentId, kidId, year, month, day);
+        }
     });
 
     historyContainer.appendChild(goBackButton);
-}
-
-// Function to display day buttons for the current month
-export function displayDaysForMonth(year, month, parentId, kidId) {
-    const dayPickerContainer = document.getElementById('day-picker-container');
-    dayPickerContainer.innerHTML = ''; // Clear previous days
-
-    const daysInMonth = new Date(year, month, 0).getDate();
-    for (let day = 1; day <= daysInMonth; day++) {
-        const dayButton = document.createElement('button');
-        dayButton.textContent = `${day}`;
-        dayButton.classList.add('day-button');
-        dayButton.addEventListener('click', () => {
-            displayChatHistoryByDay(parentId, kidId, year, month, day);
-        });
-        dayPickerContainer.appendChild(dayButton);
-    }
 }
