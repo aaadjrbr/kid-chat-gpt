@@ -151,7 +151,7 @@ button, input[type="text"], input[type="number"] {
 /* Responsive Styling */
 @media (max-width: 768px) {
     #chat-container {
-        height: 85vh;
+        height: 70vh;
     }
 
     #user-input {
@@ -211,17 +211,17 @@ img {
 
 /* Microphone button and wave styles */
 #mic-btn {
-    position: relative;
-    background-color: #4a90e2;
-    color: white;
-    border: none;
+    background-color: #4a00e0;
+    color: #fff;
     padding: 10px;
     border-radius: 50%;
+    border: none;
     cursor: pointer;
+    font-size: 24px;
 }
 
 #mic-btn:hover {
-    background-color: #357ABD;
+    background-color: #4b00e0e8;
 }
 
 /* Waves animation container */
