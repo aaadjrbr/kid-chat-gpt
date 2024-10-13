@@ -458,6 +458,11 @@ async function checkTokenRefillTime() {
             const userProfile = userProfileSnapshot.data();
             const tokensDepletedTimestamp = userProfile.tokensDepletedTimestamp;
 
+            // Gold users should get 999 tokens refilled when their tokens run out
+            const goldTokenLimit = 999;
+            const premiumTokenLimit = 100;
+            const freeTokenLimit = 30;
+
             if (tokensDepletedTimestamp) {
                 const currentTime = Date.now();
                 const tokenDepletionTime = tokensDepletedTimestamp.toMillis(); // Convert Firebase timestamp to milliseconds
@@ -466,18 +471,31 @@ async function checkTokenRefillTime() {
                 const timeLeftForRefill = 60 * 60 * 1000 - timePassed; // 1 hour in milliseconds
 
                 if (timeLeftForRefill <= 0) {
-                    userTokens = isPremium ? 100 : 30;
+                    // Refill based on user type
+                    if (isGold) {
+                        userTokens = goldTokenLimit; // Gold members get 999 tokens
+                    } else if (isPremium) {
+                        userTokens = premiumTokenLimit; // Premium members get 100 tokens
+                    } else {
+                        userTokens = freeTokenLimit; // Free members get 30 tokens
+                    }
                     await updateDoc(userProfileRef, { tokens: userTokens, tokensDepletedTimestamp: null }); // Refill tokens and clear the timestamp
                     console.log("Tokens refilled.");
                     updateTokenBar(); // Update token UI
                     return;
                 }
 
-                // Calculate minutes and seconds remaining for display
+                // Calculate minutes and seconds remaining for display (for Free and Premium members)
                 const minutesLeft = Math.floor(timeLeftForRefill / 60000);
                 const secondsLeft = Math.floor((timeLeftForRefill % 60000) / 1000);
 
                 displayMessage(`Oopsie! Looks like you've used all your magic tokens! 🌟 But don't worry, they'll refill soon! Come back in ${minutesLeft} minutes and ${secondsLeft} seconds to keep the fun going! 🚀`, "bot");
+            } else if (isGold && userTokens <= 0) {
+                // Refill Gold users if they run out of tokens
+                userTokens = goldTokenLimit;
+                await updateDoc(userProfileRef, { tokens: userTokens });
+                console.log("Gold user tokens refilled to 999.");
+                updateTokenBar();
             }
         }
     } catch (error) {
@@ -493,25 +511,34 @@ async function startTokenRefillTimer() {
     const userProfileSnapshot = await getDoc(userProfileRef);
     const userProfile = userProfileSnapshot.data();
 
+    const goldTokenLimit = 999;
+    const premiumTokenLimit = 100;
+    const freeTokenLimit = 30;
+
     if (!userProfile.tokensDepletedTimestamp) {
         await updateDoc(userProfileRef, {
             tokensDepletedTimestamp: serverTimestamp() // Store depletion time using Firebase server time
         });
         console.log('Tokens depleted, timestamp saved');
         
-        // Calculate 1 hour from now and set it to refillTime
-        refillTime = Date.now() + 60 * 60 * 1000;
+        refillTime = Date.now() + 60 * 60 * 1000; // 1 hour for refills for all users
     } else {
-        // Use the existing tokensDepletedTimestamp from Firestore
-        const tokensDepletedTimestamp = userProfile.tokensDepletedTimestamp.toMillis();
-        refillTime = tokensDepletedTimestamp + 60 * 60 * 1000;
+        const tokensDepletedTimestamp = userProfile.tokensDepletedTimestamp.toMillis(); // Convert to milliseconds
+        refillTime = tokensDepletedTimestamp + 60 * 60 * 1000; // Refill tokens after 1 hour
     }
 
-    // Start the local countdown for the UI
     const countdownInterval = setInterval(() => {
         const timeLeft = refillTime - Date.now();
         if (timeLeft <= 0) {
-            userTokens = isPremium ? 100 : 30;
+            // Refill tokens based on user type
+            if (isGold) {
+                userTokens = goldTokenLimit; // Gold members get 999 tokens
+            } else if (isPremium) {
+                userTokens = premiumTokenLimit;
+            } else {
+                userTokens = freeTokenLimit;
+            }
+
             clearInterval(countdownInterval);
             refillTime = null;
             updateTokenBar(); // Update the front-end bar
@@ -547,26 +574,21 @@ function updateTokenBar() {
     const tokenBar = document.getElementById('token-bar');
     let tokenPercentage;
 
-    if (isGold) {
-        // For Gold users, hide the bar and set it to unlimited status
-        tokenBar.style.width = "100%";
-        tokenBar.style.backgroundColor = 'gold';
-        document.getElementById("input-container").style.display = "block";
-        return;
-    }
+    // Gold, Premium, and Free users all have a set token limit now
+    let tokenLimit = isGold ? 999 : (isPremium ? 100 : 30);  // Adjust token limit based on user status
 
-    tokenPercentage = (userTokens / (isPremium ? 100 : 30)) * 100;
+    tokenPercentage = (userTokens / tokenLimit) * 100;
     tokenBar.style.width = `${tokenPercentage}%`;
 
     if (userTokens <= 0) {
         tokenBar.style.backgroundColor = 'red';
-        document.getElementById("input-container").style.display = "none"; // Hide input container
+        document.getElementById("input-container").style.display = "none"; // Hide input container when tokens are depleted
         const nextRefillTime = getNextResetTime();  // Call getNextResetTime to get the accurate time
     } else if (tokenPercentage < 20) {
         tokenBar.style.backgroundColor = 'orange';
     } else {
-        tokenBar.style.backgroundColor = '#6a82fb'; // Default color
-        document.getElementById("input-container").style.display = "block"; // Show input container
+        tokenBar.style.backgroundColor = '#6a82fb'; // Default color when above 20%
+        document.getElementById("input-container").style.display = "block"; // Show input container when tokens are available
     }
 }
 
