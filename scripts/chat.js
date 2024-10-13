@@ -62,20 +62,16 @@ async function initializeChat() {
     try {
         await fetchUserProfile();
         await fetchKidData();
-        // Add event listeners for sending messages.
+
+        // Check if user has remaining tokens or handle refill logic
+        checkTokenRefillTime();
+
         sendBtn.addEventListener('click', sendMessage);
         userInput.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
                 sendMessage();
             }
         });
-
-        // Check if user has remaining tokens
-        if (userTokens > 0) {
-            updateTokenBar();
-        } else {
-            startTokenRefillTimer();
-        }
     } catch (error) {
         console.error("Initialization error:", error);
         displayMessage("Unable to load chat. Please try again later.", "bot");
@@ -172,33 +168,35 @@ async function fetchKidData() {
 
             // Customize the conversation context based on age
             conversationContext = [
-                { 
+                {
                     role: "system", 
                     content: `You are a friendly robot named Cody, talking to a kid named ${kidName} who is ${kidAge} years old. Use simple words and short sentences, include fun emojis like 🎉 and 🚀, and avoid any serious or inappropriate topics. Keep the conversation light, playful, and fun! 😊`
                 },
                 { 
                     role: "system", 
-                    content: `When answering questions. Be engaging, friendly, and enthusiastic. Use emojis like ✨, 🐶, and 🏆 to make it exciting! Keep your responses positive and simple for a ${kidAge}-year-old to understand.`
+                    content: `When answering questions, be engaging, friendly, and enthusiastic. Use emojis like ✨, 🐶, and 🏆 to make it exciting! Keep your responses positive and simple for a ${kidAge}-year-old to understand.`
                 },
                 { 
                     role: "system", 
-                    content: `If the kid asks about sex, adult topics (e.g., boyfriends, girlfriends, relationships), suicide, anxiety, or personal problems, **do not** give advice, **do not** talk about sex (e.g.: animal sex, adults sex, any type of sex.), encourage them to ask their parents. Politely say: "It's best to talk to your parents or a trusted adult about that!" Never provide medical advice, and avoid discussing grown-up stuff. Always encourage the kid to talk to their parents or a trusted adult.`
+                    content: `If the kid asks about sex, adult topics (e.g., boyfriends, girlfriends, relationships), suicide, anxiety, or personal problems, **do not** give advice, **do not** talk about sex (e.g., animal sex, adults sex, any type of sex). Encourage them to ask their parents. Politely say: "It's best to talk to your parents or a trusted adult about that!" Never provide medical advice, and avoid discussing grown-up stuff. Always encourage the kid to talk to their parents or a trusted adult.`
                 },
                 { 
                     role: "system", 
                     content: `If the kid asks a hard question, explain it in a way that is easy for a ${kidAge}-year-old to understand. Use simple examples or fun stories to help make the answer clearer.`
                 },
-                {
-                    role: "system",
-                    content: `You are aware of the user's current subscription status and token availability. If they ask about how many tokens they have, answer them accurately. 
-
-                    - If they are a Gold member, they have unlimited tokens. You should say something like: "You're a Gold member, which means you have unlimited tokens! 🌟 Keep chatting as much as you like!"
-                    - If they are a Premium member, let them know they have 100 tokens per hour.
-                    - If they are a Free user, tell them they have 30 tokens per hour. Keep them informed if they are running low.
-                    - Always provide an encouraging and positive response regarding their token count, especially if they are running out. For example, "You still have ${userTokens} tokens left! Keep going, you're doing great!" or "Uh-oh, you have just a few tokens left, but they'll refill soon! 🌟"
+                { 
+                    role: "system", 
+                    content: `You are aware of the different types of users based on their membership status. If the kid asks about this, explain it in a fun and simple way:
+                
+                    - **Gold Members**: "You have a shiny Gold badge at the top of the chat! 🏅 This means you have **unlimited messages**! You can chat as much as you want! 🌟"
+                    - **Premium Members**: "You have a cool Premium badge! 🌟 Premium users can chat up to **100 times an hour**. That's a lot of chatting!"
+                    - **Free Members**: "You're a Free member! You can chat up to **30 times an hour**. That's a great start! 😊"
+                
+                    If they want to know more about upgrading or pricing, encourage them to ask their parents to visit the contact page: "If you want to know more about the other memberships, ask your parents to call us on the Contact page! They'll know more about pricing and how it works! 😊📞"
                     `
-                }                                                              
-            ];            
+                }                
+            ];
+
         } else {
             throw new Error("Kid data not found.");
         }
@@ -386,11 +384,20 @@ function stopMicAnimation() {
 
 async function sendMessage() {
     if (userTokens <= 0) {
-        const resetTime = getNextResetTime();
-        displayMessage(`Uh-oh! Looks like you've used up all your magic chat tokens for now! ✨ Don't worry, they'll be back soon! Come back at ${resetTime} and let's keep having fun! 🚀`, "bot");
-        if (!tokenInterval) {
-            startTokenRefillTimer(); // Start the refill timer when tokens reach zero
+        const userProfileRef = doc(db, `userProfiles/${parentId}`);
+        try {
+            const userProfileSnapshot = await getDoc(userProfileRef);
+            if (!userProfileSnapshot.data().tokensDepletedTimestamp) {
+                await updateDoc(userProfileRef, {
+                    tokensDepletedTimestamp: serverTimestamp() // Save Firebase server timestamp when tokens deplete
+                });
+                console.log('Tokens depleted, timestamp saved');
+            }
+            startTokenRefillTimer(); // Start countdown based on this timestamp
+        } catch (error) {
+            console.error("Error saving tokens depleted timestamp:", error);
         }
+        displayMessage("Uh-oh! Looks like you've used up all your magic chat tokens for now! ✨ Don't worry, they'll be back soon! 🚀", "bot");
         return;
     }
 
@@ -442,29 +449,98 @@ async function sendMessage() {
     }
 }
 
-// Function to start token refill timer only when tokens reach zero
-function startTokenRefillTimer() {
-    if (!tokensDepletedTimestamp) {
-        tokensDepletedTimestamp = Date.now(); // Set the time when tokens are depleted
+async function checkTokenRefillTime() {
+    const userProfileRef = doc(db, `userProfiles/${parentId}`);
+    try {
+        const userProfileSnapshot = await getDoc(userProfileRef);
+
+        if (userProfileSnapshot.exists()) {
+            const userProfile = userProfileSnapshot.data();
+            const tokensDepletedTimestamp = userProfile.tokensDepletedTimestamp;
+
+            if (tokensDepletedTimestamp) {
+                const currentTime = Date.now();
+                const tokenDepletionTime = tokensDepletedTimestamp.toMillis(); // Convert Firebase timestamp to milliseconds
+                const timePassed = currentTime - tokenDepletionTime;
+
+                const timeLeftForRefill = 60 * 60 * 1000 - timePassed; // 1 hour in milliseconds
+
+                if (timeLeftForRefill <= 0) {
+                    userTokens = isPremium ? 100 : 30;
+                    await updateDoc(userProfileRef, { tokens: userTokens, tokensDepletedTimestamp: null }); // Refill tokens and clear the timestamp
+                    console.log("Tokens refilled.");
+                    updateTokenBar(); // Update token UI
+                    return;
+                }
+
+                // Calculate minutes and seconds remaining for display
+                const minutesLeft = Math.floor(timeLeftForRefill / 60000);
+                const secondsLeft = Math.floor((timeLeftForRefill % 60000) / 1000);
+
+                displayMessage(`Oopsie! Looks like you've used all your magic tokens! 🌟 But don't worry, they'll refill soon! Come back in ${minutesLeft} minutes and ${secondsLeft} seconds to keep the fun going! 🚀`, "bot");
+            }
+        }
+    } catch (error) {
+        console.error("Error checking token refill time:", error);
+    }
+}
+
+// Function to handle when tokens reach zero
+async function startTokenRefillTimer() {
+    const userProfileRef = doc(db, `userProfiles/${parentId}`);
+    const userProfileSnapshot = await getDoc(userProfileRef);
+    const userProfile = userProfileSnapshot.data();
+
+    // If tokensDepletedTimestamp is not set, store the current server time
+    if (!userProfile.tokensDepletedTimestamp) {
+        await updateDoc(userProfileRef, {
+            tokensDepletedTimestamp: serverTimestamp() // Store depletion time using Firebase server time
+        });
+        console.log('Tokens depleted, timestamp saved');
+        
+        // Set refillTime to 1 hour from now
+        refillTime = Date.now() + 60 * 60 * 1000;
+    } else {
+        // Use the existing tokensDepletedTimestamp from Firestore
+        const tokensDepletedTimestamp = userProfile.tokensDepletedTimestamp.toMillis(); // Convert to milliseconds
+        refillTime = tokensDepletedTimestamp + 60 * 60 * 1000; // Add 1 hour
     }
 
-    // Set a timeout for 1 hour after tokens run out
-    tokenInterval = setTimeout(async () => {
-        // Refill tokens after 1 hour
-        userTokens = isPremium ? 100 : 30; // Refill tokens based on user type
-        updateTokenBar();
+    // Now start the countdown interval
+    const countdownInterval = setInterval(() => {
+        const timeLeft = refillTime - Date.now();
 
-        // Update Firestore after refilling tokens
-        try {
-            const userProfileRef = doc(db, `userProfiles/${parentId}`);
-            await updateDoc(userProfileRef, { tokens: userTokens });
-            console.log("Tokens refilled in Firestore:", userTokens);
-        } catch (error) {
-            console.error("Error refilling tokens in Firestore:", error);
+        if (timeLeft <= 0) {
+            userTokens = isPremium ? 100 : 30;
+            clearInterval(countdownInterval);
+            refillTime = null;  // Reset refill time
+            updateTokenBar();
+
+            // Update Firestore after refilling tokens
+            updateDoc(userProfileRef, { tokens: userTokens, tokensDepletedTimestamp: null });
+            console.log("Tokens refilled.");
+        } else {
+            const minutesLeft = Math.floor(timeLeft / 60000);
+            const secondsLeft = Math.floor((timeLeft % 60000) / 1000);
+            console.log(`Tokens will refill in ${minutesLeft} minutes and ${secondsLeft} seconds`);
         }
+    }, 1000);
+}
 
-        tokensDepletedTimestamp = null; // Reset the timestamp after refilling
-    }, 60 * 60 * 1000); // 1 hour in milliseconds
+// Function to display the fixed refill time
+function getNextResetTime() {
+    if (typeof refillTime !== 'undefined' && refillTime) {
+        const refillDate = new Date(refillTime); // Convert the timestamp to a Date object
+
+        let hours = refillDate.getHours();
+        const minutes = refillDate.getMinutes().toString().padStart(2, '0');
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12;
+        hours = hours ? hours : 12; // If the hour is '0', set it to '12' for 12-hour format
+
+        return `${hours}:${minutes} ${ampm}`;
+    }
+    return "Unknown time"; // If no refillTime is set, return this
 }
 
 function updateTokenBar() {
@@ -485,29 +561,13 @@ function updateTokenBar() {
     if (userTokens <= 0) {
         tokenBar.style.backgroundColor = 'red';
         document.getElementById("input-container").style.display = "none"; // Hide input container
-        displayMessage(`Oopsie! Looks like you've used all your magic tokens for today! 🌟 But don't worry, they'll magically refill soon! Come back at ${getNextResetTime()} to keep the fun going! 🚀`, "bot");
+        const nextRefillTime = getNextResetTime();  // Call getNextResetTime to get the accurate time
     } else if (tokenPercentage < 20) {
         tokenBar.style.backgroundColor = 'orange';
     } else {
         tokenBar.style.backgroundColor = '#6a82fb'; // Default color
         document.getElementById("input-container").style.display = "block"; // Show input container
     }
-}
-
-function getNextResetTime() {
-    const now = new Date();
-    now.setHours(now.getHours(), now.getMinutes(), 0, 0); // Use the current time
-
-    const resetTime = new Date(now.getTime() + 60 * 60 * 1000); // Add exactly 1 hour
-
-    let hours = resetTime.getHours();
-    const minutes = resetTime.getMinutes().toString().padStart(2, '0');
-    const ampm = hours >= 12 ? 'PM' : 'AM';
-
-    hours = hours % 12;
-    hours = hours ? hours : 12; // The hour '0' should be '12'
-
-    return `${hours}:${minutes} ${ampm}`;
 }
 
 async function generateImage(prompt) {
