@@ -85,10 +85,21 @@ async function fetchUserProfile() {
 
         if (userProfileSnapshot.exists()) {
             const userProfile = userProfileSnapshot.data();
+            
+            // Check for Gold and Premium status
             isPremium = userProfile.isPremium === true;
             isGold = userProfile.isGold === true;
-
-            userTokens = userProfile.tokens !== undefined ? userProfile.tokens : (isPremium ? 100 : 30);
+            
+            // If the tokens field doesn't exist, create it and assign default values based on status
+            if (userProfile.tokens === undefined) {
+                userTokens = isGold ? 999 : (isPremium ? 100 : 30);
+                
+                // Update Firestore with the default token count if missing
+                await updateDoc(userProfileRef, { tokens: userTokens });
+                console.log("Tokens field was missing, set to:", userTokens);
+            } else {
+                userTokens = userProfile.tokens; // Use the existing tokens value
+            }
 
             // Update Badge
             if (isGold) {
@@ -106,6 +117,7 @@ async function fetchUserProfile() {
                     content: "This user is a Premium member with 100 tokens per hour. Be encouraging and let them know how many tokens they have left if they ask."
                 });
             } else {
+                // Default to Free user if neither Gold nor Premium
                 badgeContainer.textContent = "Free";
                 badgeContainer.className = "badge free";
                 conversationContext.push({
@@ -117,17 +129,23 @@ async function fetchUserProfile() {
             console.log("Fetched User Profile:", userTokens);
             updateTokenBar(); // Ensure token bar is updated after fetching
         } else {
-            // Default to free user if profile not found
-            console.warn("User profile not found. Assuming user is not premium.");
-            isPremium = false;
-            isGold = false;
-            userTokens = 30;
+            // If user profile does not exist, create a Free user profile with 30 tokens
+            console.warn("User profile not found. Creating default Free user profile.");
 
-            console.log("User is not premium, 30 tokens assigned.");
-            badgeContainer.textContent = "Free User";
+            userTokens = 30; // Default for Free user
+
+            // Create the user profile in Firestore with default values
+            await setDoc(userProfileRef, {
+                isGold: false,
+                isPremium: false,
+                tokens: userTokens
+            });
+
+            console.log("User profile created with 30 tokens for Free user.");
+            
+            // Update Badge for Free user
+            badgeContainer.textContent = "Free";
             badgeContainer.className = "badge free";
-
-            // Add default Free status to conversationContext
             conversationContext.push({
                 role: "system",
                 content: "This user is a Free member with 30 tokens per hour. Be encouraging and let them know how many tokens they have left if they ask."
