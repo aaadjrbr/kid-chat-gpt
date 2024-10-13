@@ -87,12 +87,12 @@ async function fetchKidData() {
                 },
                 { 
                     role: "system", 
-                    content: `If the kid asks about topics like sex, sex positions, 69, or other adult things, respond kindly by saying: "I'm not the best one to talk to about that. It's a good idea to talk to your parents or a trusted adult." Never give recommendations for websites or talk about adult content. Always redirect the kid to their parents for guidance on such matters.`
+                    content: `If the kid asks about sex, inappropriate adult topics (e.g., sex positions, 69), or anything like that, you should **not** answer the question. Politely say: "That's a good question, but it's best to talk to your parents or a trusted adult about that!" Don't provide any more details or website recommendations on these topics. Always encourage them to ask their parents.`
                 },
                 { 
                     role: "system", 
                     content: `If the kid asks a hard question, explain it in a way that is easy for a ${kidAge}-year-old to understand. Use simple examples or fun stories to help make the answer clearer.`
-                }                               
+                }                                              
             ];            
         } else {
             throw new Error("Kid data not found.");
