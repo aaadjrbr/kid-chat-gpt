@@ -6,7 +6,7 @@
 /* General Styling */
 body {
     font-family: 'Roboto', sans-serif;
-    background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+    background-image: radial-gradient(circle, rgba(92, 100, 255, 0.527) 0%, rgba(13, 53, 172, 0.61) 100%);
     margin: 0;
     color: #333;
 }
@@ -17,6 +17,7 @@ body {
     border-radius: 15px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15), 0 6px 20px rgba(100, 150, 255, 0.2); /* Softer shadow with a subtle blue glow */
     max-width: 800px;
+    border: 3px solid #ebebebda;
     margin: 20px auto;
     width: 90%;
     display: flex;
@@ -31,8 +32,6 @@ body {
     flex: 1;
     padding: 15px;
     overflow-y: auto; /* Adds scrolling */
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(240, 245, 255, 0.95)); /* Soft white to light bluish gradient */
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15), 0 6px 20px rgba(100, 150, 255, 0.2); /* Softer shadow with a subtle blue glow */
 }
 
 /* Input Field Container */
@@ -133,7 +132,7 @@ input#user-input:hover {
     max-width: 110px;
     word-wrap: break-word;
     margin-left: 10px;
-    display: none; /* Hidden by default */
+    display: none;
 }
 
 /* Scroll Bar Styling */
@@ -200,9 +199,10 @@ img {
     width: 90%;
     margin: 20px auto; /* Centers the container horizontally */
     border-radius: 20px;
-    background: linear-gradient(135deg, #6a82fb, #fc5c7d);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(240, 245, 255, 0.95));
+    filter: drop-shadow(0 3px 10px #0004);
     padding: 10px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.041); /* Subtle shadow for depth */
 }
 
 #kid-name-display {
@@ -210,13 +210,13 @@ img {
     text-align: center;
     font-family: "Kiwi Maru", serif;
     font-weight: 400;
-    color: #ffffff; /* Matches the end color of the gradient */
+    color: #000000; /* Matches the end color of the gradient */
     letter-spacing: 1px;
 }
 
 .cursor {
     font-weight: 400;
-    color: #ffffff; /* Matches the end color of the gradient */
+    color: #000000; /* Matches the end color of the gradient */
     animation: blink 0.7s steps(1) infinite;
 }
 
@@ -279,18 +279,23 @@ img {
     margin-left: 5px;
     padding: 10px;
     border-radius: 15px;
-    background-image: linear-gradient(to right, #6a11cb, #2575fc);
+    background: radial-gradient(circle, rgb(243, 138, 184) 0%, rgb(103, 162, 235) 100%);
+    color: rgb(255, 255, 255);
     border: none;
     cursor: pointer;
     font-size: 1em;
     color: white;
     z-index: 2; /* Ensure buttons are above the wave */
     position: relative; /* Ensure they stay positioned correctly */
+    transition: all 0.2s ease;
 }
 
 /* Hover effect for buttons */
 #send-btn:hover {
-    background-image: linear-gradient(to right, #2575fc, #6a11cb);
+    background: radial-gradient(circle, rgb(243, 138, 184) 0%, rgb(103, 162, 235) 100%);
+    color: rgb(255, 255, 255);
+    border-radius: 8px;
+    transition: all 0.2s ease;
 }
 
 /* Waves animation container */
@@ -331,4 +336,20 @@ img {
         background-size: 10px 10px;
         opacity: 0.6;
     }
+}
+
+/* 6 */
+.btn-6 {
+    background: rgb(247,150,192);
+    background: radial-gradient(circle, rgba(247,150,192,1) 0%, rgba(118,174,241,1) 100%);
+    line-height: 42px;
+    padding: 0;
+    color: white;
+    border: none;
+    transition: all 0.2s ease;
+  }
+.btn-6:hover {
+    background: radial-gradient(circle, rgb(243, 138, 184) 0%, rgb(103, 162, 235) 100%);
+    color: rgb(255, 255, 255);
+    transition: all 0.2s ease;
 }
