@@ -65,6 +65,9 @@ async function fetchKidData() {
             kidName = kidData.name;
             kidAge = kidData.age;
 
+            // Start typing effect with the fetched kid name
+            typeMessage(`Hey, ${kidName}!`);
+
             // Customize the conversation context based on age
             conversationContext = [
                 { 
@@ -73,11 +76,11 @@ async function fetchKidData() {
                 },
                 { 
                     role: "system", 
-                    content: `When answering questions, be engaging and enthusiastic. Use emojis where appropriate, like ✨, 🚀, 🐶, 🏆. Keep your responses positive and friendly.`
+                    content: `When answering questions, be engaging and enthusiastic. Use emojis where appropriate, like ✨, 🚀, 🐶, 🏆. Keep your responses positive and friendly.` 
                 },
                 { 
                     role: "system", 
-                    content: `For difficult questions, explain in a way that is easy for a ${kidAge}-year-old to understand. Use examples or stories if it helps make the answer simpler.`
+                    content: `For difficult questions, explain in a way that is easy for a ${kidAge}-year-old to understand. Use examples or stories if it helps make the answer simpler.` 
                 }
             ];            
         } else {
@@ -87,6 +90,26 @@ async function fetchKidData() {
         console.error("Error fetching kid data:", error);
         throw error;
     }
+}
+
+// Function to simulate typing effect for the name
+function typeMessage(message) {
+    const kidNameElement = document.getElementById('kid-name');
+    const cursorElement = document.createElement('span');
+    cursorElement.classList.add('cursor');
+    kidNameElement.after(cursorElement); // Add the cursor after the name element
+
+    let index = 0;
+
+    const typingInterval = setInterval(() => {
+        if (index < message.length) {
+            kidNameElement.textContent += message.charAt(index);
+            index++;
+        } else {
+            clearInterval(typingInterval);
+            cursorElement.style.display = 'none'; // Remove the cursor after typing is done
+        }
+    }, 100); // Adjust typing speed here
 }
 
 async function startNewChatSession() {
@@ -115,6 +138,80 @@ async function startNewChatSession() {
 //function greetKid() {
 //    displayMessage(`Hey ${kidName}! How are you today?`, 'bot');
 //}
+
+// Check if the browser supports the Web Speech API
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+let recognition;
+let isRecording = false;
+
+if (SpeechRecognition) {
+    recognition = new SpeechRecognition();
+    recognition.lang = 'en-US'; // You can set this to other languages if needed
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    // Start/stop voice recognition when the microphone button is clicked
+    document.getElementById('mic-btn').addEventListener('click', () => {
+        if (isRecording) {
+            recognition.stop();
+            stopMicAnimation();
+            isRecording = false;
+            console.log('Voice recognition stopped.');
+        } else {
+            recognition.start();
+            startMicAnimation();
+            isRecording = true;
+            console.log('Voice recognition started. Speak now...');
+        }
+    });
+
+    // Handle speech recognition results
+    recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        document.getElementById('user-input').value = transcript;
+        console.log('Recognized text:', transcript);
+        recognition.stop();
+        stopMicAnimation();
+        isRecording = false;
+    };
+
+    // Handle errors
+    recognition.onerror = (event) => {
+        console.error('Speech recognition error:', event.error);
+        alert('Sorry, I couldn\'t hear you. Please try again.');
+        stopMicAnimation();
+        isRecording = false;
+    };
+
+    // Stop waves animation after recognition ends
+    recognition.onend = () => {
+        stopMicAnimation();
+        isRecording = false;
+        console.log('Speech recognition ended.');
+    };
+} else {
+    console.log('Web Speech API is not supported in this browser.');
+}
+
+// Function to start the mic animation (waves)
+function startMicAnimation() {
+    const micWavesElement = document.getElementById('mic-waves');
+    if (micWavesElement) {
+        micWavesElement.style.display = 'block';
+    } else {
+        console.error('Element #mic-waves not found in the DOM.');
+    }
+}
+
+// Function to stop the mic animation (waves)
+function stopMicAnimation() {
+    const micWavesElement = document.getElementById('mic-waves');
+    if (micWavesElement) {
+        micWavesElement.style.display = 'none';
+    } else {
+        console.error('Element #mic-waves not found in the DOM.');
+    }
+}
 
 async function sendMessage() {
     const message = userInput.value.trim().toLowerCase(); // Convert to lowercase for easier comparison

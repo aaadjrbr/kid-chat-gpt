@@ -9,6 +9,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
+
+    <div class="hello-container">
+    <div id="kid-name-display"><span id="kid-name"></span><span class="cursor">|</span></div>
+    </div>
+
     <div id="chat-container">
         <a class="button-go-back" style="text-align: center; text-decoration: none;" href="./profiles.html">
             <span>Go back</span>
@@ -18,9 +23,12 @@
         <div id="input-container">
             <input type="text" id="user-input" placeholder="Type a message...">
             <button id="send-btn">Send</button>
-        </div>
+            <button id="mic-btn">
+                🎤
+                <div id="mic-waves" class="waves"></div> <!-- Animated waves will appear here -->
+            </button>
+        </div>                
     </div>
-
     <script src="scripts/chat.js" type="module"></script>
 </body>
 </html>

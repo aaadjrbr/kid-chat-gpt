@@ -1,12 +1,13 @@
 /* Import Google Font */
 @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
 
 /* General Styling */
 body {
-    font-family: 'Comic Neue', sans-serif;
-    background-color: #000000;
+    font-family: 'Roboto', sans-serif;
+    background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
     margin: 0;
-    padding: 20px;
     color: #333;
 }
 
@@ -17,9 +18,10 @@ body {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     max-width: 800px;
     margin: 20px auto;
+    width: 90%;
     display: flex;
     flex-direction: column;
-    height: 500px; /* Fixed height for chat */
+    height: 80vh; /* Fixed height for chat */
     overflow: hidden; /* Prevents chat container from expanding */
 }
 
@@ -35,6 +37,7 @@ body {
 
 /* Input Field Container */
 #input-container {
+    font-family: 'Roboto', sans-serif;
     display: flex;
     padding: 10px;
     gap: 10px;
@@ -45,6 +48,7 @@ body {
 
 /* Chat Input Field Styling */
 #user-input {
+    font-family: 'Roboto', sans-serif;
     flex: 1;
     padding: 10px;
     border: 1px solid #ddd;
@@ -54,6 +58,7 @@ body {
 
 /* Send Button Styling */
 #send-btn {
+    font-family: 'Roboto', sans-serif;
     padding: 10px 15px;
     background-color: #ff9f1c;
     color: white;
@@ -70,6 +75,7 @@ body {
 
 /* Message Bubbles */
 .message {
+    font-family: 'Roboto', sans-serif;
     padding: 10px 15px;
     border-radius: 15px;
     max-width: 70%;
@@ -81,24 +87,39 @@ body {
 
 /* User Message */
 .user {
-    background-color: #d4edda;
-    padding: 10px;
-    margin-bottom: 8px;
-    color: #155724;
-    border-radius: 15px 15px 0 15px;
+    background: linear-gradient(135deg, #6a82fb, #fc5c7d); /* Blue gradient with a slight pinkish tint for a modern look */
+    padding: 12px;
+    margin-bottom: 10px;
+    color: white; /* Text color stands out on the gradient background */
+    border-radius: 20px 20px 0 20px; /* Smooth, rounded edges */
     float: right;
     clear: both;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Adds a subtle shadow for a 3D effect */
+    font-family: 'Roboto', sans-serif;
+    max-width: 70%; /* Limits the width for a better, contained look */
+    word-wrap: break-word; /* Ensures text wraps within the balloon */
 }
 
 /* Bot Message */
 .bot {
-    background-color: #f8d7da;
-    padding: 10px;
-    margin-bottom: 8px;
-    color: #721c24;
-    border-radius: 15px 15px 15px 0;
+    background: linear-gradient(135deg, #6a82fb, #6a82fbb9); /* Green gradient for a fresh, vibrant look */
+    padding: 12px;
+    margin-bottom: 10px;
+    color: white; /* White text for high contrast against the gradient */
+    border-radius: 20px 20px 20px 0; /* Smooth, rounded edges */
     float: left;
     clear: both;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    font-family: 'Roboto', sans-serif;
+    max-width: 70%; /* Keeps the message balloon contained */
+    word-wrap: break-word; /* Ensures text wraps within the balloon */
+}
+
+.hello-container {
+    margin-top: 20px;
+    background: linear-gradient(135deg, #6a82fb, #fc5c7d);
+    padding: 10px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
 }
 
 /* "Thinking..." Style */
@@ -130,7 +151,11 @@ button, input[type="text"], input[type="number"] {
 /* Responsive Styling */
 @media (max-width: 768px) {
     #chat-container {
-        height: 400px;
+        height: 85vh;
+    }
+
+    #user-input {
+        width: 60%;
     }
 
     .message {
@@ -139,9 +164,13 @@ button, input[type="text"], input[type="number"] {
 }
 
 .button-go-back {
-    background-color: #155724;
+    background-image: linear-gradient(to right, #6a11cb, #2575fc);
     padding: 10px;
     color: #fff;
+}
+
+.button-go-back:hover {
+    background-image: linear-gradient(to right, #2575fc, #6a11cb);
 }
 
 img {
@@ -154,5 +183,69 @@ img {
 @media (max-width: 768px) {
     img {
         max-width: 180px !important;
+    }
+}
+
+#kid-name-display {
+    font-size: 1.4em;
+    text-align: center;
+    font-weight: 600;
+    background: #fff; /* Futuristic purple gradient */
+    -webkit-background-clip: text; /* For WebKit browsers */
+    background-clip: text; /* Standard property */
+    color: transparent; /* Makes the gradient visible inside the text */
+    letter-spacing: 1px;
+}
+
+.cursor {
+    font-weight: bold;
+    color: #ffffff; /* Matches the end color of the gradient */
+    animation: blink 0.7s steps(1) infinite;
+}
+
+@keyframes blink {
+    0% { opacity: 1; }
+    50% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+/* Microphone button and wave styles */
+#mic-btn {
+    position: relative;
+    background-color: #4a90e2;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+#mic-btn:hover {
+    background-color: #357ABD;
+}
+
+/* Waves animation container */
+#waves {
+    display: none; /* Hidden by default */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 255, 0.5);
+    animation: wave 1.5s ease-out infinite;
+}
+
+/* Keyframes for wave animation */
+@keyframes wave {
+    0% {
+        transform: scale(0.6);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1.6);
+        opacity: 0;
     }
 }
