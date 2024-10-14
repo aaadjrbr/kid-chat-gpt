@@ -147,6 +147,10 @@ button:hover {
 
 /* Responsive Styles */
 @media (max-width: 600px) {
+    .toggle-password {
+        right: 0px !important;
+    }
+
     form, #create-account-form {
         width: 80%;
     }
@@ -204,7 +208,7 @@ ul {
 /* Toggle Password Icon */
 .toggle-password {
     position: absolute;
-    right: 10px;
+    right: 25px;
     top: 50%;
     transform: translateY(-50%);
     cursor: pointer;

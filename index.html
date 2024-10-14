@@ -3,54 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kid Chat App - Login</title>
+    <title>Alfie AI. Chat safely!</title>
     <link rel="stylesheet" href="styles/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <h1>Welcome to Kid Chat App</h1>
-    
-    <!-- Login Form -->
-    <form id="login-form">
-        <input type="email" id="email" placeholder="Parent Email" required>
-        <div class="password-container">
-            <input type="password" id="password" placeholder="Password" required>
-            <span class="toggle-password" id="toggle-password">&#128065;</span>
-        </div>
-        <button type="submit">Login</button>
-        <p id="error-message" style="color: red; display: none;"></p>
-        <a href="#" id="forgot-password-link">Forgot Password?</a> <!-- Forgot Password Link -->
-    </form>
+<div class="card">
 
-    <!-- Password Reset Form, initially hidden -->
-    <form id="password-reset-form" style="display: none;">
-        <input type="email" id="reset-email" placeholder="Enter your email" required>
-        <button type="submit">Reset Password</button>
-        <p id="reset-error-message" style="color: red; display: none;"></p>
-        <p id="reset-success-message" style="color: green; display: none;"></p>
-        <a href="#" id="i-remember">I remember!</a>
-    </form>
-
-    <!-- Toggle to create a new profile -->
-    <div class="center-container">
-        <button id="toggle-create-account">Create New Account</button>
+    <div class="content">
+      <h1>Alfie AI</h1>
+      <p style="text-align: center; font-size: 1.4em; color: #6a11cb;">Chat safely!</p>
+      <br/><br/>
+      <h3>Try now! <a href="./login.html">free</a>.</h3>
+      <br/>
+      <h3>Already a member? <a href="./profiles.html">Go to chat!</a></h3>
+      <br/><br/>
+      <p style="color: black">Coming soon | <a style="color: #000; font-weight: 600;" href="#">What is Alfie AI?</a></p>
     </div>
+    <br/>
+    
+  </div>
+  <div class="gradient-bg">
 
-    <!-- Create Account Form, initially hidden -->
-    <form id="create-account-form" style="display: none;">
-        <input type="email" id="new-email" placeholder="Enter New Email" required>
-        <div class="password-container">
-            <input type="password" id="new-account-password" placeholder="Password" required>
-            <span class="toggle-password" id="toggle-new-account-password">&#128065;</span>
-        </div>
-        <div class="password-container">
-            <input type="password" id="confirm-account-password" placeholder="Confirm Password" required>
-            <span class="toggle-password" id="toggle-confirm-account-password">&#128065;</span>
-        </div>
-        <button type="submit">Create Account</button>
-        <p id="create-error-message" style="color: red; display: none;"></p>
-    </form>
+      <filter id='noiseFilterBg'>
+        <feTurbulence 
+                      type='fractalNoise'
+                      baseFrequency='0.6'
+                      stitchTiles='stitch' />
+      </filter>
+  
+      <rect
+            width='100%'
+            height='100%'
+            preserveAspectRatio="xMidYMid meet"
+            filter='url(#noiseFilterBg)' />
+    </svg>
+    <svg xmlns="http://www.w3.org/2000/svg" class="svgBlur">
+      <defs>
+        <filter id="goo">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
+          <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -8" result="goo" />
+          <feBlend in="SourceGraphic" in2="goo" />
+        </filter>
+      </defs>
+    </svg>
+    <div class="gradients-container">
+      <div class="g1"></div>
+      <div class="g2"></div>
+      <div class="g3"></div>
+      <div class="g4"></div>
+      <div class="g5"></div>
+      <div class="interactive"></div>
+    </div>
+  </div>
 
-    <script src="scripts/firebase-config.js" type="module"></script>
-    <script src="scripts/auth.js" type="module"></script>
+  <script src="scripts/main.js"></script>
 </body>
 </html>

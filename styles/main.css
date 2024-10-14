@@ -1,160 +1,262 @@
-/* main.css */
+@import url('https://fonts.googleapis.com/css?family=Montserrat:400,700');
+@import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+
+:root {
+  --color-bg1: rgb(8, 10, 15);
+  --color-bg2: rgb(0, 17, 32);
+  --color1: 18, 113, 255;
+  --color2: 107, 74, 255;
+  --color3: 100, 100, 255;
+  --color4: 50, 160, 220;
+  --color5: 80, 47, 122;
+  --color-interactive: 140, 100, 255;
+  --circle-size: 80%;
+  --blending: hard-light;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  outline: none;
+  list-style: none;
+  text-decoration: none;
+  box-sizing: border-box;
+  color: #FFF;
+  background: transparent;
+  border: none;
+}
+
+html, body {
+  font-family: 'Dongle', sans-serif;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+}
+
 body {
-    font-family: Arial, sans-serif;
-    text-align: center;
-    background-color: #f0f0f0;
-    margin: 0;
-    padding: 0;
+  background: #FFF;
+  font-family: 'Montserrat', sans-serif;
+  overflow: hidden;
+}
+
+h1, h2 {
+    color: #6a11cb;
+    font-family: "Fredoka", sans-serif;
+    font-weight: 700;
+    text-align: center !important;
+}
+
+h3 {
+    font-family: "Fredoka", sans-serif;
+    font-weight: 400;
+    color: #6a11cb;
+}
+
+h3 a {
+    color: rgb(0, 89, 255);
+    text-decoration: underline;
+}
+
+.card {
+  position: absolute;
+  z-index: 10;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  user-select: none;
+  max-width: 600px;
+  padding: 48px;
+  -webkit-backdrop-filter: blur(10px);
+  background-color: #d5eaf8;
+  border: 4px solid #ffffff96 !important;
+  width: 90%;
+  backdrop-filter: blur(10px);
+  border-radius: 8px;
+  box-shadow: 0 4px 90px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.card::before {
+  content: "";
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: rgb(255, 255, 255);
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 1) 34%, rgba(255, 255, 255, 1) 89%, rgba(255, 255, 255, 0) 100%);
+  opacity: 0.3;
+  filter: blur(0.5px);
+  mix-blend-mode: hard-light;
+}
+
+.noise {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 1;
+  opacity: 0.1;
+}
+
+.card .content {
+  position: relative;
+  z-index: 2;
 }
 
 h1 {
-    margin-top: 50px;
-    color: #333;
+  font-size: 3rem;
 }
 
-/* Form Styles */
-form {
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-    width: 300px;
-    margin: 20px auto;
-    padding: 20px;
+p {
+  line-height: 1.6;
 }
 
-input {
-    width: 90%;
-    padding: 10px;
-    margin: 10px 0;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+@keyframes moveInCircle {
+  0% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(180deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
-button {
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px 20px;
-    margin: 10px 0;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    width: 100%;
-    font-size: 16px;
-}
-
-button:hover {
-    background-color: #45a049;
-}
-
-/* Error Message Styles */
-#error-message, #create-error-message {
-    color: red;
-    font-size: 14px;
-    margin-top: 10px;
-}
-
-/* Toggle Button for Create Account */
-.center-container {
-    margin-top: 20px;
-}
-
-#toggle-create-account {
-    background-color: #f57c00;
-    width: auto;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    margin: 0 auto;
-}
-
-#toggle-create-account:hover {
-    background-color: #e65100;
-}
-
-/* Create Account Form Styles */
-#create-account-form {
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-    width: 300px;
-    margin: 20px auto;
-    padding: 20px;
-}
-
-/* Responsive Styles */
-@media (max-width: 600px) {
-    form, #create-account-form {
-        width: 80%;
-    }
-
-    #dashboard-container {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    #calendar {
-        width: 100%;
-    }
-
-    #session-list {
-        width: 90%;
-    }
-}
-
-/* Additional Styles for Dashboard */
-#dashboard-container {
-    display: flex;
-    justify-content: space-around;
-    margin-top: 20px;
-}
-
-#calendar {
-    width: 60%;
-}
-
-#session-list {
-    width: 30%;
-    background-color: #fff;
-    padding: 10px;
-    border-radius: 8px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-}
-
-ul {
-    list-style: none;
-    padding: 0;
-}
-
-/* Password Container */
-.password-container {
-    position: relative;
-    width: 90%;
-    margin: 10px auto;
-}
-
-/* Password Field */
-.password-container input {
-    width: 90%;
-}
-
-/* Toggle Password Icon */
-.toggle-password {
-    position: absolute;
-    right: 10px;
-    top: 50%;
+@keyframes moveVertical {
+  0% {
     transform: translateY(-50%);
-    cursor: pointer;
-    font-size: 20px;
+  }
+  50% {
+    transform: translateY(50%);
+  }
+  100% {
+    transform: translateY(-50%);
+  }
 }
 
-#error-message, #create-error-message, #reset-error-message, #reset-success-message {
-    margin-top: 10px;
-    font-size: 0.9em;
+@keyframes moveHorizontal {
+  0% {
+    transform: translateX(-50%) translateY(-10%);
+  }
+  50% {
+    transform: translateX(50%) translateY(10%);
+  }
+  100% {
+    transform: translateX(-50%) translateY(-10%);
+  }
 }
 
-#reset-success-message {
-    color: green;
+.gradient-bg {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(40deg, var(--color-bg1), var(--color-bg2));
+  top: 0;
+  left: 0;
+}
+
+.gradient-bg .svgBlur {
+  display: none;
+}
+
+.gradient-bg .noiseBg {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  mix-blend-mode: soft-light;
+  opacity: 0.3;
+}
+
+.gradient-bg .gradients-container {
+  filter: url(#goo) blur(40px);
+  width: 100%;
+  height: 100%;
+}
+
+.gradient-bg .g1 {
+  position: absolute;
+  background: radial-gradient(circle at center, rgba(var(--color1), 0.8) 0, rgba(var(--color1), 0) 50%) no-repeat;
+  mix-blend-mode: var(--blending);
+  width: var(--circle-size);
+  height: var(--circle-size);
+  top: calc(50% - var(--circle-size) / 2);
+  left: calc(50% - var(--circle-size) / 2);
+  transform-origin: center center;
+  animation: moveVertical 30s ease infinite;
+  opacity: 1;
+}
+
+.gradient-bg .g2 {
+  position: absolute;
+  background: radial-gradient(circle at center, rgba(var(--color2), 0.8) 0, rgba(var(--color2), 0) 50%) no-repeat;
+  mix-blend-mode: var(--blending);
+  width: var(--circle-size);
+  height: var(--circle-size);
+  top: calc(50% - var(--circle-size) / 2);
+  left: calc(50% - var(--circle-size) / 2);
+  transform-origin: calc(50% - 400px);
+  animation: moveInCircle 20s reverse infinite;
+  opacity: 1;
+}
+
+.gradient-bg .g3 {
+  position: absolute;
+  background: radial-gradient(circle at center, rgba(var(--color3), 0.8) 0, rgba(var(--color3), 0) 50%) no-repeat;
+  mix-blend-mode: var(--blending);
+  width: var(--circle-size);
+  height: var(--circle-size);
+  top: calc(50% - var(--circle-size) / 2 + 200px);
+  left: calc(50% - var(--circle-size) / 2 - 500px);
+  transform-origin: calc(50% + 400px);
+  animation: moveInCircle 40s linear infinite;
+  opacity: 1;
+}
+
+.gradient-bg .g4 {
+  position: absolute;
+  background: radial-gradient(circle at center, rgba(var(--color4), 0.8) 0, rgba(var(--color4), 0) 50%) no-repeat;
+  mix-blend-mode: var(--blending);
+  width: var(--circle-size);
+  height: var(--circle-size);
+  top: calc(50% - var(--circle-size) / 2);
+  left: calc(50% - var(--circle-size) / 2);
+  transform-origin: calc(50% - 200px);
+  animation: moveHorizontal 40s ease infinite;
+  opacity: 0.7;
+}
+
+.gradient-bg .g5 {
+  position: absolute;
+  background: radial-gradient(circle at center, rgba(var(--color5), 0.8) 0, rgba(var(--color5), 0) 50%) no-repeat;
+  mix-blend-mode: var(--blending);
+  width: calc(var(--circle-size) * 2);
+  height: calc(var(--circle-size) * 2);
+  top: calc(50% - var(--circle-size));
+  left: calc(50% - var(--circle-size));
+  transform-origin: calc(50% - 800px) calc(50% + 200px);
+  animation: moveInCircle 20s ease infinite;
+  opacity: 1;
+}
+
+.gradient-bg .interactive {
+  position: absolute;
+  background: radial-gradient(circle at center, rgba(var(--color-interactive), 0.8) 0, rgba(var(--color-interactive), 0) 50%) no-repeat;
+  mix-blend-mode: var(--blending);
+  width: 100%;
+  height: 100%;
+  top: -50%;
+  left: -50%;
+  opacity: 0.7;
 }
