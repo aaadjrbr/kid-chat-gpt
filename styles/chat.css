@@ -456,14 +456,24 @@ button.speaker-btn.material-icons {
 }
 
 select.voice-select {
-    font-size: 0.9em; /* Adjusted font size for better readability */
-    padding: 5px 10px; /* Add padding to make it more clickable */
-    border-radius: 5px; /* Smooth rounded corners */
-    border: 1px solid #ccc; /* Light border to define the edges */
-    background-color: #f8f9fa; /* Light background color */
-    color: #333; /* Dark text color */
-    cursor: pointer; /* Pointer cursor to indicate it's selectable */
-    transition: all 0.3s ease; /* Smooth transition for hover effects */
+    font-size: 0.9em;
+    padding: 5px 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background-color: #f8f9fa;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 200px; /* Set a fixed width */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+@media screen and (max-width: 600px) {
+    select.voice-select {
+        width: 100%; /* Adjust width for smaller screens */
+    }
 }
 
 /* Hover effect */

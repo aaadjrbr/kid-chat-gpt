@@ -78,56 +78,44 @@ async function initializeChat() {
     }
 }
 
+let userProfileCache = null; // Global cache for user profile
+
 async function fetchUserProfile() {
     try {
+        // Check if profile is already cached
+        if (userProfileCache) {
+            console.log("Using cached user profile.");
+            return userProfileCache; // Use cached profile
+        }
+
         const userProfileRef = doc(db, `userProfiles/${parentId}`);
         const userProfileSnapshot = await getDoc(userProfileRef);
 
         if (userProfileSnapshot.exists()) {
-            const userProfile = userProfileSnapshot.data();
-            
+            userProfileCache = userProfileSnapshot.data(); // Cache the profile
+
             // Check for Gold and Premium status
-            isPremium = userProfile.isPremium === true;
-            isGold = userProfile.isGold === true;
-            
+            isPremium = userProfileCache.isPremium === true;
+            isGold = userProfileCache.isGold === true;
+
             // If the tokens field doesn't exist, create it and assign default values based on status
-            if (userProfile.tokens === undefined) {
+            if (userProfileCache.tokens === undefined) {
                 userTokens = isGold ? 999 : (isPremium ? 100 : 30);
-                
+
                 // Update Firestore with the default token count if missing
                 await updateDoc(userProfileRef, { tokens: userTokens });
                 console.log("Tokens field was missing, set to:", userTokens);
             } else {
-                userTokens = userProfile.tokens; // Use the existing tokens value
+                userTokens = userProfileCache.tokens; // Use the existing tokens value
             }
 
             // Update Badge
-            if (isGold) {
-                badgeContainer.textContent = "Gold";
-                badgeContainer.className = "badge gold";
-                conversationContext.push({
-                    role: "system",
-                    content: "This user is a Gold member, which means they have unlimited tokens! 🌟 Keep chatting as much as you like!"
-                });
-            } else if (isPremium) {
-                badgeContainer.textContent = "Premium";
-                badgeContainer.className = "badge premium";
-                conversationContext.push({
-                    role: "system",
-                    content: "This user is a Premium member with 100 tokens per hour. Be encouraging and let them know how many tokens they have left if they ask."
-                });
-            } else {
-                // Default to Free user if neither Gold nor Premium
-                badgeContainer.textContent = "Free";
-                badgeContainer.className = "badge free";
-                conversationContext.push({
-                    role: "system",
-                    content: "This user is a Free member with 30 tokens per hour. Be encouraging and let them know how many tokens they have left if they ask."
-                });
-            }
+            updateBadge();
 
             console.log("Fetched User Profile:", userTokens);
             updateTokenBar(); // Ensure token bar is updated after fetching
+
+            return userProfileCache; // Return the cached profile
         } else {
             // If user profile does not exist, create a Free user profile with 30 tokens
             console.warn("User profile not found. Creating default Free user profile.");
@@ -141,20 +129,48 @@ async function fetchUserProfile() {
                 tokens: userTokens
             });
 
-            console.log("User profile created with 30 tokens for Free user.");
-            
-            // Update Badge for Free user
-            badgeContainer.textContent = "Free";
-            badgeContainer.className = "badge free";
-            conversationContext.push({
-                role: "system",
-                content: "This user is a Free member with 30 tokens per hour. Be encouraging and let them know how many tokens they have left if they ask."
-            });
+            // Cache the new profile
+            userProfileCache = {
+                isGold: false,
+                isPremium: false,
+                tokens: userTokens
+            };
 
+            console.log("User profile created with 30 tokens for Free user.");
+
+            // Update Badge for Free user
+            updateBadge();
             updateTokenBar(); // Update bar for default values
+
+            return userProfileCache; // Return the cached profile
         }
     } catch (error) {
         console.error("Error fetching user profile:", error);
+    }
+}
+
+function updateBadge() {
+    if (isGold) {
+        badgeContainer.textContent = "Gold";
+        badgeContainer.className = "badge gold";
+        conversationContext.push({
+            role: "system",
+            content: "This user is a Gold member, which means they have unlimited tokens! 🌟 Keep chatting as much as you like!"
+        });
+    } else if (isPremium) {
+        badgeContainer.textContent = "Premium";
+        badgeContainer.className = "badge premium";
+        conversationContext.push({
+            role: "system",
+            content: "This user is a Premium member with 100 tokens per hour. Be encouraging and let them know how many tokens they have left if they ask."
+        });
+    } else {
+        badgeContainer.textContent = "Free";
+        badgeContainer.className = "badge free";
+        conversationContext.push({
+            role: "system",
+            content: "This user is a Free member with 30 tokens per hour. Be encouraging and let them know how many tokens they have left if they ask."
+        });
     }
 }
 
@@ -400,6 +416,7 @@ function stopMicAnimation() {
     }
 }
 
+// Update sendMessage function to use the cached profile
 async function sendMessage() {
     if (userTokens <= 0) {
         const userProfileRef = doc(db, `userProfiles/${parentId}`);
@@ -435,6 +452,10 @@ async function sendMessage() {
     try {
         const userProfileRef = doc(db, `userProfiles/${parentId}`);
         await updateDoc(userProfileRef, { tokens: userTokens });
+
+        // Call the updateTokensInFirestore function to update Firestore and refresh the cache
+        await updateTokensInFirestore(userTokens);  // This only refreshes the cache, without changing your logic.
+
         console.log("Tokens updated in Firestore:", userTokens);
 
         // If tokens run out, start the refill timer
@@ -474,57 +495,55 @@ async function sendMessage() {
     }
 }
 
-async function checkTokenRefillTime() {
+async function updateTokensInFirestore(newTokenCount) {
     const userProfileRef = doc(db, `userProfiles/${parentId}`);
-    try {
-        const userProfileSnapshot = await getDoc(userProfileRef);
+    await updateDoc(userProfileRef, { tokens: newTokenCount });
 
-        if (userProfileSnapshot.exists()) {
-            const userProfile = userProfileSnapshot.data();
-            const tokensDepletedTimestamp = userProfile.tokensDepletedTimestamp;
+    // Refresh the cache with the latest data from Firestore
+    const updatedProfileSnapshot = await getDoc(userProfileRef);
+    userProfileCache = updatedProfileSnapshot.data(); // Update the cached profile
+}
 
-            // Gold users should get 999 tokens refilled when their tokens run out
-            const goldTokenLimit = 999;
-            const premiumTokenLimit = 100;
-            const freeTokenLimit = 30;
 
-            if (tokensDepletedTimestamp) {
-                const currentTime = Date.now();
-                const tokenDepletionTime = tokensDepletedTimestamp.toMillis(); // Convert Firebase timestamp to milliseconds
-                const timePassed = currentTime - tokenDepletionTime;
+async function checkTokenRefillTime() {
+    const userProfile = await fetchUserProfile(); // Get profile (cached if available)
 
-                const timeLeftForRefill = 60 * 60 * 1000 - timePassed; // 1 hour in milliseconds
+    const tokensDepletedTimestamp = userProfile.tokensDepletedTimestamp;
 
-                if (timeLeftForRefill <= 0) {
-                    // Refill based on user type
-                    if (isGold) {
-                        userTokens = goldTokenLimit; // Gold members get 999 tokens
-                    } else if (isPremium) {
-                        userTokens = premiumTokenLimit; // Premium members get 100 tokens
-                    } else {
-                        userTokens = freeTokenLimit; // Free members get 30 tokens
-                    }
-                    await updateDoc(userProfileRef, { tokens: userTokens, tokensDepletedTimestamp: null }); // Refill tokens and clear the timestamp
-                    console.log("Tokens refilled.");
-                    updateTokenBar(); // Update token UI
-                    return;
-                }
+    const goldTokenLimit = 999;
+    const premiumTokenLimit = 100;
+    const freeTokenLimit = 30;
 
-                // Calculate minutes and seconds remaining for display (for Free and Premium members)
-                const minutesLeft = Math.floor(timeLeftForRefill / 60000);
-                const secondsLeft = Math.floor((timeLeftForRefill % 60000) / 1000);
+    if (tokensDepletedTimestamp) {
+        const currentTime = Date.now();
+        const tokenDepletionTime = tokensDepletedTimestamp.toMillis(); 
+        const timePassed = currentTime - tokenDepletionTime;
 
-                displayMessage(`Oopsie! Looks like you've used all your magic tokens! 🌟 But don't worry, they'll refill soon! Come back in ${minutesLeft} minutes and ${secondsLeft} seconds to keep the fun going! 🚀`, "bot");
-            } else if (isGold && userTokens <= 0) {
-                // Refill Gold users if they run out of tokens
+        const timeLeftForRefill = 60 * 60 * 1000 - timePassed;
+
+        if (timeLeftForRefill <= 0) {
+            if (isGold) {
                 userTokens = goldTokenLimit;
-                await updateDoc(userProfileRef, { tokens: userTokens });
-                console.log("Gold user tokens refilled to 999.");
-                updateTokenBar();
+            } else if (isPremium) {
+                userTokens = premiumTokenLimit;
+            } else {
+                userTokens = freeTokenLimit;
             }
+            await updateDoc(doc(db, `userProfiles/${parentId}`), { tokens: userTokens, tokensDepletedTimestamp: null });
+            console.log("Tokens refilled.");
+            updateTokenBar();
+            return;
         }
-    } catch (error) {
-        console.error("Error checking token refill time:", error);
+
+        const minutesLeft = Math.floor(timeLeftForRefill / 60000);
+        const secondsLeft = Math.floor((timeLeftForRefill % 60000) / 1000);
+
+        displayMessage(`Oopsie! Looks like you've used all your magic tokens! 🌟 But don't worry, they'll refill soon! Come back in ${minutesLeft} minutes and ${secondsLeft} seconds to keep the fun going! 🚀`, "bot");
+    } else if (isGold && userTokens <= 0) {
+        userTokens = goldTokenLimit;
+        await updateDoc(doc(db, `userProfiles/${parentId}`), { tokens: userTokens });
+        console.log("Gold user tokens refilled to 999.");
+        updateTokenBar();
     }
 }
 
