@@ -876,12 +876,16 @@ function speakText(text) {
     const utterance = new SpeechSynthesisUtterance(removeEmojis(text)); // Remove emojis
 
     const voices = synth.getVoices();
-    const selectedVoiceIndex = document.querySelector('.voice-select').value; // Get the selected voice from the dropdown
-    const selectedVoice = voices[selectedVoiceIndex];
+    let selectedVoiceIndex = document.querySelector('.voice-select').value; // Get the selected voice from the dropdown
+    let selectedVoice = voices[selectedVoiceIndex];
 
-    if (selectedVoice) {
-        utterance.voice = selectedVoice;
+    // If no voice is selected or the voice isn't found, default to an English voice
+    if (!selectedVoice || selectedVoice.lang.indexOf('en') !== 0) {
+        // Try to find the default voice for the platform
+        selectedVoice = voices.find(voice => voice.name.includes("Samantha") || voice.lang === 'en-US') || voices[0]; // Fallback to first available
     }
+
+    utterance.voice = selectedVoice;
 
     isSpeaking = true; // Set the flag to true to indicate speaking has started
     utterance.onend = () => {
