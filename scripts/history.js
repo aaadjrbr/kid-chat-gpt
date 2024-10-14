@@ -4,25 +4,17 @@ import { collection, getDocs, query, where, orderBy } from "https://www.gstatic.
 const botName = "Friendly Robot";
 let kidName = "User";
 
-// Cache key for session storage
-const CACHE_KEY = "chatHistoryCache";
+// Fetch `kidName` from URL params or Firestore (if applicable)
+function getKidNameFromURL() {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get('kidName') || "User"; // Set "User" as fallback, if `kidName` isn't in the URL
+}
 
 // Fetch chat sessions for a specific day within the current month and cache them
 export async function displayChatHistoryByDay(parentId, kidId, year, month, day) {
+    // Dynamically set the kid's name from the URL or fallback to "User"
+    kidName = getKidNameFromURL();  
     console.log(`Fetching chat sessions for parentId: ${parentId}, kidId: ${kidId}, Year: ${year}, Month: ${month}, Day: ${day}`);
-
-    // Check if the data is already in the session cache
-    const cacheKey = `${parentId}_${kidId}_${year}_${month}_${day}`;
-    const cachedData = sessionStorage.getItem(cacheKey);
-    
-    if (cachedData) {
-        console.log("Using cached data for chat sessions.");
-        renderChatHistory(JSON.parse(cachedData), parentId, kidId, year, month, day);
-        return;
-    }
-
-    const urlParams = new URLSearchParams(window.location.search);
-    kidName = urlParams.get('kidName') || "User";
 
     const chatSessionsRef = collection(db, `parents/${parentId}/kids/${kidId}/chatSessions`);
     const startOfDay = new Date(`${year}-${month}-${String(day).padStart(2, '0')}T00:00:00`);
@@ -37,21 +29,31 @@ export async function displayChatHistoryByDay(parentId, kidId, year, month, day)
     );
 
     const chatSnapshot = await getDocs(q);
-    if (!chatSnapshot.empty) {
-        // Save chat data to the cache
-        const chatSessions = chatSnapshot.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data()
-        }));
-        sessionStorage.setItem(cacheKey, JSON.stringify(chatSessions));
-        console.log("Caching chat sessions for this day.");
+    const historyContainer = document.getElementById('history-container');
+    historyContainer.innerHTML = ''; // Clear previous results
 
-        // Render chat history after caching
-        renderChatHistory(chatSessions, parentId, kidId, year, month, day);
-    } else {
-        const historyContainer = document.getElementById('history-container');
-        historyContainer.innerHTML = '<p>No chat history available for this day.</p>';
+    if (chatSnapshot.empty) {
+        historyContainer.innerHTML += '<p>No chat history available for this day.</p>';
+        return;
     }
+
+    const sessionsContainer = document.createElement('div');
+    sessionsContainer.classList.add('sessions-container');
+
+    const sessionsList = document.createElement('ul');
+    chatSnapshot.forEach(doc => {
+        const session = doc.data();
+        const sessionItem = document.createElement('li');
+        const sessionTime = new Date(session.dateStarted.seconds * 1000).toLocaleTimeString();
+        sessionItem.textContent = `Chat started at ${sessionTime}`;
+        sessionItem.addEventListener('click', () => {
+            loadChatMessages(parentId, kidId, doc.id, year, month, day); // Pass parentId, kidId correctly here
+        });
+        sessionsList.appendChild(sessionItem);
+    });
+
+    sessionsContainer.appendChild(sessionsList);
+    historyContainer.appendChild(sessionsContainer);
 }
 
 // Function to render the chat history from the cache or query
@@ -60,7 +62,7 @@ function renderChatHistory(chatSessions, parentId, kidId, year, month, day) {
     historyContainer.innerHTML = ''; // Clear previous results
 
     const historyHeader = document.createElement('h3');
-    historyHeader.textContent = `Chat history for ${month}/${day}/${year}`;
+    historyHeader.textContent = `💬 Chat history for ${month}/${day}/${year}`;
     historyContainer.appendChild(historyHeader);
 
     const sessionsContainer = document.createElement('div');
@@ -83,6 +85,8 @@ function renderChatHistory(chatSessions, parentId, kidId, year, month, day) {
 
 // Function to load chat messages for a specific chat session
 async function loadChatMessages(parentId, kidId, chatId, year, month, day) {
+    kidName = getKidNameFromURL();  // Ensure kidName is set before rendering messages
+
     console.log(`Fetching messages for chatId: ${chatId}`);
     const messagesRef = collection(db, `parents/${parentId}/kids/${kidId}/chatSessions/${chatId}/messages`);
 
@@ -106,9 +110,9 @@ async function loadChatMessages(parentId, kidId, chatId, year, month, day) {
     } else {
         messagesSnapshot.forEach(doc => {
             const msg = doc.data();
-            const msgItem = document.createElement('li');
-            const senderName = msg.sender === 'bot' ? botName : kidName;
+            const senderName = msg.sender === 'bot' ? botName : kidName; // Use kidName instead of "User"
 
+            const msgItem = document.createElement('li');
             msgItem.classList.add(msg.sender === 'bot' ? 'bot-message' : 'user-message');
 
             // Check if the message contains a URL that looks like an image
@@ -120,7 +124,7 @@ async function loadChatMessages(parentId, kidId, chatId, year, month, day) {
                 imageElement.style.borderRadius = "8px";
                 msgItem.appendChild(imageElement);
             } else {
-                // Display text message
+                // Display text message with senderName
                 msgItem.textContent = `${senderName}: ${msg.text}`;
             }
 
@@ -136,7 +140,6 @@ async function loadChatMessages(parentId, kidId, chatId, year, month, day) {
     goBackButton.textContent = "Go Back";
     goBackButton.classList.add('go-back-button');
     goBackButton.addEventListener('click', () => {
-        // Re-render the chat sessions for the same day from cache
         const cacheKey = `${parentId}_${kidId}_${year}_${month}_${day}`;
         const cachedData = sessionStorage.getItem(cacheKey);
         if (cachedData) {

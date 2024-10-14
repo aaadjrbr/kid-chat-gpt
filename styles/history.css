@@ -1,20 +1,28 @@
-/* styles/main.css */
+/* Import Google Font */
+@import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
 
 /* General styling */
 body {
-    font-family: 'Comic Sans MS', Arial, sans-serif;
-    background-color: #f0f0f0;
+    font-family: 'Roboto', sans-serif;
+    background-image: radial-gradient(circle, rgba(92, 100, 255, 0.527) 0%, rgba(13, 53, 172, 0.61) 100%);
     margin: 0;
     padding: 20px;
     color: #333;
 }
 
+button {
+    font-family: 'Roboto', sans-serif;
+}
+
 h2 {
+    font-family: 'Roboto', sans-serif;
     text-align: center;
-    font-family: 'Poppins', sans-serif;
 }
 
 h3 {
+    font-family: "Kiwi Maru", serif;
     text-align: center;
 }
 
@@ -38,19 +46,33 @@ h3 {
 
 /* Styling for individual day buttons in the calendar */
 .day-button {
-    background-color: #4CAF50;
+    background: rgb(247,150,192);
+    background: radial-gradient(circle, rgba(118,174,241,1) 0%, rgba(118,174,241,1) 100%);
     border: none;
     color: white;
-    padding: 10px;
-    font-size: 14px;
+    padding: 12px 16px;
+    font-size: 1em;
+    font-weight: 700;
     cursor: pointer;
-    border-radius: 5px;
-    transition: background-color 0.3s;
+    border-radius: 50px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease-in-out;
     text-align: center;
+    margin: 5px;
+    transition: all 0.2s ease;
 }
 
 .day-button:hover {
-    background-color: #45a049;
+    background: radial-gradient(circle, rgb(243, 138, 184) 0%, rgb(103, 162, 235) 100%);
+    color: rgb(255, 255, 255);
+    transition: all 0.2s ease;
+    transform: scale(1.05);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+}
+
+.day-button:active {
+    transform: scale(0.95);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 @media (max-width: 600px) {
@@ -71,19 +93,49 @@ h3 {
 }
 
 .button-go-back {
-    background-color: #155724;
-    border-radius: 10px;
+    background-image: linear-gradient(to right, #6a11cb, #2575fc);
+    border-radius: 15px;
     padding: 10px;
     color: #fff;
 }
 
+.button-go-back:hover {
+    background-image: linear-gradient(to right, #2575fc, #6a11cb);
+}
+
+.month-container {
+    justify-content: center; /* Aligns the content inside the container horizontally */
+    align-items: center; /* Aligns content vertically */
+    width: 90%;
+    margin: 10px auto; /* Centers the container horizontally */
+    border-radius: 20px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(240, 245, 255, 0.95));
+    filter: drop-shadow(0 3px 10px #0004);
+    padding: 10px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.041); /* Subtle shadow for depth */
+}
+
+.title-container {
+    justify-content: center; /* Aligns the content inside the container horizontally */
+    align-items: center; /* Aligns content vertically */
+    width: 90%;
+    margin: 10px auto; /* Centers the container horizontally */
+    border-radius: 20px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(240, 245, 255, 0.95));
+    filter: drop-shadow(0 3px 10px #0004);
+    padding: 10px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.041); /* Subtle shadow for depth */
+}
+
 /* Chat history container styling */
 #history-container {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(240, 245, 255, 0.95));
+    filter: drop-shadow(0 3px 10px #0004);
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.041); /* Subtle shadow for depth */
     background-color: #fff;
     width: 80%;
     padding: 15px;
     border-radius: 20px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
     max-width: 600px;
     margin: 35px auto;
     overflow-y: auto;
@@ -152,45 +204,52 @@ ul {
 }
 
 li {
-    background-color: #e0f7fa;
+    background: rgb(247,150,192);
+    background: radial-gradient(circle, rgba(247,150,192,1) 0%, rgba(118,174,241,1) 100%);
     padding: 15px;
     margin-bottom: 8px;
     border-radius: 25px;
+    color: white;
     cursor: pointer;
     transition: background-color 0.3s;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    transition: all 0.2s ease;
 }
 
 li:hover {
-    background-color: #b2ebf2;
+    background: radial-gradient(circle, rgb(243, 138, 184) 0%, rgb(103, 162, 235) 100%);
+    color: rgb(255, 255, 255);
+    transition: all 0.2s ease;
 }
 
 /* User message styling */
 .user-message {
-    background-color: #d1e7dd; /* Light green background */
-    color: #0f5132; /* Dark green text */
-    text-align: left;
-    border-radius: 25px 25px 5px 25px;
+    background: linear-gradient(135deg, #6a82fb, #fc5c7d); /* Blue gradient with a slight pinkish tint for a modern look */
+    padding: 12px;
+    margin-bottom: 10px;
+    color: white; /* Text color stands out on the gradient background */
+    border-radius: 20px 20px 0 20px; /* Smooth, rounded edges */
     float: right;
     clear: both;
-}
-
-.user-message:hover {
-    background-color: #d1e7ddc7; /* Light green background */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Adds a subtle shadow for a 3D effect */
+    font-family: 'Roboto', sans-serif;
+    max-width: 70%; /* Limits the width for a better, contained look */
+    word-wrap: break-word; /* Ensures text wraps within the balloon */
 }
 
 /* Bot message styling */
 .bot-message {
-    background-color: #f8d7da; /* Light red background */
-    color: #842029; /* Dark red text */
-    text-align: left;
-    border-radius: 25px 25px 25px 5px;
+    background: linear-gradient(135deg, #6a82fb, #6a82fbb9); /* Green gradient for a fresh, vibrant look */
+    padding: 12px;
+    margin-bottom: 10px;
+    color: white; /* White text for high contrast against the gradient */
+    border-radius: 20px 20px 20px 0; /* Smooth, rounded edges */
     float: left;
     clear: both;
-}
-
-.bot-message:hover {
-    background-color: #f8d7dac9; /* Light red background */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    font-family: 'Roboto', sans-serif;
+    max-width: 70%; /* Keeps the message balloon contained */
+    word-wrap: break-word; /* Ensures text wraps within the balloon */
 }
 
 /* Additional styling for message appearance */

@@ -5,20 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat History</title>
     <link rel="stylesheet" href="styles/history.css">
+    <link href="https://fonts.googleapis.com/css2?family=Kiwi+Maru:wght@300;400;500&display=swap" rel="stylesheet">
 </head>
 <body>
-    <h2>Chat History for <span id="kid-name"></span></h2>
+<div class="title-container">
+    <h2>🔎 Chat History for <span id="kid-name"></span></h2>
     <div class="button-go-back-container">
         <a class="button-go-back" style="text-align: center; text-decoration: none;" href="./profiles.html">
             <span>Go back</span>
         </a>
     </div>
+</div>
 
+<div class="month-container">
     <h3 id="current-month-title"></h3>
     <div id="day-picker-container"></div>
     <div id="history-container">
         <br/><br/>
     </div>
+</div>
 
     <!-- Include Firebase and history.js -->
     <script src="scripts/firebase-config.js" type="module"></script>
