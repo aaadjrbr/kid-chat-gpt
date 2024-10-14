@@ -316,26 +316,25 @@ function typeMultipleMessages(messages, pauseDuration = 5000, defaultMessage = "
 }
 
 async function startNewChatSession() {
-    try {
-        const chatSessionsRef = collection(db, `parents/${parentId}/kids/${kidId}/chatSessions`);
-
-        const chatSnapshot = await getDocs(chatSessionsRef);
-        const nextChatNumber = chatSnapshot.size + 1;
-
-        const newChatRef = doc(chatSessionsRef, `chat${nextChatNumber}`);
-        await setDoc(newChatRef, {
-            dateStarted: serverTimestamp(),
-            chatNumber: nextChatNumber,
-            kidName: kidName
-        });
-
-        currentChatSessionRef = collection(newChatRef, "messages");
-        console.log(`Started new chat session: chat${nextChatNumber}`);
-
-        //greetKid();
-    } catch (error) {
-        console.error("Error starting a new chat session:", error);
+    const chatSessionsMetaRef = doc(db, `parents/${parentId}/kids/${kidId}/meta/documentId`);
+    
+    const chatMetaSnapshot = await getDoc(chatSessionsMetaRef);
+    
+    if (!chatMetaSnapshot.exists()) {
+        // Initialize the metadata if it doesn't exist
+        await setDoc(chatSessionsMetaRef, { chatCount: 1 });
     }
+
+    // Create a new chat session using only the timestamp as an identifier
+    const newChatRef = doc(collection(db, `parents/${parentId}/kids/${kidId}/chatSessions`));
+
+    await setDoc(newChatRef, {
+        dateStarted: serverTimestamp(),
+        kidName: kidName
+    });
+
+    currentChatSessionRef = collection(newChatRef, "messages");
+    console.log(`Started new chat session at ${new Date().toLocaleString()}`);
 }
 
 //function greetKid() {

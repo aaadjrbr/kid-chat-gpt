@@ -12,25 +12,15 @@ function getKidNameFromURL() {
 
 // Fetch chat sessions for a specific day within the current month and cache them
 export async function displayChatHistoryByDay(parentId, kidId, year, month, day) {
-    // Dynamically set the kid's name from the URL or fallback to "User"
     kidName = getKidNameFromURL();  
-    console.log(`Fetching chat sessions for parentId: ${parentId}, kidId: ${kidId}, Year: ${year}, Month: ${month}, Day: ${day}`);
 
-    // Cache key specific for this day
-    const cacheKey = `${parentId}_${kidId}_${year}_${month}_${day}`;
-    const cachedData = sessionStorage.getItem(cacheKey);
-    
-    if (cachedData) {
-        console.log("Using cached data for chat sessions.");
-        renderChatHistory(JSON.parse(cachedData), parentId, kidId, year, month, day);
-        return;
-    }
-
-    const chatSessionsRef = collection(db, `parents/${parentId}/kids/${kidId}/chatSessions`);
+    // Convert the selected day to a start and end timestamp
     const startOfDay = new Date(`${year}-${month}-${String(day).padStart(2, '0')}T00:00:00`);
     const endOfDay = new Date(`${year}-${month}-${String(day).padStart(2, '0')}T23:59:59`);
 
-    // Query chat sessions for the specific day
+    const chatSessionsRef = collection(db, `parents/${parentId}/kids/${kidId}/chatSessions`);
+    
+    // Query for chats that started between the start and end of the day
     const q = query(
         chatSessionsRef,
         where("dateStarted", ">=", startOfDay),
@@ -47,31 +37,18 @@ export async function displayChatHistoryByDay(parentId, kidId, year, month, day)
         return;
     }
 
-    // Store the sessions in cache
+    // Store the sessions in cache (by day)
     const chatSessions = chatSnapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
     }));
+    const cacheKey = `${parentId}_${kidId}_${year}_${month}_${day}`;
     sessionStorage.setItem(cacheKey, JSON.stringify(chatSessions));
 
-    const sessionsContainer = document.createElement('div');
-    sessionsContainer.classList.add('sessions-container');
-
-    const sessionsList = document.createElement('ul');
-    chatSnapshot.forEach(doc => {
-        const session = doc.data();
-        const sessionItem = document.createElement('li');
-        const sessionTime = new Date(session.dateStarted.seconds * 1000).toLocaleTimeString();
-        sessionItem.textContent = `Chat started at ${sessionTime}`;
-        sessionItem.addEventListener('click', () => {
-            loadChatMessages(parentId, kidId, doc.id, year, month, day); // Pass parentId, kidId correctly here
-        });
-        sessionsList.appendChild(sessionItem);
-    });
-
-    sessionsContainer.appendChild(sessionsList);
-    historyContainer.appendChild(sessionsContainer);
+    // Display the fetched sessions
+    renderChatHistory(chatSessions, parentId, kidId, year, month, day);
 }
+
 
 // Function to load chat messages for a specific chat session
 async function loadChatMessages(parentId, kidId, chatId, year, month, day) {
@@ -159,7 +136,7 @@ function renderChatHistory(chatSessions, parentId, kidId, year, month, day) {
         const sessionTime = new Date(session.dateStarted.seconds * 1000).toLocaleTimeString();
         sessionItem.textContent = `Chat started at ${sessionTime}`;
         sessionItem.addEventListener('click', () => {
-            loadChatMessages(parentId, kidId, session.id, year, month, day);
+            loadChatMessages(parentId, kidId, session.id, year, month, day); 
         });
         sessionsList.appendChild(sessionItem);
     });
@@ -167,3 +144,4 @@ function renderChatHistory(chatSessions, parentId, kidId, year, month, day) {
     sessionsContainer.appendChild(sessionsList);
     historyContainer.appendChild(sessionsContainer);
 }
+
