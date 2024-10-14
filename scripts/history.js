@@ -96,9 +96,24 @@ async function loadChatMessages(parentId, kidId, chatId, year, month, day) {
     const historyContainer = document.getElementById('history-container');
     historyContainer.innerHTML = ''; // Clear previous results
 
+    // Add the "Go Back" button to go back to the list of sessions for the same day (Add this first)
+    const goBackButton = document.createElement('button');
+    goBackButton.textContent = "Go Back";
+    goBackButton.classList.add('go-back-button');
+    goBackButton.addEventListener('click', () => {
+        const cacheKey = `${parentId}_${kidId}_${year}_${month}_${day}`;
+        const cachedData = sessionStorage.getItem(cacheKey);
+        if (cachedData) {
+            console.log("Using cached data to go back.");
+            renderChatHistory(JSON.parse(cachedData), parentId, kidId, year, month, day);
+        }
+    });
+
+    historyContainer.appendChild(goBackButton); // Add the button to the top
+
     // Update header to indicate the selected day
     const historyHeader = document.createElement('h3');
-    historyHeader.textContent = `Chat messages for ${month}/${day}/${year}`;
+    historyHeader.textContent = `💬 Chat messages for ${month}/${day}/${year}`;
     historyContainer.appendChild(historyHeader);
 
     const messagesContainer = document.createElement('div');
@@ -134,19 +149,4 @@ async function loadChatMessages(parentId, kidId, chatId, year, month, day) {
     }
 
     historyContainer.appendChild(messagesContainer);
-
-    // Add the "Go Back" button to go back to the list of sessions for the same day
-    const goBackButton = document.createElement('button');
-    goBackButton.textContent = "Go Back";
-    goBackButton.classList.add('go-back-button');
-    goBackButton.addEventListener('click', () => {
-        const cacheKey = `${parentId}_${kidId}_${year}_${month}_${day}`;
-        const cachedData = sessionStorage.getItem(cacheKey);
-        if (cachedData) {
-            console.log("Using cached data to go back.");
-            renderChatHistory(JSON.parse(cachedData), parentId, kidId, year, month, day);
-        }
-    });
-
-    historyContainer.appendChild(goBackButton);
 }
