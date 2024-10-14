@@ -428,6 +428,57 @@ img {
     }
 }
 
+.speaker-btn, .arrow-btn {
+    background: none;
+    color: #ffffff;
+    float: right;
+    border: none;
+    cursor: pointer;
+    font-size: 24px;
+    margin-left: 10px;
+}
+
+.voice-select {
+    margin-left: 10px;
+    float: right;
+    display: none; /* Initially hidden */
+    font-size: 16px;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+button.speaker-btn.material-icons {
+    margin-left: -10px;
+}
+
+select.voice-select {
+    font-size: 0.9em; /* Adjusted font size for better readability */
+    padding: 5px 10px; /* Add padding to make it more clickable */
+    border-radius: 5px; /* Smooth rounded corners */
+    border: 1px solid #ccc; /* Light border to define the edges */
+    background-color: #f8f9fa; /* Light background color */
+    color: #333; /* Dark text color */
+    cursor: pointer; /* Pointer cursor to indicate it's selectable */
+    transition: all 0.3s ease; /* Smooth transition for hover effects */
+}
+
+/* Hover effect */
+select.voice-select:hover {
+    background-color: #e2e6ea; /* Change background color on hover */
+    border-color: #999; /* Darken border on hover */
+}
+
+/* Focused (when clicked) */
+select.voice-select:focus {
+    outline: none; /* Remove default outline */
+    border-color: #007bff; /* Change border color on focus */
+    box-shadow: 0 0 3px rgba(0, 123, 255, 0.5); /* Add subtle shadow for focus */
+}
+
+.speaker-btn:hover, .arrow-btn:hover {
+    color: #ffffffd5;  /* Optional: color change on hover */
+}
+
 /* 6 */
 .btn-6 {
     background: rgb(247,150,192);

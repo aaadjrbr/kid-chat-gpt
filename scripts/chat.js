@@ -730,24 +730,72 @@ function displayTypingMessage(text, sender) {
     messageDiv.className = sender;
 
     if (sender === 'bot') {
-        const formattedText = formatMessageText(text);  // Format the bot message
+        const formattedText = formatMessageText(text); // Format the bot message
         messageDiv.innerHTML = '';  // Start empty and build the text
         const messageContent = document.createElement('div');
         messageContent.className = 'bot-message-content';  // Add class for extra spacing
         messageContent.innerHTML = formattedText;  // Insert formatted text (uses innerHTML)
-        messageDiv.appendChild(messageContent);
 
+        // Create speaker button with Material Icon
+        const speakerButton = document.createElement('button');
+        speakerButton.className = 'speaker-btn material-icons';  // Add Material Icons class
+        speakerButton.innerHTML = 'volume_up';  // Use 'volume_up' icon for the speaker
+        speakerButton.onclick = () => speakText(text);  // Trigger text-to-speech
+
+        // Create arrow button to toggle the voice selection dropdown
+        const arrowButton = document.createElement('button');
+        arrowButton.className = 'arrow-btn material-icons';  // Add Material Icons class
+        arrowButton.innerHTML = 'arrow_drop_down';  // Use 'arrow_drop_down' icon for the dropdown arrow
+
+        // Create voice selection dropdown (initially hidden)
+        const voiceSelect = document.createElement('select');
+        voiceSelect.className = 'voice-select';
+        voiceSelect.style.display = 'none';  // Initially hide the dropdown
+
+        // Function to populate available voices in the dropdown
+        function populateVoiceList() {
+            const synth = window.speechSynthesis;
+            const voices = synth.getVoices();
+            voiceSelect.innerHTML = ''; // Clear any previous options
+
+            voices.forEach((voice, index) => {
+                const option = document.createElement('option');
+                option.textContent = `${voice.name} (${voice.lang})`;
+                option.value = index;
+                option.dataset.lang = voice.lang;
+                option.dataset.name = voice.name;
+                voiceSelect.appendChild(option);
+            });
+        }
+
+        // Show/hide the voice dropdown when the arrow button is clicked
+        arrowButton.onclick = () => {
+            voiceSelect.style.display = voiceSelect.style.display === 'none' ? 'block' : 'none';
+        };
+
+        // Populate voices on page load and when voices change
+        if (speechSynthesis.onvoiceschanged !== undefined) {
+            speechSynthesis.onvoiceschanged = populateVoiceList;
+        }
+        populateVoiceList(); // Call to populate voices when the page loads
+
+        // Append speaker button, arrow button, and voice dropdown to the message div
+        messageDiv.appendChild(messageContent);
+        messageDiv.appendChild(speakerButton);
+        messageDiv.appendChild(arrowButton);
+        messageDiv.appendChild(voiceSelect);
         messagesContainer.appendChild(messageDiv);
 
         // Add fade-in effect when the bot message is added
         setTimeout(() => {
-            messageDiv.classList.add('fade-in'); // Optional if you want to trigger the animation dynamically
-        }, 100);  // Adding a slight delay to ensure smooth transition
+            messageDiv.classList.add('fade-in'); // Optional fade-in animation
+        }, 100);
 
-        // Disable the "Thinking..." message
-        document.getElementById('thinking').style.display = 'block';  
+        // Show the "Thinking..." message
+        document.getElementById('thinking').style.display = 'block';
         userInput.disabled = true;
-        sendBtn.disabled = true; 
+        sendBtn.disabled = true;
+
     } else {
         messageDiv.innerHTML = text;
         messagesContainer.appendChild(messageDiv);
@@ -766,6 +814,55 @@ function removeTypingMessage() {
     userInput.disabled = false;
     sendBtn.disabled = false; // Enable send button
 }
+
+// Create voice selection dropdown (initially hidden)
+const voiceSelect = document.createElement('select');
+voiceSelect.className = 'voice-select';
+voiceSelect.style.display = 'none';  // Initially hide the dropdown
+
+// Function to populate available voices in the dropdown
+function populateVoiceList() {
+    const synth = window.speechSynthesis;
+    const voices = synth.getVoices();
+
+    voices.forEach((voice, index) => {
+        const option = document.createElement('option');
+        option.textContent = `${voice.name} (${voice.lang})`;
+        option.value = index;
+        option.dataset.lang = voice.lang;
+        option.dataset.name = voice.name;
+        voiceSelect.appendChild(option);
+    });
+}
+
+// Fetch and populate the voices once the voices are loaded
+if (speechSynthesis.onvoiceschanged !== undefined) {
+    speechSynthesis.onvoiceschanged = populateVoiceList;
+}
+
+// Function to remove emojis from text
+function removeEmojis(text) {
+    return text.replace(/([\u2700-\u27BF]|[\uE000-\uF8FF]|[\uFE00-\uFE0F]|\uD83C[\uD000-\uDFFF]|\uD83D[\uD000-\uDFFF]|\uD83E[\uD000-\uDFFF])/g, '');
+}
+
+// Modified speakText function to use the selected voice and remove emojis
+function speakText(text) {
+    const synth = window.speechSynthesis;
+    const utterance = new SpeechSynthesisUtterance(removeEmojis(text)); // Remove emojis
+
+    const voices = synth.getVoices();
+    const selectedVoiceIndex = document.querySelector('.voice-select').value; // Get the selected voice from the dropdown
+    const selectedVoice = voices[selectedVoiceIndex];
+
+    if (selectedVoice) {
+        utterance.voice = selectedVoice;
+    }
+
+    synth.speak(utterance);
+}
+
+// Call populateVoiceList when the page loads to ensure the voice list is available
+window.onload = populateVoiceList;
 
 async function getChatResponse() {
     try {
