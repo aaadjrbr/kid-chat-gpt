@@ -873,21 +873,35 @@ function speakText(text) {
         return; // Exit if already speaking
     }
 
-    const utterance = new SpeechSynthesisUtterance(removeEmojis(text)); // Remove emojis
-
+    const utterance = new SpeechSynthesisUtterance(removeEmojis(text)); // Remove emojis from the spoken text
     const voices = synth.getVoices();
-    let selectedVoiceIndex = document.querySelector('.voice-select').value; // Get the selected voice from the dropdown
-    let selectedVoice = voices[selectedVoiceIndex];
 
-    // If no voice is selected or the voice isn't found, default to an English voice
-    if (!selectedVoice || selectedVoice.lang.indexOf('en') !== 0) {
-        // Try to find the default voice for the platform
-        selectedVoice = voices.find(voice => voice.name.includes("Samantha") || voice.lang === 'en-US') || voices[0]; // Fallback to first available
+    // Step 1: Force the first voice to always be an English voice (Samantha for iOS, en-US for others)
+    let selectedVoice = voices.find(voice => voice.name.includes("Samantha") || voice.lang === 'en-US');
+    
+    if (!selectedVoice) {
+        // Fallback to any available English voice if no Samantha or en-US voice is found
+        selectedVoice = voices.find(voice => voice.lang.startsWith('en')) || voices[0]; 
     }
 
-    utterance.voice = selectedVoice;
+    // Step 2: Check if the user has selected a voice from the dropdown and make sure it's English
+    const voiceSelect = document.querySelector('.voice-select');
+    if (voiceSelect && voiceSelect.value) {
+        const userSelectedVoice = voices[voiceSelect.value];
+        if (userSelectedVoice && userSelectedVoice.lang.startsWith('en')) {
+            selectedVoice = userSelectedVoice; // Use the selected voice if it's English
+        }
+    }
 
-    isSpeaking = true; // Set the flag to true to indicate speaking has started
+    // If no English voice is found, log an error and prevent speaking
+    if (!selectedVoice) {
+        console.error('No English voice available');
+        return;
+    }
+
+    utterance.voice = selectedVoice; // Assign the selected voice
+    isSpeaking = true; // Set the flag to indicate speaking has started
+
     utterance.onend = () => {
         isSpeaking = false; // Reset the flag once speech ends
     };

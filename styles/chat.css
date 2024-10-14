@@ -456,6 +456,7 @@ button.speaker-btn.material-icons {
 }
 
 select.voice-select {
+    margin-top: 4px !important;
     font-size: 0.9em;
     padding: 5px 10px;
     border-radius: 5px;
