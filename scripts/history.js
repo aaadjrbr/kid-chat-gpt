@@ -43,7 +43,7 @@ export async function displayChatHistoryByDay(parentId, kidId, year, month, day)
     historyContainer.innerHTML = ''; // Clear previous results
 
     if (chatSnapshot.empty) {
-        historyContainer.innerHTML += '<p>No chat history available for this day.</p>';
+        historyContainer.innerHTML += '<p>❌ No chat history available for this day.</p>';
         return;
     }
 
@@ -111,7 +111,7 @@ async function loadChatMessages(parentId, kidId, chatId, year, month, day) {
 
     const messagesList = document.createElement('ul');
     if (messagesSnapshot.empty) {
-        historyContainer.innerHTML += '<p>No messages found for this chat session.</p>';
+        historyContainer.innerHTML += '<p>❌ No messages found for this chat session.</p>';
     } else {
         messagesSnapshot.forEach(doc => {
             const msg = doc.data();

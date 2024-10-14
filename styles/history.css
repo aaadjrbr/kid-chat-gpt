@@ -93,14 +93,16 @@ h3 {
 }
 
 .button-go-back {
-    background-image: linear-gradient(to right, #6a11cb, #2575fc);
+    background-color: #ffa726;
     border-radius: 15px;
     padding: 10px;
     color: #fff;
+    transition: background-color 0.3s, transform 0.2s;
 }
 
 .button-go-back:hover {
-    background-image: linear-gradient(to right, #2575fc, #6a11cb);
+    background-color: #fb8c00;
+    transform: translateY(-2px);
 }
 
 .month-container {
@@ -315,6 +317,19 @@ li:hover {
     content: "";
     display: table;
     clear: both;
+}
+
+.kid-name-display {
+    font-size: 1.4em;
+    text-align: center;
+    font-family: "Kiwi Maru", serif;
+    font-weight: 700;
+    letter-spacing: 1px;
+    background: radial-gradient(circle, rgb(243, 138, 184) 0%, rgb(103, 162, 235) 100%);
+    color: rgb(255, 255, 255);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent; /* Makes the text fill transparent to show the gradient */
+    background-clip: text; /* This will still ensure the background gradient clips to the text */
 }
 
 /* Go Back button styling */
