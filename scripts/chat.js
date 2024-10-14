@@ -176,13 +176,13 @@ async function fetchKidData() {
 
             // Start typing effect with the fetched kid name
             typeMultipleMessages([
-                `Hey, ${kidName}! 👋`,
-                `Being ${kidAge} is great! ✨`,
-                `Why is the sky blue? 🌈`,
-                `Can fish fly? 🐟✈️`,
-                `Teach me math! ➗🧮`,
-                `Help me with English 📚`
-            ], 10000, "Keep learning! 💭"); // Default message for the pause                               
+                `Hey, ${kidName}!`,
+                `Being ${kidAge} is great!`,
+                `Why is the sky blue?`,
+                `Can fish fly?`,
+                `Teach me math!`,
+                `Help me with English`
+            ], 10000, "Keep learning!"); // Default message for the pause                               
 
             // Customize the conversation context based on age
             conversationContext = [
@@ -845,9 +845,16 @@ function removeEmojis(text) {
     return text.replace(/([\u2700-\u27BF]|[\uE000-\uF8FF]|[\uFE00-\uFE0F]|\uD83C[\uD000-\uDFFF]|\uD83D[\uD000-\uDFFF]|\uD83E[\uD000-\uDFFF])/g, '');
 }
 
+let isSpeaking = false; // Variable to track speaking state
+
 // Modified speakText function to use the selected voice and remove emojis
 function speakText(text) {
     const synth = window.speechSynthesis;
+
+    if (isSpeaking) {
+        return; // Exit if already speaking
+    }
+
     const utterance = new SpeechSynthesisUtterance(removeEmojis(text)); // Remove emojis
 
     const voices = synth.getVoices();
@@ -857,6 +864,11 @@ function speakText(text) {
     if (selectedVoice) {
         utterance.voice = selectedVoice;
     }
+
+    isSpeaking = true; // Set the flag to true to indicate speaking has started
+    utterance.onend = () => {
+        isSpeaking = false; // Reset the flag once speech ends
+    };
 
     synth.speak(utterance);
 }

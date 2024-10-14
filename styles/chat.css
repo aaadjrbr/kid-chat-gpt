@@ -293,9 +293,13 @@ img {
     font-size: 1.4em;
     text-align: center;
     font-family: "Kiwi Maru", serif;
-    font-weight: 400;
-    color: #000000; /* Matches the end color of the gradient */
+    font-weight: 700;
     letter-spacing: 1px;
+    background: radial-gradient(circle, rgb(243, 138, 184) 0%, rgb(103, 162, 235) 100%);
+    color: rgb(255, 255, 255);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent; /* Makes the text fill transparent to show the gradient */
+    background-clip: text; /* This will still ensure the background gradient clips to the text */
 }
 
 @media (max-width: 768px) {
@@ -448,7 +452,7 @@ img {
 }
 
 button.speaker-btn.material-icons {
-    margin-left: -10px;
+    margin-left: -10px !important;
 }
 
 select.voice-select {
