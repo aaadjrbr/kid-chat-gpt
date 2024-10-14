@@ -16,6 +16,16 @@ export async function displayChatHistoryByDay(parentId, kidId, year, month, day)
     kidName = getKidNameFromURL();  
     console.log(`Fetching chat sessions for parentId: ${parentId}, kidId: ${kidId}, Year: ${year}, Month: ${month}, Day: ${day}`);
 
+    // Cache key specific for this day
+    const cacheKey = `${parentId}_${kidId}_${year}_${month}_${day}`;
+    const cachedData = sessionStorage.getItem(cacheKey);
+    
+    if (cachedData) {
+        console.log("Using cached data for chat sessions.");
+        renderChatHistory(JSON.parse(cachedData), parentId, kidId, year, month, day);
+        return;
+    }
+
     const chatSessionsRef = collection(db, `parents/${parentId}/kids/${kidId}/chatSessions`);
     const startOfDay = new Date(`${year}-${month}-${String(day).padStart(2, '0')}T00:00:00`);
     const endOfDay = new Date(`${year}-${month}-${String(day).padStart(2, '0')}T23:59:59`);
@@ -37,6 +47,13 @@ export async function displayChatHistoryByDay(parentId, kidId, year, month, day)
         return;
     }
 
+    // Store the sessions in cache
+    const chatSessions = chatSnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+    }));
+    sessionStorage.setItem(cacheKey, JSON.stringify(chatSessions));
+
     const sessionsContainer = document.createElement('div');
     sessionsContainer.classList.add('sessions-container');
 
@@ -48,33 +65,6 @@ export async function displayChatHistoryByDay(parentId, kidId, year, month, day)
         sessionItem.textContent = `Chat started at ${sessionTime}`;
         sessionItem.addEventListener('click', () => {
             loadChatMessages(parentId, kidId, doc.id, year, month, day); // Pass parentId, kidId correctly here
-        });
-        sessionsList.appendChild(sessionItem);
-    });
-
-    sessionsContainer.appendChild(sessionsList);
-    historyContainer.appendChild(sessionsContainer);
-}
-
-// Function to render the chat history from the cache or query
-function renderChatHistory(chatSessions, parentId, kidId, year, month, day) {
-    const historyContainer = document.getElementById('history-container');
-    historyContainer.innerHTML = ''; // Clear previous results
-
-    const historyHeader = document.createElement('h3');
-    historyHeader.textContent = `💬 Chat history for ${month}/${day}/${year}`;
-    historyContainer.appendChild(historyHeader);
-
-    const sessionsContainer = document.createElement('div');
-    sessionsContainer.classList.add('sessions-container');
-
-    const sessionsList = document.createElement('ul');
-    chatSessions.forEach(session => {
-        const sessionItem = document.createElement('li');
-        const sessionTime = new Date(session.dateStarted.seconds * 1000).toLocaleTimeString();
-        sessionItem.textContent = `Chat started at ${sessionTime}`;
-        sessionItem.addEventListener('click', () => {
-            loadChatMessages(parentId, kidId, session.id, year, month, day); // Pass parentId, kidId correctly here
         });
         sessionsList.appendChild(sessionItem);
     });
@@ -149,4 +139,31 @@ async function loadChatMessages(parentId, kidId, chatId, year, month, day) {
     }
 
     historyContainer.appendChild(messagesContainer);
+}
+
+// Function to render the chat history from cache or query
+function renderChatHistory(chatSessions, parentId, kidId, year, month, day) {
+    const historyContainer = document.getElementById('history-container');
+    historyContainer.innerHTML = ''; // Clear previous results
+
+    const historyHeader = document.createElement('h3');
+    historyHeader.textContent = `💬 Chat history for ${month}/${day}/${year}`;
+    historyContainer.appendChild(historyHeader);
+
+    const sessionsContainer = document.createElement('div');
+    sessionsContainer.classList.add('sessions-container');
+
+    const sessionsList = document.createElement('ul');
+    chatSessions.forEach(session => {
+        const sessionItem = document.createElement('li');
+        const sessionTime = new Date(session.dateStarted.seconds * 1000).toLocaleTimeString();
+        sessionItem.textContent = `Chat started at ${sessionTime}`;
+        sessionItem.addEventListener('click', () => {
+            loadChatMessages(parentId, kidId, session.id, year, month, day);
+        });
+        sessionsList.appendChild(sessionItem);
+    });
+
+    sessionsContainer.appendChild(sessionsList);
+    historyContainer.appendChild(sessionsContainer);
 }
