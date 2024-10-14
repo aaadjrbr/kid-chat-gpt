@@ -264,7 +264,7 @@ export function viewChatHistory(kidId, kidName, event) {
 // Function to set up image gallery for selection
 export function setupImageGallery(containerId) {
     const imageContainer = document.getElementById(containerId);
-    const images = ['image1.webp', 'image2.webp', 'image3.webp', 'default.webp', 'image4.webp']; // Include both .png and .webp formats
+    const images = ['default.webp', 'image2.webp', 'image3.webp', 'image4.webp', 'image5.webp',  'image6.webp', 'image7.webp', 'image8.webp', 'image9.webp', 'image10.webp', 'image11.webp']; // Include both .png and .webp formats
     images.forEach(image => {
         const imgElement = document.createElement('img');
         imgElement.src = `images/${image}`;

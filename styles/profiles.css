@@ -90,7 +90,7 @@ form#add-profile-form {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 30px;
+    gap: 5px;
 }
 
 .profile-options {
@@ -319,7 +319,7 @@ button:hover {
 }
 
 .gallery-image.selected {
-    border: 3px solid #6a11cb !important;
+    border: 4px solid #000000 !important;
 }
 
 /* Modal styling */
