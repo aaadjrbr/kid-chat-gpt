@@ -452,14 +452,21 @@ async function sendMessage() {
     conversationContext.push({ role: "user", content: message });
 
     try {
-        displayTypingMessage("", 'typing'); // Cody starts thinking
-        let response;
+        displayTypingMessage("", 'typing'); // Show "Thinking..." message
+        document.getElementById('thinking').style.display = 'block'; // Show "Thinking..." status
+        userInput.disabled = true;
+        sendBtn.disabled = true;
 
-        response = await getChatResponse(); // Call text generation function
-        displayTypingMessage(response, 'bot'); // Display text response
+        setTimeout(async () => {
+            // After 1.5 seconds, display the bot's response
+            let response = await getChatResponse(); // Call text generation function
+            displayTypingMessage(response, 'bot'); // Display text response
 
-        removeTypingMessage(); // Cody is done thinking
-        await saveMessageToCurrentChat(response, 'bot');
+            removeTypingMessage(); // Hide "Thinking..." message and enable input again
+            await saveMessageToCurrentChat(response, 'bot');
+
+        }, 1500); // 1.5 second delay before showing the bot's message
+
     } catch (error) {
         console.error("Error sending message:", error);
         removeTypingMessage();
@@ -684,27 +691,69 @@ function displayMessage(text, sender) {
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
 }
 
+function formatMessageText(text) {
+    // Replace **text** with <b>text</b> for bold
+    let formattedText = text
+        .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')  // Bold
+        .replace(/```html([\s\S]*?)```/g, (match, code) => createCodeBlock(code, 'language-html'))  // HTML code block
+        .replace(/```([\s\S]*?)```/g, (match, code) => createCodeBlock(code))  // Generic code block
+        .replace(/`(.*?)`/g, '<code class="inline-code">$1</code>');  // Inline code
+
+    return formattedText;
+}
+
+function createCodeBlock(code, language = 'language-javascript') {
+    const encodedCode = Prism.highlight(code, Prism.languages[language.replace('language-', '')], language);
+    return `
+        <pre class="code-block ${language}"><code>${encodedCode}</code></pre>
+        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+    `;
+}
+
+window.copyCode = function(button) {
+    const codeBlock = button.previousElementSibling.querySelector('code');
+    const codeText = codeBlock.textContent;  // Get the raw code
+    navigator.clipboard.writeText(codeText).then(() => {
+        button.textContent = "Copied!";
+        setTimeout(() => {
+            button.textContent = "Copy";
+        }, 2000);
+    }).catch(err => {
+        console.error('Error copying text: ', err);
+        button.textContent = "Error";
+    });
+};
+
+// Responsible for displaying bot messages (bubble) is displayTypingMessage
 function displayTypingMessage(text, sender) {
-    let index = 0;
     const messageDiv = document.createElement('div');
     messageDiv.className = sender;
 
-    messagesContainer.appendChild(messageDiv);
-    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    if (sender === 'bot') {
+        const formattedText = formatMessageText(text);  // Format the bot message
+        messageDiv.innerHTML = '';  // Start empty and build the text
+        const messageContent = document.createElement('div');
+        messageContent.className = 'bot-message-content';  // Add class for extra spacing
+        messageContent.innerHTML = formattedText;  // Insert formatted text (uses innerHTML)
+        messageDiv.appendChild(messageContent);
 
-    // Show the "Thinking..." message and disable the input field
-    document.getElementById('thinking').style.display = 'block';
-    userInput.disabled = true;
-    sendBtn.disabled = true; // Disable send button
+        messagesContainer.appendChild(messageDiv);
 
-    const typingInterval = setInterval(() => {
-        if (index < text.length) {
-            messageDiv.textContent += text.charAt(index);
-            index++;
-        } else {
-            clearInterval(typingInterval);
-        }
-    }, 30); //30 fast -- 100 slow
+        // Add fade-in effect when the bot message is added
+        setTimeout(() => {
+            messageDiv.classList.add('fade-in'); // Optional if you want to trigger the animation dynamically
+        }, 100);  // Adding a slight delay to ensure smooth transition
+
+        // Disable the "Thinking..." message
+        document.getElementById('thinking').style.display = 'block';  
+        userInput.disabled = true;
+        sendBtn.disabled = true; 
+    } else {
+        messageDiv.innerHTML = text;
+        messagesContainer.appendChild(messageDiv);
+    }
+
+    messagesContainer.scrollTop = messagesContainer.scrollHeight; // Scroll to bottom
 }
 
 function removeTypingMessage() {
