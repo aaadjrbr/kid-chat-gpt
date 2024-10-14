@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Alfie AI. Chat safely! </title>
+    <link rel="stylesheet" href="styles/login.css">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <h1>Alfie AI<br/><span class="sub-title">Chat safely!</span></h1>
+    <h2>Login to start chating:</h2>
+    
+    <!-- Login Form -->
+    <form id="login-form">
+        <input type="email" id="email" placeholder="Parent Email" required>
+        <div class="password-container">
+            <input type="password" id="password" placeholder="Password" required>
+            <span class="toggle-password" id="toggle-password">👀</span>
+        </div>
+        <button type="submit">Login</button>
+        <p id="error-message" style="color: red; display: none;"></p>
+        <a href="#" id="forgot-password-link">Forgot Password?</a> <!-- Forgot Password Link -->
+    </form>
+
+    <!-- Password Reset Form, initially hidden -->
+    <form id="password-reset-form" style="display: none;">
+        <h2>Oops! Forgot my password</h2>
+        <input type="email" id="reset-email" placeholder="Enter your email" required>
+        <button type="submit">Reset Password</button>
+        <p id="reset-error-message" style="color: red; display: none;"></p>
+        <p id="reset-success-message" style="color: green; display: none;"></p>
+        <a href="#" id="i-remember">Nevermind</a>
+    </form>
+
+    <!-- Toggle to create a new profile -->
+    <div class="center-container">
+        <button id="toggle-create-account">Create New Account</button>
+    </div>
+
+    <!-- Create Account Form, initially hidden -->
+    <form id="create-account-form" style="display: none;">
+        <h2 style="color: white;">Create New Account</h2>
+        <input type="email" id="new-email" placeholder="Enter New Email" required>
+        <div class="password-container">
+            <input type="password" id="new-account-password" placeholder="Password" required>
+            <span class="toggle-password" id="toggle-new-account-password">👀</span>
+        </div>
+        <div class="password-container">
+            <input type="password" id="confirm-account-password" placeholder="Confirm Password" required>
+            <span class="toggle-password" id="toggle-confirm-account-password">👀</span>
+        </div>
+        <button type="submit">Create Account</button>
+        <p id="create-error-message" style="color: red; display: none;"></p>
+    </form>
+    <br/><br/>
+    <footer>
+        <p>Alfie AI. All Rights Reserved.</p>
+    </footer>
+    <br/><br/>
+    <script src="scripts/firebase-config.js" type="module"></script>
+    <script src="scripts/auth.js" type="module"></script>
+</body>
+</html>

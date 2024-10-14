@@ -91,6 +91,6 @@ document.querySelectorAll('.toggle-password').forEach(togglePassword => {
         const passwordField = togglePassword.previousElementSibling;
         const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
         passwordField.setAttribute('type', type);
-        togglePassword.textContent = type === 'password' ? '👁️' : '🙈';
+        togglePassword.textContent = type === 'password' ? '👀' : '🙈';
     });
 });

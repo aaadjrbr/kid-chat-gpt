@@ -1,0 +1,226 @@
+/* Import Google Font */
+@import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+/* main.css */
+body {
+    font-family: 'Roboto', sans-serif;
+    text-align: center;
+    background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+    margin: 0;
+    padding: 0;
+}
+
+input, button {
+    font-family: 'Roboto', sans-serif; 
+}
+
+h1 {
+    margin-top: 50px;
+    color: #6a11cb;
+    font-family: "Fredoka", sans-serif;
+    font-weight: 700;
+    font-size: 2.2em;
+}
+
+.sub-title {
+    font-weight: 400;
+    font-size: 0.7em !important;
+}
+
+h2 {
+    font-family: "Fredoka", sans-serif;
+    font-weight: 400;
+    color: #6a11cb;
+}
+
+/* Form Styles */
+form {
+    width: 300px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #d5eaf8;
+    border: 3px solid #6a11cb !important;
+    border-radius: 25px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 80%;
+    text-align: center;
+}
+
+input {
+    width: 90%;
+    padding: 12px 16px;
+    margin: 12px 0;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+input:focus {
+    border-color: #3498db;
+    box-shadow: 0 4px 8px rgba(52, 152, 219, 0.4);
+    background-color: #fff;
+    outline: none;
+}
+
+input:hover {
+    border-color: #aaa;
+    background-color: #fff;
+}
+
+a {
+    font-size: 0.9em;
+    color: rgb(0, 89, 255);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+    color: rgba(0, 89, 255, 0.781);
+}
+
+button {
+    background-image: linear-gradient(to right, #6a11cb, #2575fc);
+    color: white;
+    padding: 10px 20px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    font-size: 16px;
+    transition: opacity 0.5s ease;
+}
+
+button:hover {
+    background-image: linear-gradient(to right, #2575fc, #6a11cb);
+}
+
+/* Error Message Styles */
+#error-message, #create-error-message {
+    color: red;
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+/* Toggle Button for Create Account */
+.center-container {
+    margin-top: 20px;
+}
+
+#toggle-create-account {
+    background: rgb(247,150,192);
+    background: radial-gradient(circle, rgba(247,150,192,1) 0%, rgba(118,174,241,1) 100%);
+    width: auto;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin: 0 auto;
+}
+
+#toggle-create-account:hover {
+    background: radial-gradient(circle, rgb(243, 138, 184) 0%, rgb(103, 162, 235) 100%);
+    color: rgb(255, 255, 255);
+    transition: all 0.2s ease;
+}
+
+/* Create Account Form Styles */
+#create-account-form {
+    width: 300px;
+    margin: 20px auto;
+    padding: 20px;
+    background: rgb(247,150,192);
+    background: radial-gradient(circle, rgba(247,150,192,1) 0%, rgba(118,174,241,1) 100%);
+    border: 3px solid #ffffffbe !important;
+    border-radius: 25px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 80%;
+    text-align: center;
+}
+
+/* Responsive Styles */
+@media (max-width: 600px) {
+    form, #create-account-form {
+        width: 80%;
+    }
+
+    #dashboard-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    #calendar {
+        width: 100%;
+    }
+
+    #session-list {
+        width: 90%;
+    }
+}
+
+/* Additional Styles for Dashboard */
+#dashboard-container {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+}
+
+#calendar {
+    width: 60%;
+}
+
+#session-list {
+    width: 30%;
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+/* Password Container */
+.password-container {
+    position: relative;
+    width: 90%;
+    margin: 10px auto;
+}
+
+/* Password Field */
+.password-container input {
+    width: 90%;
+}
+
+/* Toggle Password Icon */
+.toggle-password {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 20px;
+}
+
+#error-message, #create-error-message, #reset-error-message, #reset-success-message {
+    margin-top: 10px;
+    font-size: 0.9em;
+}
+
+#reset-success-message {
+    color: green;
+}
+
+footer p {
+    color: #333;
+    font-size: 0.8em;
+}
