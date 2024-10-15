@@ -21,6 +21,7 @@ let isPremium = false; // Default, will be updated based on the user's profile.
 let isGold = false; // Check if user has gold status
 let tokenInterval = null; // To keep track of the token reset.
 let tokensDepletedTimestamp = null; // Timestamp for when tokens run out.
+let conversationContext = [];
 
 // Badge Element for Status
 const badgeContainer = document.createElement('div');
@@ -170,8 +171,6 @@ function updateBadge() {
         });
     }
 }
-
-let conversationContext = [];
 
 // Function to fetch kid data from Firestore
 async function fetchKidData() {
@@ -472,8 +471,9 @@ async function sendMessage() {
     displayMessage(message, 'user');
     userInput.value = '';
 
-    await saveMessageToCurrentChat(message, 'user');
+    // Save user message to session context
     conversationContext.push({ role: "user", content: message });
+    await saveMessageToCurrentChat(message, 'user');
 
     try {
         displayTypingMessage("", 'typing'); // Show "Thinking..." message
@@ -483,7 +483,10 @@ async function sendMessage() {
 
         setTimeout(async () => {
             // After 1.5 seconds, display the bot's response
-            let response = await getChatResponse(); // Call text generation function
+            let response = await getChatResponse(); // Call function to get the bot's response
+
+            // Save bot response to session context
+            conversationContext.push({ role: "assistant", content: response });
             displayTypingMessage(response, 'bot'); // Display text response
 
             removeTypingMessage(); // Hide "Thinking..." message and enable input again
@@ -928,9 +931,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function getChatResponse() {
     try {
+        // Pass the entire conversationContext to the ChatGPT function
         const response = await getChatResponseFunction({ prompt: conversationContext });
-        const botResponse = response.data;  // Firebase returns the function result here
-        conversationContext.push({ role: "assistant", content: botResponse });
+        const botResponse = response.data;  // Response from Firebase function
+
+        // Return the response so it can be displayed
         return botResponse;
     } catch (error) {
         console.error("Error getting chat response:", error);
