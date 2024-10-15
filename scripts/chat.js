@@ -782,15 +782,12 @@ function displayTypingMessage(text, sender) {
     messagesContainer.scrollTop = messagesContainer.scrollHeight; // Scroll to bottom
 }
 
-// Function to call Polly through your Lambda function
-const apiUrl = 'https://vzkzxcfw54.execute-api.us-east-2.amazonaws.com/prod';
-
 async function speakWithPolly(text) {
     try {
-        const response = await fetch(apiUrl, {
+        const response = await fetch('https://9mviptooh0.execute-api.us-east-2.amazonaws.com/prod/polly', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ text }),  // Send the text to convert
+            body: JSON.stringify({ text }),  // Send the text to be converted to speech
         });
 
         if (!response.ok) {
