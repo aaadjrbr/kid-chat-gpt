@@ -783,22 +783,28 @@ function displayTypingMessage(text, sender) {
 }
 
 // Function to call Polly through your Lambda function
+const apiUrl = 'https://vzkzxcfw54.execute-api.us-east-2.amazonaws.com/prod';
+
 async function speakWithPolly(text) {
     try {
-        const response = await fetch('https://vzkzxcfw54.execute-api.us-east-2.amazonaws.com', {
+        const response = await fetch(apiUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ text })  // Send text to be converted
+            body: JSON.stringify({ text }),  // Send the text to convert
         });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
 
         const data = await response.json();
         const audioStream = data.audioStream;
 
-        // Create an audio element and play the audio
+        // Play the Polly-generated audio
         const audio = new Audio('data:audio/mp3;base64,' + audioStream);
         audio.play();
     } catch (error) {
-        console.error('Error calling Polly Lambda function:', error);
+        console.error('Error calling Polly API:', error);
     }
 }
 
