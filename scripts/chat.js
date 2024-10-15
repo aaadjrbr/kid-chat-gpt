@@ -740,7 +740,6 @@ window.copyCode = function(button) {
 };
 
 // Responsible for displaying bot messages (bubble) is displayTypingMessage
-// Function to display messages and conditionally add the speaker button
 function displayTypingMessage(text, sender) {
     const messageDiv = document.createElement('div');
     messageDiv.className = sender;
@@ -752,57 +751,72 @@ function displayTypingMessage(text, sender) {
         messageContent.className = 'bot-message-content';  // Add class for extra spacing
         messageContent.innerHTML = formattedText;  // Insert formatted text (uses innerHTML)
 
-        // Conditionally add the speaker button for Premium/Gold users
-        if (isPremium || isGold) {  // Check if user is Premium or Gold
-            const speakerButton = document.createElement('button');
-            speakerButton.className = 'speaker-btn material-icons';  // Add Material Icons class
-            speakerButton.innerHTML = 'volume_up';  // Use 'volume_up' icon for the speaker
+        // Create speaker button with Material Icon
+        const speakerButton = document.createElement('button');
+        speakerButton.className = 'speaker-btn material-icons';  // Add Material Icons class
+        speakerButton.innerHTML = 'volume_up';  // Use 'volume_up' icon for the speaker
+        speakerButton.onclick = () => speakText(text);  // Trigger text-to-speech
 
-            // Attach the click event to trigger Polly voice generation only when clicked
-            speakerButton.onclick = () => speakWithPolly(text);
+        // Create arrow button to toggle the voice selection dropdown
+        const arrowButton = document.createElement('button');
+        arrowButton.className = 'arrow-btn material-icons';  // Add Material Icons class
+        arrowButton.innerHTML = 'arrow_drop_down';  // Use 'arrow_drop_down' icon for the dropdown arrow
 
-            // Append the speaker button to the message content
-            messageDiv.appendChild(speakerButton);
+        // Create voice selection dropdown (initially hidden)
+        const voiceSelect = document.createElement('select');
+        voiceSelect.className = 'voice-select';
+        voiceSelect.style.display = 'none';  // Initially hide the dropdown
+
+        // Function to populate available voices in the dropdown
+        function populateVoiceList() {
+            const synth = window.speechSynthesis;
+            const voices = synth.getVoices();
+            voiceSelect.innerHTML = ''; // Clear any previous options
+
+            voices.forEach((voice, index) => {
+                const option = document.createElement('option');
+                option.textContent = `${voice.name} (${voice.lang})`;
+                option.value = index;
+                option.dataset.lang = voice.lang;
+                option.dataset.name = voice.name;
+                voiceSelect.appendChild(option);
+            });
         }
 
-        // Append the message content to the message div
+        // Show/hide the voice dropdown when the arrow button is clicked
+        arrowButton.onclick = () => {
+            voiceSelect.style.display = voiceSelect.style.display === 'none' ? 'block' : 'none';
+        };
+
+        // Populate voices on page load and when voices change
+        if (speechSynthesis.onvoiceschanged !== undefined) {
+            speechSynthesis.onvoiceschanged = populateVoiceList;
+        }
+        populateVoiceList(); // Call to populate voices when the page loads
+
+        // Append speaker button, arrow button, and voice dropdown to the message div
         messageDiv.appendChild(messageContent);
+        messageDiv.appendChild(speakerButton);
+        messageDiv.appendChild(arrowButton);
+        messageDiv.appendChild(voiceSelect);
         messagesContainer.appendChild(messageDiv);
 
         // Add fade-in effect when the bot message is added
         setTimeout(() => {
             messageDiv.classList.add('fade-in'); // Optional fade-in animation
         }, 100);
+
+        // Show the "Thinking..." message
+        document.getElementById('thinking').style.display = 'block';
+        userInput.disabled = true;
+        sendBtn.disabled = true;
+
     } else {
-        // User messages or other sender messages
         messageDiv.innerHTML = text;
         messagesContainer.appendChild(messageDiv);
     }
 
     messagesContainer.scrollTop = messagesContainer.scrollHeight; // Scroll to bottom
-}
-
-async function speakWithPolly(text) {
-    try {
-        const response = await fetch('https://9mviptooh0.execute-api.us-east-2.amazonaws.com/prod/polly', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ text }),  // Send the text to be converted to speech
-        });
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data = await response.json();
-        const audioStream = data.audioStream;
-
-        // Play the Polly-generated audio
-        const audio = new Audio('data:audio/mp3;base64,' + audioStream);
-        audio.play();
-    } catch (error) {
-        console.error('Error calling Polly API:', error);
-    }
 }
 
 function removeTypingMessage() {
@@ -815,6 +829,94 @@ function removeTypingMessage() {
     userInput.disabled = false;
     sendBtn.disabled = false; // Enable send button
 }
+
+// Create voice selection dropdown (initially hidden)
+document.addEventListener('DOMContentLoaded', function () {
+    const voiceSelect = document.createElement('select');
+    voiceSelect.className = 'voice-select';
+    voiceSelect.style.display = 'none';  // Initially hidden
+    document.body.appendChild(voiceSelect);  // Append it to the DOM (or to the correct parent element)
+
+    populateVoiceList();  // Call the function after the element has been added
+});
+
+if (speechSynthesis.onvoiceschanged !== undefined) {
+    speechSynthesis.onvoiceschanged = populateVoiceList;
+}
+
+function populateVoiceList() {
+    const synth = window.speechSynthesis;
+    const voices = synth.getVoices();
+    const voiceSelect = document.querySelector('.voice-select'); // Select the voice dropdown
+
+    if (voiceSelect) {
+        voiceSelect.innerHTML = ''; // Clear any previous options
+        voices.forEach((voice, index) => {
+            const option = document.createElement('option');
+            option.textContent = `${voice.name} (${voice.lang})`;
+            option.value = index;
+            option.dataset.lang = voice.lang;
+            option.dataset.name = voice.name;
+            voiceSelect.appendChild(option);
+        });
+    } else {
+        console.error('Voice select element not found in the DOM');
+    }
+}
+
+// Function to remove emojis from text
+function removeEmojis(text) {
+    return text.replace(/([\u2700-\u27BF]|[\uE000-\uF8FF]|[\uFE00-\uFE0F]|\uD83C[\uD000-\uDFFF]|\uD83D[\uD000-\uDFFF]|\uD83E[\uD000-\uDFFF])/g, '');
+}
+
+let isSpeaking = false; // Variable to track speaking state
+
+// Modified speakText function to use the selected voice and remove emojis
+function speakText(text) {
+    const synth = window.speechSynthesis;
+
+    if (isSpeaking) {
+        return; // Exit if already speaking
+    }
+
+    const utterance = new SpeechSynthesisUtterance(removeEmojis(text)); // Remove emojis from the spoken text
+    const voices = synth.getVoices();
+
+    // Force the first voice to always be an English US voice (Samantha for iOS, or any en-US voice)
+    let selectedVoice = voices.find(voice => voice.name.includes("Samantha") || voice.lang === 'en-US');
+
+    // Fallback to any available English voice if no Samantha or en-US voice is found
+    if (!selectedVoice) {
+        selectedVoice = voices.find(voice => voice.lang.startsWith('en')) || voices[0]; 
+    }
+
+    // Check if the user has selected a voice from the dropdown and make sure it's English
+    const voiceSelect = document.querySelector('.voice-select');
+    if (voiceSelect && voiceSelect.value) {
+        const userSelectedVoice = voices[voiceSelect.value];
+        if (userSelectedVoice && userSelectedVoice.lang.startsWith('en')) {
+            selectedVoice = userSelectedVoice; // Use the selected voice if it's English
+        }
+    }
+
+    // If no English voice is found, log an error and prevent speaking
+    if (!selectedVoice) {
+        console.error('No English voice available');
+        return;
+    }
+
+    utterance.voice = selectedVoice; // Assign the selected voice
+    isSpeaking = true; // Set the flag to indicate speaking has started
+
+    utterance.onend = () => {
+        isSpeaking = false; // Reset the flag once speech ends
+    };
+
+    synth.speak(utterance);
+}
+
+// Call populateVoiceList when the page loads to ensure the voice list is available
+window.onload = populateVoiceList;
 
 async function getChatResponse() {
     try {
