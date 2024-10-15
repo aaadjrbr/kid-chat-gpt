@@ -26,6 +26,27 @@ h3 {
     text-align: center;
 }
 
+.bot-name {
+    font-family: "Fredoka", sans-serif;
+    font-weight: 600;
+    background: #fff;
+    padding: 1px;
+    border-radius: 8px;
+    margin-right: 3px;
+    color: #6a11cb;
+}
+
+li.user-message span {
+    font-weight: bold;
+    background: #ffffffde;
+    padding: 3px;
+    border-radius: 8px;
+    margin-right: 6px;
+    color: #e24545;
+    font-family: "Fredoka", sans-serif;
+    font-weight: 600;
+}
+
 /* Calendar styling */
 #month-picker {
     display: block;

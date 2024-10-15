@@ -1,7 +1,7 @@
 import { db } from './firebase-config.js';
 import { collection, getDocs, query, where, orderBy } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
 
-const botName = "Friendly Robot";
+const botName = "🐶 Alfie";
 let kidName = "User";
 
 // Fetch `kidName` from URL params or Firestore (if applicable)
@@ -82,10 +82,10 @@ async function loadChatMessages(parentId, kidId, chatId, year, month, day) {
     const historyHeader = document.createElement('h3');
     historyHeader.textContent = `💬 Chat messages for ${month}/${day}/${year}`;
     historyContainer.appendChild(historyHeader);
-
+    
     const messagesContainer = document.createElement('div');
     messagesContainer.classList.add('messages-container');
-
+    
     const messagesList = document.createElement('ul');
     if (messagesSnapshot.empty) {
         historyContainer.innerHTML += '<p>❌ No messages found for this chat session.</p>';
@@ -93,10 +93,19 @@ async function loadChatMessages(parentId, kidId, chatId, year, month, day) {
         messagesSnapshot.forEach(doc => {
             const msg = doc.data();
             const senderName = msg.sender === 'bot' ? botName : kidName; // Use kidName instead of "User"
-
+    
             const msgItem = document.createElement('li');
             msgItem.classList.add(msg.sender === 'bot' ? 'bot-message' : 'user-message');
-
+    
+            // Create a span for the sender name
+            const senderSpan = document.createElement('span');
+            senderSpan.textContent = `${senderName}: `;
+    
+            // Add a specific class to the bot's name
+            if (msg.sender === 'bot') {
+                senderSpan.classList.add('bot-name'); // Add class for the bot's name
+            }
+    
             // Check if the message contains a URL that looks like an image
             if (msg.text.startsWith("http") && (msg.text.includes(".png") || msg.text.includes(".jpg") || msg.text.includes(".jpeg"))) {
                 const imageElement = document.createElement('img');
@@ -106,17 +115,18 @@ async function loadChatMessages(parentId, kidId, chatId, year, month, day) {
                 imageElement.style.borderRadius = "8px";
                 msgItem.appendChild(imageElement);
             } else {
-                // Display text message with senderName
-                msgItem.textContent = `${senderName}: ${msg.text}`;
+                // Append sender name and text message separately
+                msgItem.appendChild(senderSpan);
+                msgItem.appendChild(document.createTextNode(msg.text));
             }
-
+    
             messagesList.appendChild(msgItem);
         });
         messagesContainer.appendChild(messagesList);
     }
-
+    
     historyContainer.appendChild(messagesContainer);
-}
+}    
 
 // Function to render the chat history from cache or query
 function renderChatHistory(chatSessions, parentId, kidId, year, month, day) {
