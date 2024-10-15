@@ -64,14 +64,12 @@
     </div>
     <br/><br/>
 <div class="info-bottom">
-    <a href="#"><p>Parents</p></a> | <a href="#"><p>About us</p></a>
+    <a href="#"><p>Parents</p></a> | <a href="./forgot-pin.html"><p>Forgot your PIN?</p></a>
 </div>
-    <br/>
-
 
     <script src="scripts/firebase-config.js" type="module"></script>
     <script type="module">
-        import { loadProfiles, addProfile, viewChatHistory, startNewChat, setupImageGallery, deleteProfileHandler } from './scripts/profiles.js';
+        import { loadProfiles, addProfile, viewChatHistory, startNewChat, setupImageGallery, deleteProfileHandler, verifyUserPin, toggleOptionsWithPin } from './scripts/profiles.js';
         import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js";
     
         window.viewChatHistory = viewChatHistory;
@@ -82,24 +80,49 @@
             setupImageGallery('image-gallery'); // Set up image gallery for adding a profile
             setupImageGallery('edit-image-gallery'); // Set up image gallery for editing a profile
     
-            // Toggle Add Profile Form
-            const toggleButton = document.getElementById('toggle-add-profile');
-            const addProfileForm = document.getElementById('add-profile-form');
-            toggleButton.addEventListener('click', () => {
+        // Toggle Add Profile Form
+        const toggleButton = document.getElementById('toggle-add-profile');
+        const addProfileForm = document.getElementById('add-profile-form');
+                    
+        let isPinVerified = false; // Flag to track if the PIN has been verified
+                    
+        toggleButton.addEventListener('click', async () => {
                 if (addProfileForm.classList.contains('fade-in')) {
+                    // Hide the form and reset the PIN verification status
+                    toggleForm();
+                    isPinVerified = false; // Reset the flag, so PIN is asked next time
+                } else {
+                    // If PIN has already been verified, toggle form without asking again
+                    if (isPinVerified) {
+                        toggleForm();
+                    } else {
+                        // Ask for the PIN if it hasn't been verified
+                        await verifyUserPin(() => {
+                            isPinVerified = true; // Set the flag after successful PIN verification
+                            toggleForm();
+                        });
+                    }
+                }
+        });
+            
+            // Function to handle the form toggle (fade-in/fade-out)
+            function toggleForm() {
+                if (addProfileForm.classList.contains('fade-in')) {
+                    // Hide the form (fade-out)
                     addProfileForm.classList.remove('fade-in');
                     addProfileForm.classList.add('fade-out');
                     setTimeout(() => {
                         addProfileForm.style.display = 'none';
-                    }, 500); // Match this with the CSS transition time
+                    }, 500); // Adjust this timeout based on your CSS transition
                 } else {
+                    // Show the form (fade-in)
                     addProfileForm.style.display = 'block';
                     setTimeout(() => {
                         addProfileForm.classList.remove('fade-out');
                         addProfileForm.classList.add('fade-in');
-                    }, 10); // A tiny delay ensures the CSS transition is triggered
+                    }, 10); // Tiny delay to trigger CSS transition
                 }
-            });
+        }
     
             // Logout button functionality
             const logoutButton = document.getElementById('logout-button');
@@ -122,7 +145,10 @@
             const kidName = document.getElementById('kid-name').value;
             const kidAge = parseInt(document.getElementById('kid-age').value);
             const selectedImage = document.querySelector('#image-gallery .selected')?.dataset.image || 'default.webp';
+            
+            // Call the correct function
             await addProfile(kidName, kidAge, selectedImage);
+            
             document.getElementById('add-profile-form').reset();
             loadProfiles();
         });

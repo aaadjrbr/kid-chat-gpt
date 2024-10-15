@@ -1,17 +1,162 @@
 // profiles.js
 import { db } from './firebase-config.js';
-import { collection, addDoc, getDocs, updateDoc, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
+import { collection, addDoc, getDocs, updateDoc, deleteDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js";
 
 const profilesContainer = document.getElementById('profiles-container');
 const auth = getAuth();
 let currentKidId = null; // Used to track which kid is being edited
 
+// Function to check if user has a PIN in the "userpin" collection and prompt for creation if not
+async function checkUserPin() {
+    const auth = getAuth();
+    
+    onAuthStateChanged(auth, async (user) => {
+        if (user) {
+            const userPinRef = doc(db, 'userpin', user.uid);
+            const userPinDoc = await getDoc(userPinRef);
+            
+            // If the user's pin document doesn't exist, show the popup for creating a PIN
+            if (!userPinDoc.exists()) {
+                console.log("No PIN found in userpin collection. Showing popup.");
+                showPinCreationPopup(user.uid);
+            } else {
+                console.log("User already has a PIN in the userpin collection.");
+            }
+        } else {
+            console.error("User not authenticated.");
+        }
+    });
+}
+
+// Function to show the PIN creation popup
+function showPinCreationPopup(userId) {
+    // Create the popup container
+    const popupContainer = document.createElement('div');
+    popupContainer.id = 'pin-popup';
+    popupContainer.style.position = 'fixed';
+    popupContainer.style.top = '50%';
+    popupContainer.style.left = '50%';
+    popupContainer.style.transform = 'translate(-50%, -50%)';
+    popupContainer.style.padding = '30px';
+    popupContainer.style.backgroundColor = '#f4f4f9';
+    popupContainer.style.borderRadius = '15px';
+    popupContainer.style.width = '350px';
+    popupContainer.style.boxShadow = '0px 10px 20px rgba(0, 0, 0, 0.2)';
+    popupContainer.style.zIndex = '1000';
+    popupContainer.style.textAlign = 'center';
+
+    // Add title and inputs
+    popupContainer.innerHTML = `
+        <h3>Create Your Personal PIN</h3>
+        <label for="user-pin">Enter a 4-digit PIN:</label><br>
+        <input type="number" id="user-pin" maxlength="4" placeholder="4-digit PIN" required><br><br>
+        
+        <label for="bestfriend">Who was your best friend during childhood?</label><br>
+        <input type="text" id="bestfriend" placeholder="Best friend" required><br><br>
+        <p>Remember: To create, save and edit accounts you need your PIN.</p>
+        <button id="save-pin-btn">Save</button>
+    `;
+
+    // Append popup to body
+    document.body.appendChild(popupContainer);
+
+    // Handle saving the PIN and best friend answer
+    document.getElementById('save-pin-btn').addEventListener('click', async () => {
+        const pin = document.getElementById('user-pin').value;
+        const bestFriend = document.getElementById('bestfriend').value;
+
+        // Validate that both fields are filled and the PIN is 4 digits
+        if (pin && bestFriend && pin.length === 4) {
+            try {
+                // Save the PIN and bestfriend to the "userpin" collection in Firestore
+                const userPinRef = doc(db, 'userpin', userId);
+                await setDoc(userPinRef, {
+                    userpin: pin,
+                    bestfriend: bestFriend
+                });
+
+                // Remove the popup after saving
+                document.body.removeChild(popupContainer);
+                console.log('PIN and best friend saved successfully in the userpin collection.');
+            } catch (error) {
+                console.error('Error saving PIN and best friend:', error);
+            }
+        } else {
+            alert('Please enter a valid 4-digit PIN and answer the question.');
+        }
+    });
+}
+
+// Call checkUserPin after authentication to run the check
+checkUserPin();
+
+// Function to prompt for the PIN and verify it before allowing the action
+export async function verifyUserPin(actionCallback) {
+    const auth = getAuth();
+    const user = auth.currentUser;
+
+    if (!user) {
+        console.error("User not authenticated.");
+        return;
+    }
+
+    let retry = true; // Allow user to retry entering the PIN
+    while (retry) {
+        // Show a prompt for the user to enter their PIN
+        const enteredPin = prompt("Please enter your 4-digit PIN (or press Cancel to exit):");
+
+        if (enteredPin === null) {
+            // User pressed Cancel
+            alert("PIN verification canceled.");
+            console.log("User canceled the PIN entry.");
+            return;
+        }
+
+        if (enteredPin.length !== 4 || isNaN(enteredPin)) {
+            alert("Invalid input. Please enter a valid 4-digit PIN.");
+            const tryAgain = confirm("Do you want to try again?");
+            if (!tryAgain) {
+                retry = false;
+                return;
+            }
+            continue;
+        }
+
+        // Fetch the user's PIN from Firestore
+        const userPinRef = doc(db, 'userpin', user.uid);
+        const userPinDoc = await getDoc(userPinRef);
+
+        if (userPinDoc.exists()) {
+            const userData = userPinDoc.data();
+
+            // Check if the entered PIN matches the stored one
+            if (enteredPin === userData.userpin) {
+                console.log("PIN verified successfully.");
+                alert("PIN verified successfully.");
+                actionCallback();
+                return;
+            } else {
+                alert("Incorrect PIN. Please try again.");
+                const tryAgain = confirm("Do you want to try again?");
+                if (!tryAgain) {
+                    retry = false;
+                    return;
+                }
+            }
+        } else {
+            console.error("No PIN found for this user.");
+            alert("No PIN found. Please create one.");
+            return;
+        }
+    }
+}
+
 // Function to load profiles
 export async function loadProfiles() {
     try {
         console.log("Loading profiles...");
-        
+
         // Display loading message
         profilesContainer.innerHTML = '<p class="loading-txt">⏳ Loading...</p>';
 
@@ -32,14 +177,14 @@ export async function loadProfiles() {
                 querySnapshot.forEach(doc => {
                     const kid = doc.data();
                     const kidId = doc.id;
-                
+
                     const profileDiv = document.createElement('div');
                     profileDiv.classList.add('profile-item');
                     profileDiv.innerHTML = `
                     <img src="images/${kid.image || 'default.webp'}" alt="${kid.name}" class="profile-image">
                     <span class="kid-name-circle">${kid.name}</span>
-                    `;                
-                    
+                    `;
+
                     const optionsContainer = document.createElement('div'); // Create options container here
                     optionsContainer.classList.add('profile-options');
                     optionsContainer.style.display = 'none'; // Hide options by default
@@ -47,12 +192,13 @@ export async function loadProfiles() {
                         <button onclick="viewChatHistory('${kidId}', '${kid.name}', event)">📝 Chat History</button>
                         <button onclick="startNewChat('${kidId}', '${kid.name}', event)">✨ New Chat</button>
                     `;
-                    profileDiv.appendChild(optionsContainer);                    
-                
+                    profileDiv.appendChild(optionsContainer);
+
+                    // Add click event listener on the profileDiv to toggle the options
                     profileDiv.addEventListener('click', () => {
-                        loadChatOptions(kidId, kid.name, profileDiv, editButton); // Pass the correct profileDiv and editButton
+                        toggleOptionsWithPin(optionsContainer, profileDiv.querySelector('.edit-button'), profileDiv);
                     });
-                
+
                     const editButton = document.createElement('button');
                     editButton.textContent = "•••";
                     editButton.classList.add('edit-button');
@@ -61,9 +207,9 @@ export async function loadProfiles() {
                         openEditModal(kidId, kid);
                     });
                     profileDiv.appendChild(editButton);
-                
+
                     profilesContainer.appendChild(profileDiv);
-                });                
+                });
             } else {
                 window.location.href = 'index.html';
             }
@@ -87,23 +233,55 @@ export async function addProfile(name, age, image) {
         const kidsRef = collection(db, `parents/${parentId}/kids`);
         await addDoc(kidsRef, { name: name, age: age, image: image || 'default.png' });
         console.log(`Profile added: ${name}, Age: ${age}, Image: ${image}`);
+
+        // Display success message
+        displaySuccessMessage("Profile added successfully!");
+
     } catch (error) {
         console.error("Error adding profile:", error);
     }
 }
 
-// Function to delete a profile
-export async function deleteProfile(kidId) {
-    try {
+// Function to display success message in the UI
+function displaySuccessMessage(message) {
+    const messageDiv = document.createElement('div');
+    messageDiv.textContent = message;
+    messageDiv.className = 'success-message'; // Add a class for styling if needed
+    document.body.appendChild(messageDiv);
+
+    // Optionally, remove the message after a few seconds
+    setTimeout(() => {
+        messageDiv.remove();
+    }, 3000); // Adjust the time (3 seconds) as needed
+}
+
+// Function to delete a profile with PIN verification
+export async function deleteProfileWithPin(kidId) {
+    verifyUserPin(async () => {
         const user = auth.currentUser;
-        if (!user) return;
         const parentId = user.uid;
         const kidRef = doc(db, `parents/${parentId}/kids/${kidId}`);
         await deleteDoc(kidRef);
         console.log(`Profile deleted: ${kidId}`);
-    } catch (error) {
-        console.error("Error deleting profile:", error);
+
+        // Close the edit modal after deletion
+        document.getElementById('edit-modal').style.display = 'none';
+
+        loadProfiles(); // Refresh the profiles list
+    });
+}
+
+// Modify your delete profile handler to use the PIN check and close the modal after deletion
+async function deleteProfileHandler() {
+    if (!currentKidId) {
+        console.error("No profile selected for deletion.");
+        return;
     }
+
+    const confirmDeletion = confirm("Are you sure you want to delete this profile?");
+    if (!confirmDeletion) return;
+
+    await deleteProfileWithPin(currentKidId); // Deletes the profile and closes the modal in `deleteProfileWithPin`
 }
 
 // Function to open the edit modal
@@ -116,19 +294,25 @@ function openEditModal(kidId, kid) {
     document.getElementById('edit-modal').style.display = 'block';
 }
 
-// Function to save changes
+async function saveProfileWithPin(kidId, newName, newAge, newImage) {
+    verifyUserPin(async () => {
+        await editProfile(kidId, newName, newAge, newImage);
+        console.log("Profile saved successfully.");
+        loadProfiles();
+    });
+}
+
+// Modify your save profile event listener to use the PIN check
 document.getElementById('save-changes-button').addEventListener('click', async () => {
     const newName = document.getElementById('edit-kid-name').value;
-    const newAge = document.getElementById('edit-kid-age').value; // Add age input here
+    const newAge = document.getElementById('edit-kid-age').value;
     const newImage = document.querySelector('#edit-image-gallery .selected')?.dataset.image || 'default.png';
-    
-    // Ensure that all fields are present before updating
+
     if (newName && newAge && newImage) {
-        await editProfile(currentKidId, newName, newAge, newImage); // Pass all parameters correctly
+        saveProfileWithPin(currentKidId, newName, newAge, newImage);
         document.getElementById('edit-modal').style.display = 'none';
-        loadProfiles();
     } else {
-        console.error('Missing required fields for profile update.');
+        console.error("Missing required fields for profile update.");
     }
 });
 
@@ -141,30 +325,6 @@ function setupDeleteButton() {
 
     // Add the event listener only once
     deleteProfileButton.addEventListener('click', deleteProfileHandler);
-}
-
-// Function to handle deleting a profile
-async function deleteProfileHandler() {
-    if (!currentKidId) {
-        console.error("No profile selected for deletion.");
-        return; // Exit the function if there's no current profile selected
-    }
-
-    // Confirm deletion
-    const confirmDeletion = confirm('Are you sure you want to delete this profile?');
-    if (!confirmDeletion) {
-        return; // Exit the function if the user cancels
-    }
-
-    try {
-        // Perform the deletion
-        await deleteProfile(currentKidId);
-        currentKidId = null; // Reset currentKidId after deletion
-        document.getElementById('edit-modal').style.display = 'none'; // Close the modal
-        loadProfiles(); // Reload the profiles
-    } catch (error) {
-        console.error("Error during profile deletion:", error);
-    }
 }
 
 // Call setupDeleteButton once when the page is loaded or whenever needed
@@ -200,44 +360,50 @@ export function loadChatOptions(kidId, kidName, profileDiv, editButton) {
         console.error('Options container not found');
         return;
     }
+}
 
 // Toggle visibility with fade-in/fade-out effect
-if (optionsContainer.classList.contains('show')) {
-    // Fade out options
-    optionsContainer.classList.remove('show');
-    setTimeout(() => {
-        optionsContainer.style.display = 'none';
-    }, 5); // Delay for the fade-out effect to complete
+export async function toggleOptionsWithPin(optionsContainer, editButton, profileDiv) {
+    const toggleAction = async () => {
+        if (optionsContainer.classList.contains('show')) {
+            // Fade out options
+            optionsContainer.classList.remove('show');
+            setTimeout(() => {
+                optionsContainer.style.display = 'none';
+            }, 5); // Delay for the fade-out effect to complete
 
-    // Fade in edit button
-    editButton.classList.remove('hide');
-    setTimeout(() => {
-        editButton.style.display = 'inline-block';
-    }, 5); // Delay for the fade-in effect
+            // Fade in edit button
+            editButton.classList.remove('hide');
+            setTimeout(() => {
+                editButton.style.display = 'inline-block';
+            }, 5); // Delay for the fade-in effect
 
-    // Fade in profile image and name
-    profileDiv.querySelector('.profile-image').classList.remove('hide');
-    profileDiv.querySelector('.kid-name-circle').classList.remove('hide');
-} else {
-    // Display the options with fade-in effect
-    optionsContainer.style.display = 'block';
-    setTimeout(() => {
-        optionsContainer.classList.add('show');
-    }, 5); // Slight delay to trigger the fade-in
+            // Fade in profile image and name
+            profileDiv.querySelector('.profile-image').classList.remove('hide');
+            profileDiv.querySelector('.kid-name-circle').classList.remove('hide');
+        } else {
+            // Display the options with fade-in effect
+            optionsContainer.style.display = 'block';
+            setTimeout(() => {
+                optionsContainer.classList.add('show');
+            }, 5); // Slight delay to trigger the fade-in
 
-    // Fade out edit button
-    editButton.classList.add('hide');
-    setTimeout(() => {
-        editButton.style.display = 'none';
-    }, 5); // Delay for the fade-out effect to complete
+            // Fade out edit button
+            editButton.classList.add('hide');
+            setTimeout(() => {
+                editButton.style.display = 'none';
+            }, 5); // Delay for the fade-out effect to complete
 
-    // Fade out profile image and name
-    profileDiv.querySelector('.profile-image').classList.add('hide');
-    profileDiv.querySelector('.kid-name-circle').classList.add('hide');
+            // Fade out profile image and name
+            profileDiv.querySelector('.profile-image').classList.add('hide');
+            profileDiv.querySelector('.kid-name-circle').classList.add('hide');
+        }
+    };
+
+    // Execute the toggle action
+    await toggleAction();
 }
 
-
-}
 
 // Function to navigate to the chat page
 export function startNewChat(kidId, kidName, event) {

@@ -356,6 +356,19 @@ button:hover {
     color: #ff0000;
 }
 
+.success-message {
+    background-color: #6ad834;
+    border: 4px solid #fff;
+    color: #000000;
+    padding: 10px;
+    font-weight: 700;
+    position: fixed;
+    bottom: 400px;
+    right: 80px;
+    z-index: 1000;
+    border-radius: 15px;
+}
+
 .logout-container {
     text-align: right;
     margin-top: 20px; /* Add some space above the button */
@@ -397,4 +410,92 @@ button:hover {
 
 .info-bottom a:hover p {
     color: #007bff; /* Change color on hover */
+}
+
+#pin-popup {
+    position: fixed;
+    color: #6a11cb;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 30px;
+    width: 70% !important;
+    max-width: 90%;
+    z-index: 1000;
+    text-align: center;
+    background-color: #d5eaf8;
+    border: 3px solid #6a11cb !important;
+    border-radius: 25px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+#pin-popup h3 {
+    color: #6a11cb;
+    font-size: 1.5em;
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+#pin-popup label {
+    display: block;
+    font-size: 1em;
+    margin-bottom: 5px;
+    color: #6a11cb;
+    font-weight: 600;
+    text-align: center
+}
+
+#pin-popup input[type="number"],
+#pin-popup input[type="text"] {
+    width: 80%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    border: 1px solid #d0d0d0;
+    background-color: #fff; /* White input fields */
+    font-size: 1.1em;
+    box-shadow: inset 0px 3px 6px rgba(0, 0, 0, 0.05); /* Subtle inset shadow */
+    outline: none;
+    transition: border 0.3s ease;
+}
+
+#pin-popup input[type="number"]:focus,
+#pin-popup input[type="text"]:focus {
+    border-color: #0057d9; /* Blue highlight on focus */
+}
+
+#pin-popup button {
+    background-image: linear-gradient(to right, #6a11cb, #2575fc);
+    color: #fff;
+    padding: 12px 20px;
+    border-radius: 8px;
+    border: none;
+    font-size: 1.2em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Soft shadow */
+}
+
+#pin-popup button:hover {
+    background-image: linear-gradient(to right, #2575fc, #6a11cb);
+}
+
+#pin-popup button:active {
+    background-image: linear-gradient(to right, #2574fcd0, #6b11cbc9);
+}
+
+@media (max-width: 600px) {
+    #pin-popup {
+        width: 75%;
+        padding: 20px;
+    }
+
+    #pin-popup h3 {
+        font-size: 1.3em;
+    }
+
+    #pin-popup button {
+        font-size: 1em;
+    }
 }
