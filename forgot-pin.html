@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forgot My PIN</title>
+    <link rel="stylesheet" href="styles/forgot-pin.css">
+</head>
+<body>
+    <div class="forgot-pin-container">
+        <h2>Reset Your PIN</h2>
+        <h3><a href="./profiles.html">Go back</a></h3>
+
+        <form id="forgot-pin-form">
+            <label for="new-pin">Enter New 4-Digit PIN:</label><br>
+            <input type="number" id="new-pin" maxlength="4" placeholder="New PIN" required><br><br>
+
+            <label for="new-pin-confirm">Confirm New 4-Digit PIN:</label><br>
+            <input type="number" id="new-pin-confirm" maxlength="4" placeholder="Confirm New PIN" required><br><br>
+
+            <label for="security-answer">Who was your best friend during childhood?</label><br>
+            <input type="text" id="security-answer" placeholder="Best friend" required><br><br>
+
+            <button type="submit">Reset PIN</button>
+        </form>
+
+        <p id="status-message" class="status-message"></p>
+    </div>
+
+    <script src="scripts/firebase-config.js" type="module"></script>
+    <script src="scripts/forgot-pin.js" type="module"></script>
+</body>
+</html>

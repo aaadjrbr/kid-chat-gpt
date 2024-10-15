@@ -1,0 +1,101 @@
+/* General body styling */
+body {
+    font-family: 'Open Sans', sans-serif;
+    background-color: #f4f4f9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+/* Container for the form */
+.forgot-pin-container {
+    background-color: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    padding: 30px;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    border: 1px solid #e0e0e0;
+}
+
+/* Title styling */
+.forgot-pin-container h2 {
+    font-size: 1.8em;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* Label styling */
+.forgot-pin-container label {
+    font-size: 1em;
+    color: #555;
+    text-align: left;
+    display: block;
+    margin-bottom: 5px;
+}
+
+/* Input field styling */
+.forgot-pin-container input[type="number"],
+.forgot-pin-container input[type="text"] {
+    width: 80%;
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 1px solid #d0d0d0;
+    border-radius: 8px;
+    font-size: 1em;
+    background-color: #fdfdfd;
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05);
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+/* Focused input field border effect */
+.forgot-pin-container input[type="number"]:focus,
+.forgot-pin-container input[type="text"]:focus {
+    border-color: #0057d9;
+}
+
+/* Button styling */
+.forgot-pin-container button {
+    background-color: #0057d9;
+    color: white;
+    padding: 12px 20px;
+    font-size: 1.2em;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Hover effect for the button */
+.forgot-pin-container button:hover {
+    background-color: #0043a5;
+}
+
+/* Status message styling */
+.status-message {
+    font-size: 1em;
+    margin-top: 10px;
+    color: red; /* Default to red for error messages */
+}
+
+/* Adjustments for mobile */
+@media (max-width: 600px) {
+    .forgot-pin-container {
+        width: 70%;
+
+    }
+
+    .forgot-pin-container h2 {
+        font-size: 1.5em;
+    }
+
+    .forgot-pin-container button {
+        font-size: 1em;
+    }
+}
