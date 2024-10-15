@@ -532,51 +532,84 @@ select.voice-select:focus {
 
 /* User Badge Styling */
 .badge {
-    width: 70px;
+    width: 90px;
     text-align: center;
-    padding: 8px 12px;
+    padding: 10px 15px;
     border-radius: 25px;
     font-weight: bold;
     font-size: 1em;
-    margin: 10px auto; /* Centered horizontally with a bit of margin */
+    margin: 15px auto;
     display: block;
     color: #fff;
     position: relative;
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.4), 0 5px 8px rgba(255, 255, 255, 0.2) inset; /* Add shadow for 3D effect */
-    transition: transform 0.3s ease-in-out; /* Animation for hovering effect */
+    background: linear-gradient(135deg, #222, #444); /* Base gradient for depth */
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.6), 0 5px 8px rgba(255, 255, 255, 0.2) inset;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    overflow: hidden;
+    z-index: 0;
 }
 
+/* Add a subtle glowing effect and 3D hover animation */
+.badge:hover {
+    transform: translateY(-8px) scale(1.05);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.8), 0 8px 16px rgba(255, 255, 255, 0.4) inset;
+}
+
+/* Add a shiny overlay on hover */
 .badge::before {
     content: "";
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border-radius: inherit;
-    background: linear-gradient(145deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0));
-    z-index: 1;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: rgba(255, 255, 255, 0.2);
+    opacity: 0.2;
+    transform: rotate(45deg);
     pointer-events: none;
+    transition: opacity 0.3s;
 }
-
-.badge:hover {
-    transform: translateY(-5px);
+.badge:hover::before {
+    opacity: 0.4;
 }
 
 /* Free Badge Style */
 .badge.free {
-    background: linear-gradient(135deg, #ff6a6a, #ff9999);
-    color: #fff;
+    background: linear-gradient(135deg, #ff4b2b, #ff416c); /* Bold red gradient */
 }
 
 /* Premium Badge Style */
 .badge.premium {
-    background: linear-gradient(135deg, #ffeb3b, #ffd700);
+    background: linear-gradient(135deg, #ffcc33, #ffb100); /* Golden yellow gradient */
     color: #fff;
 }
 
 /* Gold Member Badge Style */
 .badge.gold {
-    background: linear-gradient(135deg, #f9a602, #ffcc00);
-    color: #fff;
+    background: linear-gradient(135deg, #ffba00, #ff9f00); /* Bright gold */
+    box-shadow: 0 0 15px rgba(255, 195, 0, 0.8), 0 8px 15px rgba(255, 195, 0, 0.6) inset;
+}
+
+/* Special Shiny Animation for Gold Badge */
+.badge.gold::after {
+    content: "";
+    position: absolute;
+    top: -50px;
+    left: -50px;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0) 60%);
+    transform: rotate(-45deg);
+    animation: shine 3s infinite linear;
+    pointer-events: none;
+}
+
+/* Shiny effect animation */
+@keyframes shine {
+    0% {
+        transform: rotate(-45deg) translate(-200%, -200%);
+    }
+    100% {
+        transform: rotate(-45deg) translate(200%, 200%);
+    }
 }
