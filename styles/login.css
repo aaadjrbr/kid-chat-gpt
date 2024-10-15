@@ -44,7 +44,7 @@ form {
     border: 3px solid #6a11cb !important;
     border-radius: 25px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    width: 80%;
+    width: 40%;
     text-align: center;
 }
 
@@ -141,7 +141,7 @@ button:hover {
     border: 3px solid #ffffffbe !important;
     border-radius: 25px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    width: 80%;
+    width: 40%;
     text-align: center;
 }
 
@@ -212,7 +212,7 @@ ul {
     top: 50%;
     transform: translateY(-50%);
     cursor: pointer;
-    font-size: 20px;
+    font-size: 15px;
 }
 
 #error-message, #create-error-message, #reset-error-message, #reset-success-message {
