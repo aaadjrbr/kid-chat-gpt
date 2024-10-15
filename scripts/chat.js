@@ -510,7 +510,6 @@ async function updateTokensInFirestore(newTokenCount) {
     userProfileCache = updatedProfileSnapshot.data(); // Update the cached profile
 }
 
-
 async function checkTokenRefillTime() {
     const userProfile = await fetchUserProfile(); // Get profile (cached if available)
 
@@ -520,14 +519,17 @@ async function checkTokenRefillTime() {
     const premiumTokenLimit = 100;
     const freeTokenLimit = 30;
 
+    // Check if tokens were depleted at some point (i.e., if tokensDepletedTimestamp exists)
     if (tokensDepletedTimestamp) {
         const currentTime = Date.now();
-        const tokenDepletionTime = tokensDepletedTimestamp.toMillis(); 
+        const tokenDepletionTime = tokensDepletedTimestamp.toMillis(); // Convert Firestore timestamp to milliseconds
         const timePassed = currentTime - tokenDepletionTime;
 
-        const timeLeftForRefill = 60 * 60 * 1000 - timePassed;
+        // Calculate the remaining time for the 1-hour refill cooldown
+        const timeLeftForRefill = 60 * 60 * 1000 - timePassed; // 1 hour in milliseconds
 
         if (timeLeftForRefill <= 0) {
+            // If more than 1 hour has passed, refill the tokens
             if (isGold) {
                 userTokens = goldTokenLimit;
             } else if (isPremium) {
@@ -535,21 +537,35 @@ async function checkTokenRefillTime() {
             } else {
                 userTokens = freeTokenLimit;
             }
-            await updateDoc(doc(db, `userProfiles/${parentId}`), { tokens: userTokens, tokensDepletedTimestamp: null });
-            console.log("Tokens refilled.");
-            updateTokenBar();
+
+            // Reset tokens and clear the depletion timestamp in Firestore
+            await updateDoc(doc(db, `userProfiles/${parentId}`), {
+                tokens: userTokens,
+                tokensDepletedTimestamp: null // Clear the timestamp so it's only set again when tokens deplete
+            });
+
+            console.log("Tokens refilled after waiting the cooldown.");
+            updateTokenBar(); // Update the UI to reflect the token refill
             return;
         }
 
+        // If there is still time left for the refill, display the countdown
         const minutesLeft = Math.floor(timeLeftForRefill / 60000);
         const secondsLeft = Math.floor((timeLeftForRefill % 60000) / 1000);
+        displayMessage(`Oops! You've run out of tokens! 🌟 They'll refill in ${minutesLeft} minutes and ${secondsLeft} seconds! 🚀`, "bot");
 
+    } else if (userTokens <= 0 && !tokensDepletedTimestamp) {
+        // If tokens just ran out, set the depletion timestamp (only once when tokens run out)
+        await updateDoc(doc(db, `userProfiles/${parentId}`), { tokensDepletedTimestamp: serverTimestamp() });
+        console.log("Tokens depleted, timestamp saved.");
+
+        // Manually calculate the time left (1 hour cooldown)
+        const timeLeft = 60 * 60 * 1000;
+        const minutesLeft = Math.floor(timeLeft / 60000);
+        const secondsLeft = Math.floor((timeLeft % 60000) / 1000);
+
+        // Display the initial message when tokens deplete
         displayMessage(`Oopsie! Looks like you've used all your magic tokens! 🌟 But don't worry, they'll refill soon! Come back in ${minutesLeft} minutes and ${secondsLeft} seconds to keep the fun going! 🚀`, "bot");
-    } else if (isGold && userTokens <= 0) {
-        userTokens = goldTokenLimit;
-        await updateDoc(doc(db, `userProfiles/${parentId}`), { tokens: userTokens });
-        console.log("Gold user tokens refilled to 999.");
-        updateTokenBar();
     }
 }
 
