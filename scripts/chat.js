@@ -43,19 +43,16 @@ if (!kidId) {
     onAuthStateChanged(auth, (user) => {
         if (user) {
             parentId = user.uid; // Get the authenticated user's ID
-            initializeChat();
-            // Set up polling mechanism to refresh the user profile every 5 minutes
-            setInterval(() => {
-                fetchUserProfile().then(() => {
-                    console.log("Profile updated from Firestore. Tokens: ", userTokens);
-                });
-            }, 5 * 60 * 1000); // Refresh every 5 minutes
+            initializeChat(); // Initialize the chat and fetch necessary data
+            fetchUserProfile().then(() => {
+                console.log("Profile updated from Firestore. Tokens: ", userTokens);
+            });  // Fetch the profile once, no need to poll every 5 minutes
         } else {
             console.error("No user is signed in.");
             displayMessage("Please sign in to access the chat.", "bot");
             sendBtn.disabled = true;
         }
-    });
+    });    
 }
 
 async function initializeChat() {
