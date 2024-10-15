@@ -201,7 +201,7 @@ async function fetchKidData() {
             conversationContext = [
                 {
                     role: "system", 
-                    content: `You are a friendly robot named Cody, talking to a kid named ${kidName} who is ${kidAge} years old. Use simple words and short sentences, include fun emojis like 🎉 and 🚀, and avoid any serious or inappropriate topics. Keep the conversation light, playful, and fun! 😊`
+                    content: `You are a friendly robot named Alfie, talking to a kid named ${kidName} who is ${kidAge} years old. Use simple words and short sentences, include fun emojis like 🎉 and 🚀, and avoid any serious or inappropriate topics. Keep the conversation light, playful, and fun! 😊`
                 },
                 { 
                     role: "system", 
@@ -209,23 +209,30 @@ async function fetchKidData() {
                 },
                 { 
                     role: "system", 
-                    content: `If the kid asks about sex, adult topics (e.g., boyfriends, girlfriends, relationships), suicide, anxiety, or personal problems, **do not** give advice, **do not** talk about sex (e.g., animal sex, adults sex, any type of sex). Encourage them to ask their parents. Politely say: "It's best to talk to your parents or a trusted adult about that!" Never provide medical advice, and avoid discussing grown-up stuff. Always encourage the kid to talk to their parents or a trusted adult.`
+                    content: `If the kid asks about sex, adult topics (e.g., boyfriends, girlfriends, relationships), suicide, anxiety, or personal problems, **do not** give advice, **do not** talk about sex (e.g., animal sex, adult sex, any type of sex). Encourage them to ask their parents. Politely say: "It's best to talk to your parents or a trusted adult about that!" Never provide medical advice, and avoid discussing grown-up stuff. Always encourage the kid to talk to their parents or a trusted adult.`
                 },
-                { 
-                    role: "system", 
+                {
+                    role: "system",
                     content: `If the kid asks a hard question, explain it in a way that is easy for a ${kidAge}-year-old to understand. Use simple examples or fun stories to help make the answer clearer.`
                 },
-                { 
+                {
+                    role: "system",
+                    content: `You are a friendly robot named Alfie, and when explaining math or any process, you always focus on teaching **how** to get to the result rather than just giving the answer. For example, instead of saying "2+2=4," walk the child through adding two groups of two to make four.`
+                },
+                {
+                    role: "system",
+                    content: `When explaining coding concepts, Alfie keeps it simple and fun. Use short explanations and examples that kids can easily understand. Explain processes step by step rather than overwhelming with too much technical detail.`
+                },
+                {
                     role: "system", 
                     content: `You are aware of the different types of users based on their membership status. If the kid asks about this, explain it in a fun and simple way:
-                
+                    
                     - **Gold Members**: "You have a shiny Gold badge at the top of the chat! 🏅 This means you have **unlimited messages**! You can chat as much as you want! 🌟"
                     - **Premium Members**: "You have a cool Premium badge! 🌟 Premium users can chat up to **100 times an hour**. That's a lot of chatting!"
                     - **Free Members**: "You're a Free member! You can chat up to **30 times an hour**. That's a great start! 😊"
-                
-                    If they want to know more about upgrading or pricing, encourage them to ask their parents to visit the contact page: "If you want to know more about the other memberships, ask your parents to call us on the Contact page! They'll know more about pricing and how it works! 😊📞"
-                    `
-                }                
+                    
+                    If they want to know more about upgrading or pricing, encourage them to ask their parents to visit the contact page: "If you want to know more about the other memberships, ask your parents to call us on the Contact page! They'll know more about pricing and how it works! 😊📞"`
+                }                                
             ];
 
         } else {
@@ -757,48 +764,10 @@ function displayTypingMessage(text, sender) {
         speakerButton.innerHTML = 'volume_up';  // Use 'volume_up' icon for the speaker
         speakerButton.onclick = () => speakText(text);  // Trigger text-to-speech
 
-        // Create arrow button to toggle the voice selection dropdown
-        const arrowButton = document.createElement('button');
-        arrowButton.className = 'arrow-btn material-icons';  // Add Material Icons class
-        arrowButton.innerHTML = 'arrow_drop_down';  // Use 'arrow_drop_down' icon for the dropdown arrow
-
-        // Create voice selection dropdown (initially hidden)
-        const voiceSelect = document.createElement('select');
-        voiceSelect.className = 'voice-select';
-        voiceSelect.style.display = 'none';  // Initially hide the dropdown
-
-        // Function to populate available voices in the dropdown
-        function populateVoiceList() {
-            const synth = window.speechSynthesis;
-            const voices = synth.getVoices();
-            voiceSelect.innerHTML = ''; // Clear any previous options
-
-            voices.forEach((voice, index) => {
-                const option = document.createElement('option');
-                option.textContent = `${voice.name} (${voice.lang})`;
-                option.value = index;
-                option.dataset.lang = voice.lang;
-                option.dataset.name = voice.name;
-                voiceSelect.appendChild(option);
-            });
-        }
-
-        // Show/hide the voice dropdown when the arrow button is clicked
-        arrowButton.onclick = () => {
-            voiceSelect.style.display = voiceSelect.style.display === 'none' ? 'block' : 'none';
-        };
-
-        // Populate voices on page load and when voices change
-        if (speechSynthesis.onvoiceschanged !== undefined) {
-            speechSynthesis.onvoiceschanged = populateVoiceList;
-        }
-        populateVoiceList(); // Call to populate voices when the page loads
-
-        // Append speaker button, arrow button, and voice dropdown to the message div
+        // Append speaker button and message content to the message div
         messageDiv.appendChild(messageContent);
         messageDiv.appendChild(speakerButton);
-        messageDiv.appendChild(arrowButton);
-        messageDiv.appendChild(voiceSelect);
+
         messagesContainer.appendChild(messageDiv);
 
         // Add fade-in effect when the bot message is added
@@ -888,23 +857,63 @@ if (speechSynthesis.onvoiceschanged !== undefined) {
     speechSynthesis.onvoiceschanged = populateVoiceList;
 }
 
-// Function to populate only English (US) voices in the dropdown
 // Ensure voices are populated on page load
 document.addEventListener('DOMContentLoaded', () => {
     populateVoiceList(); // Call the function when page loads
 });
 
-// Function to speak the given text
+// Function to speak the given text using default US English voice
 const speakText = (text) => {
     const synth = window.speechSynthesis;
     const utterance = new SpeechSynthesisUtterance(removeEmojis(text)); // Removing emojis before speaking
-    const selectedVoice = document.getElementById('voiceSelect').value;
-    const voice = synth.getVoices().find(voice => voice.name === selectedVoice);
-    if (voice) {
-        utterance.voice = voice;
+
+    // Get the list of voices
+    let voices = synth.getVoices();
+
+    // Chrome sometimes loads voices asynchronously, so check and load voices again if not found
+    if (voices.length === 0) {
+        synth.onvoiceschanged = () => {
+            voices = synth.getVoices();
+            chooseVoice(voices, utterance);
+        };
+    } else {
+        chooseVoice(voices, utterance);
     }
+
+    // Set language to US English
     utterance.lang = 'en-US';
+
+    // Adjust the speech rate (make it slower for kids)
+    utterance.rate = 0.85; // Slower rate, adjust as necessary
+
+    // Speak the text
     synth.speak(utterance);
+};
+
+// Function to choose the best voice
+const chooseVoice = (voices, utterance) => {
+    // Try preferred voices in order
+    const preferredVoices = ['Google US English', 'Samantha', 'Karen', 'Google UK English Female'];
+
+    // Attempt to find the preferred voice
+    let selectedVoice = null;
+    for (const preferredVoice of preferredVoices) {
+        selectedVoice = voices.find(voice => voice.name === preferredVoice);
+        if (selectedVoice) break; // Stop once the first match is found
+    }
+
+    // If no preferred voice found, try any available English (US) voice
+    if (!selectedVoice) {
+        selectedVoice = voices.find(voice => voice.lang === 'en-US');
+    }
+
+    // Apply the selected voice if found
+    if (selectedVoice) {
+        utterance.voice = selectedVoice;
+        console.log(`Using voice: ${selectedVoice.name}`);
+    } else {
+        console.warn('No suitable voice found, using default browser voice.');
+    }
 };
 
 // Function to remove emojis from the text
