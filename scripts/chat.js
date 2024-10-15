@@ -830,9 +830,53 @@ function removeTypingMessage() {
     sendBtn.disabled = false; // Enable send button
 }
 
+// Function to populate only English (US) voices in the dropdown
+const populateVoiceList = () => {
+    const synth = window.speechSynthesis;
+    let voices = synth.getVoices().filter(voice => voice.lang.includes('en-')); // Only English voices
+
+    if (!voices.length) {
+        synth.onvoiceschanged = () => {
+            voices = synth.getVoices().filter(voice => voice.lang.includes('en-'));
+            populateVoiceList(); // Repopulate voices when they become available
+        };
+        return;
+    }
+
+    const voiceSelect = document.getElementById('voiceSelect'); // Ensure this exists in the DOM
+
+    if (voiceSelect) {
+        voiceSelect.innerHTML = ''; // Clear existing options
+
+        const defaultVoiceNames = ['Google US English', 'Karen', 'Samantha']; // Common US voices
+        let defaultVoice;
+
+        if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
+            defaultVoice = voices.find(voice => voice.name === 'Karen');
+        } else if (/Android/.test(navigator.userAgent)) {
+            defaultVoice = voices.find(voice => voice.name === 'Google US English') || voices[0];
+        } else {
+            defaultVoice = voices.find(voice => voice.name === 'Google US English') || voices[0];
+        }
+
+        voices.forEach((voice) => {
+            const option = document.createElement('option');
+            option.textContent = voice.name;
+            option.value = voice.name;
+            if (voice === defaultVoice) {
+                option.selected = true; // Set the default selected voice
+            }
+            voiceSelect.appendChild(option);
+        });
+    } else {
+        console.error('Element #voiceSelect not found in the DOM.');
+    }
+};
+
 // Create voice selection dropdown (initially hidden)
 document.addEventListener('DOMContentLoaded', function () {
     const voiceSelect = document.createElement('select');
+    voiceSelect.id = 'voiceSelect'; // Ensure the ID matches what you use in populateVoiceList
     voiceSelect.className = 'voice-select';
     voiceSelect.style.display = 'none';  // Initially hidden
     document.body.appendChild(voiceSelect);  // Append it to the DOM (or to the correct parent element)
@@ -844,79 +888,34 @@ if (speechSynthesis.onvoiceschanged !== undefined) {
     speechSynthesis.onvoiceschanged = populateVoiceList;
 }
 
-function populateVoiceList() {
+// Function to populate only English (US) voices in the dropdown
+// Ensure voices are populated on page load
+document.addEventListener('DOMContentLoaded', () => {
+    populateVoiceList(); // Call the function when page loads
+});
+
+// Function to speak the given text
+const speakText = (text) => {
     const synth = window.speechSynthesis;
-    const voices = synth.getVoices();
-    const voiceSelect = document.querySelector('.voice-select'); // Select the voice dropdown
-
-    if (voiceSelect) {
-        voiceSelect.innerHTML = ''; // Clear any previous options
-        voices.forEach((voice, index) => {
-            const option = document.createElement('option');
-            option.textContent = `${voice.name} (${voice.lang})`;
-            option.value = index;
-            option.dataset.lang = voice.lang;
-            option.dataset.name = voice.name;
-            voiceSelect.appendChild(option);
-        });
-    } else {
-        console.error('Voice select element not found in the DOM');
+    const utterance = new SpeechSynthesisUtterance(removeEmojis(text)); // Removing emojis before speaking
+    const selectedVoice = document.getElementById('voiceSelect').value;
+    const voice = synth.getVoices().find(voice => voice.name === selectedVoice);
+    if (voice) {
+        utterance.voice = voice;
     }
-}
+    utterance.lang = 'en-US';
+    synth.speak(utterance);
+};
 
-// Function to remove emojis from text
+// Function to remove emojis from the text
 function removeEmojis(text) {
     return text.replace(/([\u2700-\u27BF]|[\uE000-\uF8FF]|[\uFE00-\uFE0F]|\uD83C[\uD000-\uDFFF]|\uD83D[\uD000-\uDFFF]|\uD83E[\uD000-\uDFFF])/g, '');
 }
 
-let isSpeaking = false; // Variable to track speaking state
-
-// Modified speakText function to use the selected voice and remove emojis
-function speakText(text) {
-    const synth = window.speechSynthesis;
-
-    if (isSpeaking) {
-        return; // Exit if already speaking
-    }
-
-    const utterance = new SpeechSynthesisUtterance(removeEmojis(text)); // Remove emojis from the spoken text
-    const voices = synth.getVoices();
-
-    // Force the first voice to always be an English US voice (Samantha for iOS, or any en-US voice)
-    let selectedVoice = voices.find(voice => voice.name.includes("Samantha") || voice.lang === 'en-US');
-
-    // Fallback to any available English voice if no Samantha or en-US voice is found
-    if (!selectedVoice) {
-        selectedVoice = voices.find(voice => voice.lang.startsWith('en')) || voices[0]; 
-    }
-
-    // Check if the user has selected a voice from the dropdown and make sure it's English
-    const voiceSelect = document.querySelector('.voice-select');
-    if (voiceSelect && voiceSelect.value) {
-        const userSelectedVoice = voices[voiceSelect.value];
-        if (userSelectedVoice && userSelectedVoice.lang.startsWith('en')) {
-            selectedVoice = userSelectedVoice; // Use the selected voice if it's English
-        }
-    }
-
-    // If no English voice is found, log an error and prevent speaking
-    if (!selectedVoice) {
-        console.error('No English voice available');
-        return;
-    }
-
-    utterance.voice = selectedVoice; // Assign the selected voice
-    isSpeaking = true; // Set the flag to indicate speaking has started
-
-    utterance.onend = () => {
-        isSpeaking = false; // Reset the flag once speech ends
-    };
-
-    synth.speak(utterance);
-}
-
-// Call populateVoiceList when the page loads to ensure the voice list is available
-window.onload = populateVoiceList;
+// Ensure voices are populated on page load
+document.addEventListener('DOMContentLoaded', () => {
+    populateVoiceList(); // Call the function when page loads
+});
 
 async function getChatResponse() {
     try {
