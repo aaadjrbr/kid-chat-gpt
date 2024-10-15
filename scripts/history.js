@@ -129,19 +129,31 @@ async function loadChatMessages(parentId, kidId, chatId, year, month, day) {
 }    
 
 // Function to render the chat history from cache or query
+const SESSIONS_PER_PAGE = 8; // Number of chat sessions per page
+let currentPage = 1; // Start from the first page
+
+// Function to render the chat history with pagination
 function renderChatHistory(chatSessions, parentId, kidId, year, month, day) {
+    const totalSessions = chatSessions.length;
+    const totalPages = Math.ceil(totalSessions / SESSIONS_PER_PAGE);
+    
+    // Limit the sessions to display based on the current page
+    const startIndex = (currentPage - 1) * SESSIONS_PER_PAGE;
+    const endIndex = Math.min(startIndex + SESSIONS_PER_PAGE, totalSessions);
+    const sessionsToDisplay = chatSessions.slice(startIndex, endIndex);
+
     const historyContainer = document.getElementById('history-container');
     historyContainer.innerHTML = ''; // Clear previous results
 
     const historyHeader = document.createElement('h3');
-    historyHeader.textContent = `💬 Chat history for ${month}/${day}/${year}`;
+    historyHeader.textContent = `💬 Chat history for ${month}/${day}/${year} (Page ${currentPage}/${totalPages})`;
     historyContainer.appendChild(historyHeader);
 
     const sessionsContainer = document.createElement('div');
     sessionsContainer.classList.add('sessions-container');
 
     const sessionsList = document.createElement('ul');
-    chatSessions.forEach(session => {
+    sessionsToDisplay.forEach(session => {
         const sessionItem = document.createElement('li');
         const sessionTime = new Date(session.dateStarted.seconds * 1000).toLocaleTimeString();
         sessionItem.textContent = `Chat started at ${sessionTime}`;
@@ -153,5 +165,33 @@ function renderChatHistory(chatSessions, parentId, kidId, year, month, day) {
 
     sessionsContainer.appendChild(sessionsList);
     historyContainer.appendChild(sessionsContainer);
-}
 
+    // Add pagination buttons (if necessary)
+    const paginationContainer = document.createElement('div');
+    paginationContainer.classList.add('pagination-container');
+
+    if (currentPage > 1) {
+        const prevButton = document.createElement('button');
+        prevButton.textContent = '< Previous';
+        prevButton.addEventListener('click', () => {
+            currentPage--;
+            renderChatHistory(chatSessions, parentId, kidId, year, month, day); // Re-render the page with previous chats
+        });
+        paginationContainer.appendChild(prevButton);
+    }
+
+    if (currentPage < totalPages) {
+        const nextButton = document.createElement('button');
+        nextButton.textContent = 'Next >';
+        nextButton.addEventListener('click', () => {
+            currentPage++;
+            renderChatHistory(chatSessions, parentId, kidId, year, month, day); // Re-render the page with next chats
+        });
+        paginationContainer.appendChild(nextButton);
+    }
+
+    // Only show pagination if there is more than one page
+    if (totalPages > 1) {
+        historyContainer.appendChild(paginationContainer);
+    }
+}
