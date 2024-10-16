@@ -71,7 +71,7 @@ h3 a:hover {
     font-family: 'M PLUS Rounded 1c', sans-serif; /* Rounded, cute font */
     font-size: 1em;
     color: #ff6f61; /* Soft red for heading */
-    font-weight: 500;
+    font-weight: 400;
     text-align: left;
     display: block;
     text-align: center !important;
@@ -127,8 +127,9 @@ h3 a:hover {
 .status-message {
     font-size: 1em;
     margin-top: 10px;
-    font-family: 'M PLUS Rounded 1c', sans-serif;
+    font-family: 'Roboto', sans-serif;
     color: red;
+    font-weight: bold;
 }
 
 /* Adjustments for mobile */
