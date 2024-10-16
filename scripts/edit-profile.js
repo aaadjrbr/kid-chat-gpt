@@ -229,7 +229,25 @@ userForm.addEventListener('submit', async (e) => {
     try {
         await setDoc(doc(db, 'userProfiles', currentUserUid), userProfile);
         status.textContent = 'Profile updated successfully!';
+        
+        // Show the status box
+        status.style.display = 'block';
+    
+        // Hide the message after 3 seconds
+        setTimeout(() => {
+            status.style.display = 'none';
+            status.textContent = ''; // Clear the message as well
+        }, 3000);
     } catch (error) {
         status.textContent = 'Error updating profile: ' + error.message;
-    }
+        
+        // Show the status box
+        status.style.display = 'block';
+    
+        // Hide the message after 3 seconds
+        setTimeout(() => {
+            status.style.display = 'none';
+            status.textContent = ''; // Clear the message as well
+        }, 3000);
+    }       
 });

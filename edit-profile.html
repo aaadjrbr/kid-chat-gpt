@@ -7,34 +7,71 @@
     <link rel="stylesheet" href="./styles/edit-profile.css">
 </head>
 <body>
-    <div class="container">
-        <h1>Register User</h1>
-        <form id="user-form">
-            <label for="profilePicture">Profile Picture:</label>
-            <div id="profile-picture-container"></div>
-            <input type="file" id="profilePicture" accept="image/*" /><br><br>
+    <div class="forgot-pin-container">
+        <h2>Register User</h2>
+        <h3><a href="./profiles.html">Go back</a></h3>
+        
+        <!-- New Box with Message and Toggle -->
+        <div class="user-box">
+            <p>First, to go to the parents' community, you need to edit your profile. Already did? Go to the <a href="#" id="community-link">Community</a></p>
+            <button type="button" id="toggle-profile-btn">Edit Profile</button>
+            <br/><br/>
+            <div id="profile-toggle" style="display:none;">
+                <form id="user-form">
+                    <label for="profilePicture">Profile Picture:</label>
+                    <div id="profile-picture-container">
+                        <img id="profile-img" src="default-pic.jpg" alt="Profile Picture" />
+                        <button type="button" id="delete-btn">Delete Picture</button>
+                    </div>                    
+                    <input type="file" id="profilePicture" accept="image/*" /><br><br>
 
-            <label for="name">Name:</label>
-            <input type="text" id="name" required /><br><br>
+                    <label for="name">Name:</label><br>
+                    <input type="text" id="name" required /><br><br>
 
-            <label for="email">Email:</label>
-            <input type="email" id="email" required /><br><br>
+                    <label for="email">Email:</label><br>
+                    <input type="email" id="email" required /><br><br>
 
-            <label for="phone">Phone:</label>
-            <input type="tel" id="phone" required /><br><br>
+                    <label for="phone">Phone:</label><br>
+                    <input type="tel" id="phone" required /><br><br>
 
-            <label>Kids:</label>
-            <div id="kids-container">
-                <input type="text" name="kid1" placeholder="Kid 1" class="kid-input" /><br><br>
+                    <label>Kids:</label>
+                    <div id="kids-container">
+                        <input type="text" name="kid1" placeholder="Kid 1" class="kid-input" /><br><br>
+                    </div>
+                    <button type="button" id="add-kid-btn">Add Another Kid</button><br><br>
+
+                    <button type="submit">Submit</button>
+                </form>
             </div>
-            <button type="button" id="add-kid-btn">Add Another Kid</button><br><br>
-
-            <button type="submit">Submit</button>
-        </form>
+        </div>
 
         <p id="status"></p>
     </div>
 
     <script type="module" src="./scripts/edit-profile.js"></script>
+
+    <script>
+        // Toggle logic for showing and hiding the profile form
+        const toggleProfileBtn = document.getElementById('toggle-profile-btn');
+        const profileToggle = document.getElementById('profile-toggle');
+
+        toggleProfileBtn.addEventListener('click', () => {
+            if (profileToggle.style.display === 'none') {
+                profileToggle.style.display = 'block';
+                toggleProfileBtn.textContent = 'Hide Profile Edit';
+            } else {
+                profileToggle.style.display = 'none';
+                toggleProfileBtn.textContent = 'Edit Profile';
+            }
+        });
+
+        // Community link action (add your logic for the actual link)
+        const communityLink = document.getElementById('community-link');
+        communityLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            // Redirect to the community page or add your logic here
+            window.location.href = '/community';  // Update with actual community URL
+        });
+    </script>
 </body>
 </html>
