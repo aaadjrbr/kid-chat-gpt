@@ -260,7 +260,7 @@ export async function loadProfiles() {
                     profilesContainer.appendChild(profileDiv);
                 });
             } else {
-                window.location.href = 'index.html';
+                window.location.href = 'login.html';
             }
         });
     } catch (error) {
