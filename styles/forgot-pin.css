@@ -1,9 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800;900&display=swap');
 
-/* General body styling */
+:root {
+    --color-bg1: rgb(243, 138, 184);
+    --color-bg2: rgb(103, 162, 235);
+  }
+
 body {
     font-family: 'Roboto', sans-serif;
-    background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+    background: radial-gradient(circle, var(--color-bg1) 0%, var(--color-bg2) 100%);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -11,9 +16,14 @@ body {
     margin: 0;
 }
 
+* {
+    font-family: 'M PLUS Rounded 1c', sans-serif;
+}
+
 h2 {
-    font-family: "Protest Strike", sans-serif;
-    font-weight: 400 !important;
+    font-family: 'M PLUS Rounded 1c', sans-serif;
+    font-weight: 800 !important;
+    margin-top: -10px;
 }
 
 h3 a {
@@ -32,29 +42,36 @@ h3 a:hover {
 
 /* Container for the form */
 .forgot-pin-container {
-    background-color: #d5eaf8;
+    background-color: #fff8e1; /* Soft, warm background color */
+    border: 3px solid #fbc02d; /* Cute yellow border */
     border-radius: 15px;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
-    padding: 30px;
-    width: 80%;
-    max-width: 400px;
+    padding: 20px;
+    width: 65% !important;
     text-align: center;
-    border: 1px solid #e0e0e0;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    font-family: 'M PLUS Rounded 1c', sans-serif;
+    max-height: 90vh; /* Adjust to avoid exceeding the viewport height */
+    overflow-y: auto; /* Enable vertical scrolling if content overflows */
 }
 
 /* Title styling */
 .forgot-pin-container h2 {
     font-size: 1.8em;
-    color: #6a11cb;
-    font-weight: 600;
+    color: #ff6f61; /* Soft red for heading */
     margin-bottom: 20px;
 }
 
 /* Label styling */
 .forgot-pin-container label {
+    font-family: 'M PLUS Rounded 1c', sans-serif; /* Rounded, cute font */
     font-size: 1em;
-    color: #6a11cb;
-    font-weight: 600;
+    color: #ff6f61; /* Soft red for heading */
+    font-weight: 500;
     text-align: left;
     display: block;
     text-align: center !important;
@@ -64,9 +81,10 @@ h3 a:hover {
 /* Input field styling */
 .forgot-pin-container input[type="number"],
 .forgot-pin-container input[type="text"] {
-    font-family: 'Roboto', sans-serif;
+    font-family: 'M PLUS Rounded 1c', sans-serif;
+    font-weight: 400;
     width: 80%;
-    padding: 12px;
+    padding: 8px;
     margin-bottom: 20px;
     border: 1px solid #d0d0d0;
     border-radius: 8px;
@@ -85,29 +103,32 @@ h3 a:hover {
 
 /* Button styling */
 .forgot-pin-container button {
-    font-family: 'Roboto', sans-serif;
-    background-image: linear-gradient(to right, #6a11cb, #2575fc);
-    color: white;
-    padding: 12px 20px;
-    font-size: 1.2em;
+    background-color: #ffa726; /* Darker orange on hover */
+    color: #fff;
+    font-weight: 500;
     border: none;
-    border-radius: 8px;
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-size: 1em;
     cursor: pointer;
-    transition: background-color 0.3s ease;
-    width: 100%;
-    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    margin: 5px;
+    transition: background-color 0.3s;
 }
 
 /* Hover effect for the button */
 .forgot-pin-container button:hover {
-    background-image: linear-gradient(to right, #2575fc, #6a11cb);
+    color: #fff;
+    background-color: #ffa826e7; /* Darker orange on hover */
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
 }
 
 /* Status message styling */
 .status-message {
     font-size: 1em;
     margin-top: 10px;
-    color: red; /* Default to red for error messages */
+    font-family: 'M PLUS Rounded 1c', sans-serif;
+    color: red;
 }
 
 /* Adjustments for mobile */
@@ -127,6 +148,7 @@ h3 a:hover {
 }
 
 a#toggleBox {
+    font-family: 'M PLUS Rounded 1c', sans-serif;
     color: #2575fc;
 }
 
@@ -138,11 +160,15 @@ a#toggleBox:hover {
     display: none;
     opacity: 0;
     margin-top: 10px;
+    font-weight: 400;
     transition: opacity 0.5s ease-in-out;
     padding: 10px;
     border-radius: 8px;
-    background-color: #f0f0f0;
-    border: 1px solid #ccc;
+    background-color: #f4f4f4; /* Light background for cancel button */
+    color: #555;
+    border: 2px solid #ddd; /* Subtle border */
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05);
 }
 
 #contentBox.visible {
