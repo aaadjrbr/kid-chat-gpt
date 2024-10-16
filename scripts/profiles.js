@@ -107,6 +107,7 @@ function showPinCreationPopup(userId) {
 // Call checkUserPin after authentication to run the check
 checkUserPin();
 
+
 // Function to prompt for the PIN and verify it before allowing the action
 export async function verifyUserPin(actionCallback) {
     const auth = getAuth();
@@ -117,26 +118,57 @@ export async function verifyUserPin(actionCallback) {
         return;
     }
 
-    let retry = true; // Allow user to retry entering the PIN
-    while (retry) {
-        // Show a prompt for the user to enter their PIN
-        const enteredPin = prompt("Please enter your 4-digit PIN (or press Cancel to exit):");
+    // Create the PIN verification popup
+    const popupContainer = document.createElement('div');
+    popupContainer.id = 'pin-verification-popup';
+    popupContainer.style.position = 'fixed';
+    popupContainer.style.top = '50%';
+    popupContainer.style.left = '50%';
+    popupContainer.style.transform = 'translate(-50%, -50%)';
+    popupContainer.style.padding = '30px';
+    popupContainer.style.backgroundColor = '#f4f4f9';
+    popupContainer.style.borderRadius = '15px';
+    popupContainer.style.width = '350px';
+    popupContainer.style.boxShadow = '0px 10px 20px rgba(0, 0, 0, 0.2)';
+    popupContainer.style.zIndex = '1000';
+    popupContainer.style.textAlign = 'center';
 
-        if (enteredPin === null) {
-            // User pressed Cancel
-            alert("PIN verification canceled.");
-            console.log("User canceled the PIN entry.");
-            return;
+    // Add the PIN input field, toggle checkbox, and error message
+    popupContainer.innerHTML = `
+        <h3>Enter Your PIN 🔑</h3>
+        <input type="password" id="entered-pin" maxlength="4" placeholder="4-digit PIN" required><br><br>
+        <label>
+            <input type="checkbox" id="toggle-pin-visibility">
+            Show PIN
+        </label>
+        <p><a href="./forgot-pin.html">Forgot your PIN?</a></p>
+        <p id="pin-error-message" style="color: red; display: none;">Invalid PIN. Please try again.</p>
+        <button id="submit-pin-btn">Verify PIN</button>
+        <button id="cancel-pin-btn" style="margin-left: 10px;">Cancel</button>
+    `;
+
+    // Append the popup to the body
+    document.body.appendChild(popupContainer);
+
+    // Add event listener for toggling PIN visibility
+    document.getElementById('toggle-pin-visibility').addEventListener('change', () => {
+        const pinInput = document.getElementById('entered-pin');
+        if (pinInput.type === 'password') {
+            pinInput.type = 'text'; // Show the PIN
+        } else {
+            pinInput.type = 'password'; // Hide the PIN (dots)
         }
+    });
 
+    // Add event listeners for the submit and cancel buttons
+    document.getElementById('submit-pin-btn').addEventListener('click', async () => {
+        const enteredPin = document.getElementById('entered-pin').value;
+
+        // Validate that the input is a 4-digit number
         if (enteredPin.length !== 4 || isNaN(enteredPin)) {
-            alert("Invalid input. Please enter a valid 4-digit PIN.");
-            const tryAgain = confirm("Do you want to try again?");
-            if (!tryAgain) {
-                retry = false;
-                return;
-            }
-            continue;
+            document.getElementById('pin-error-message').textContent = "Invalid input. Please enter a valid 4-digit PIN.";
+            document.getElementById('pin-error-message').style.display = 'block';
+            return;
         }
 
         // Fetch the user's PIN from Firestore
@@ -149,23 +181,24 @@ export async function verifyUserPin(actionCallback) {
             // Check if the entered PIN matches the stored one
             if (enteredPin === userData.userpin) {
                 console.log("PIN verified successfully.");
-                alert("PIN verified successfully.");
-                actionCallback();
+                document.body.removeChild(popupContainer); // Close the popup
+                actionCallback(); // Call the callback after verification
                 return;
             } else {
-                alert("Incorrect PIN. Please try again.");
-                const tryAgain = confirm("Do you want to try again?");
-                if (!tryAgain) {
-                    retry = false;
-                    return;
-                }
+                document.getElementById('pin-error-message').textContent = "Incorrect PIN. Please try again.";
+                document.getElementById('pin-error-message').style.display = 'block';
             }
         } else {
             console.error("No PIN found for this user.");
-            alert("No PIN found. Please create one.");
-            return;
+            document.getElementById('pin-error-message').textContent = "No PIN found. Please create one.";
+            document.getElementById('pin-error-message').style.display = 'block';
         }
-    }
+    });
+
+    // Add a cancel button to close the popup without verifying the PIN
+    document.getElementById('cancel-pin-btn').addEventListener('click', () => {
+        document.body.removeChild(popupContainer); // Close the popup
+    });
 }
 
 // Function to load profiles

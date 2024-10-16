@@ -502,3 +502,74 @@ button:hover {
         font-size: 1em;
     }
 }
+
+#pin-verification-popup {
+    background-color: #fff8e1; /* Soft, warm background color */
+    border: 3px solid #fbc02d; /* Cute yellow border */
+    border-radius: 15px;
+    padding: 20px;
+    width: 70% !important;
+    text-align: center;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    font-family: 'M PLUS Rounded 1c', sans-serif; /* Rounded, cute font */
+}
+
+#pin-verification-popup h3 {
+    color: #ff6f61; /* Soft red for heading */
+    font-size: 1.5em;
+    margin-bottom: 20px;
+}
+
+#pin-verification-popup input {
+    padding: 10px;
+    border: 2px solid #fbc02d; /* Matching border with the popup */
+    border-radius: 10px;
+    margin-bottom: 15px;
+    font-size: 1.2em;
+}
+
+div#pin-verification-popup p a {
+    color:#007bff;
+}
+
+div#pin-verification-popup p a:hover {
+    color:#007bffd7;
+}
+
+#pin-verification-popup button {
+    background-color: #ffcc80; /* Light orange button */
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-size: 1em;
+    cursor: pointer;
+    margin: 5px;
+    transition: background-color 0.3s;
+}
+
+#pin-verification-popup button:hover {
+    background-color: #ffa726; /* Darker orange on hover */
+}
+
+#pin-error-message {
+    color: #ff5252 !important; /* Cute error color (soft red) */
+    font-size: 1em !important;
+    display: none;
+    margin-bottom: 15px;
+}
+
+#pin-verification-popup #cancel-pin-btn {
+    background-color: #f4f4f4; /* Light background for cancel button */
+    color: #555;
+    border: 2px solid #ddd; /* Subtle border */
+}
+
+#pin-verification-popup #cancel-pin-btn:hover {
+    background-color: #e0e0e0; /* Slight change on hover */
+}
