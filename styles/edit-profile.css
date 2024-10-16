@@ -40,6 +40,16 @@ h3 a:hover {
     border: 3px solid #ffffff;
 }
 
+button#add-kid-btn {
+    background-color: #287187 !important;
+    font-size: 0.8em !important;
+}
+
+button.remove-kid-btn {
+    background-color: #ff6f61 !important;
+    font-size: 0.8em !important;
+}
+
 /* Container for the form */
 .forgot-pin-container {
     background-color: #fff8e1;

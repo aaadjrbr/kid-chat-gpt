@@ -5,15 +5,15 @@ import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/
 
 const userForm = document.getElementById('user-form');
 const profilePictureInput = document.getElementById('profilePicture');
-const profilePictureContainer = document.getElementById('profile-picture-container'); // To display the current photo
+const profilePictureContainer = document.getElementById('profile-picture-container');
 const addKidBtn = document.getElementById('add-kid-btn');
 const kidsContainer = document.getElementById('kids-container');
 const status = document.getElementById('status');
-let kidCount = 1;
+let kidCount = 0; // Start counting kids from 0 to handle the fixed placeholder separately
 
 const auth = getAuth();
 let currentUserUid = null;
-let currentProfilePictureRef = ''; // Track the current profile picture URL
+let currentProfilePictureRef = '';
 
 // Function to handle adding more kids
 addKidBtn.addEventListener('click', () => {
@@ -33,13 +33,14 @@ function addKidInput(kid = '', id = null) {
     newKidInput.value = kid;
     newKidInput.classList.add('kid-input');
 
-    // Remove button for dynamic kid inputs (not for Kid 1)
+    // Remove button for kid inputs
     const removeKidBtn = document.createElement('button');
     removeKidBtn.textContent = 'Remove';
     removeKidBtn.classList.add('remove-kid-btn');
     removeKidBtn.addEventListener('click', () => {
         kidsContainer.removeChild(kidDiv); // Remove from UI
         removeKidFromFirestore(kid); // Remove from Firestore
+        updateKidPlaceholders(); // Update the placeholders and counter
     });
 
     kidDiv.appendChild(newKidInput);
@@ -47,11 +48,22 @@ function addKidInput(kid = '', id = null) {
     kidsContainer.appendChild(kidDiv);
 }
 
+// Function to update kid input placeholders after a kid is removed
+function updateKidPlaceholders() {
+    const kidInputs = document.querySelectorAll('.kid-input');
+    kidCount = kidInputs.length; // Adjust kidCount to the actual number of kids remaining
+
+    kidInputs.forEach((input, index) => {
+        input.name = `kid${index + 1}`; // Update the input name based on the new order
+        input.placeholder = `Kid ${index + 1}`; // Update the placeholder text
+    });
+}
+
 // Wait for the user to be authenticated and fetch existing user data if available
 onAuthStateChanged(auth, async (user) => {
     if (user) {
-        currentUserUid = user.uid;  // Get the current user's UID
-        await fetchUserData(currentUserUid);  // Fetch and populate the form if data exists
+        currentUserUid = user.uid;
+        await fetchUserData(currentUserUid);
     } else {
         status.textContent = 'Please log in to edit your profile.';
     }
@@ -66,7 +78,6 @@ async function fetchUserData(uid) {
         document.getElementById('email').value = userData.email || '';
         document.getElementById('phone').value = userData.phone || '';
 
-        // Display current profile picture if it exists, otherwise show default
         currentProfilePictureRef = userData.profilePicture || 'https://via.placeholder.com/50';
         const profileImage = document.createElement('img');
         profileImage.src = currentProfilePictureRef;
@@ -85,12 +96,9 @@ async function fetchUserData(uid) {
 
         // Populate the kids section
         if (userData.kids && userData.kids.length > 0) {
-            // First kid field will always remain, no remove option
-            document.querySelector('.kid-input').value = userData.kids[0] || '';
-
-            // Add dynamic fields for additional kids
-            userData.kids.slice(1).forEach((kid) => {
-                addKidInput(kid); // Add all additional kids dynamically
+            // Populate all kids, starting with Kid 1 and allowing removal of the first kid
+            userData.kids.forEach((kid) => {
+                addKidInput(kid); 
             });
         }
     } else {
@@ -124,19 +132,19 @@ async function deleteProfilePicture() {
         const storage = getStorage();
         const storageRef = ref(storage, currentProfilePictureRef);
         try {
-            await deleteObject(storageRef);  // Delete the photo from Firebase Storage
-            await updateDoc(doc(db, 'userProfiles', currentUserUid), { profilePicture: '' });  // Remove profile picture from Firestore
-            
-            profilePictureContainer.innerHTML = '';  // Clear the current profile picture display
+            await deleteObject(storageRef);
+            await updateDoc(doc(db, 'userProfiles', currentUserUid), { profilePicture: '' });
+
+            profilePictureContainer.innerHTML = '';
             const defaultImage = document.createElement('img');
-            defaultImage.src = 'https://via.placeholder.com/50';  // Show default profile picture
+            defaultImage.src = 'https://via.placeholder.com/50';
             defaultImage.alt = "Default Profile Picture";
             defaultImage.style.width = '150px';
             defaultImage.style.height = '150px';
             profilePictureContainer.appendChild(defaultImage);
 
             status.textContent = 'Profile picture deleted successfully!';
-            currentProfilePictureRef = '';  // Reset the picture reference
+            currentProfilePictureRef = '';
         } catch (error) {
             console.error("Error deleting profile picture:", error);
             status.textContent = 'Error deleting profile picture.';
@@ -144,47 +152,6 @@ async function deleteProfilePicture() {
     } else {
         status.textContent = 'No profile picture to delete.';
     }
-}
-
-// Function to compress the image before uploading
-function compressImage(file, maxWidth, maxHeight) {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = event => {
-            const img = new Image();
-            img.src = event.target.result;
-            img.onload = () => {
-                const canvas = document.createElement('canvas');
-                let width = img.width;
-                let height = img.height;
-
-                // Calculate the new dimensions
-                if (width > height) {
-                    if (width > maxWidth) {
-                        height = Math.round((height *= maxWidth / width));
-                        width = maxWidth;
-                    }
-                } else {
-                    if (height > maxHeight) {
-                        width = Math.round((width *= maxHeight / height));
-                        height = maxHeight;
-                    }
-                }
-
-                canvas.width = width;
-                canvas.height = height;
-
-                const ctx = canvas.getContext('2d');
-                ctx.drawImage(img, 0, 0, width, height);
-
-                canvas.toBlob(blob => {
-                    resolve(blob);
-                }, 'image/jpeg', 0.7); // 0.7 is the quality, adjust as needed
-            };
-        };
-        reader.onerror = error => reject(error);
-    });
 }
 
 // Save or update the user's profile
@@ -201,22 +168,18 @@ userForm.addEventListener('submit', async (e) => {
     const phone = document.getElementById('phone').value;
     const kids = Array.from(document.getElementsByClassName('kid-input')).map(kidInput => kidInput.value);
 
-    let profilePictureUrl = currentProfilePictureRef;  // Default to current profile picture if no new one is uploaded
+    let profilePictureUrl = currentProfilePictureRef;
     const storage = getStorage();
     
-    // Handle profile picture upload with compression
     if (profilePictureInput.files[0]) {
         const file = profilePictureInput.files[0];
+        const compressedFile = await compressImage(file, 150, 150);
 
-        // Compress the image to a smaller size for a profile picture
-        const compressedFile = await compressImage(file, 150, 150); // Max dimensions 150x150
-
-        const storageRef = ref(storage, `profilePictures/${currentUserUid}`); // Use UID for picture storage
-        await uploadBytes(storageRef, compressedFile); // Upload the compressed image
-        profilePictureUrl = await getDownloadURL(storageRef); // Get the download URL
+        const storageRef = ref(storage, `profilePictures/${currentUserUid}`);
+        await uploadBytes(storageRef, compressedFile);
+        profilePictureUrl = await getDownloadURL(storageRef);
     }
 
-    // Create or update user profile object
     const userProfile = {
         name,
         email,
@@ -225,29 +188,24 @@ userForm.addEventListener('submit', async (e) => {
         profilePicture: profilePictureUrl || 'https://via.placeholder.com/50'
     };
 
-    // Save to Firestore using the user's UID
     try {
         await setDoc(doc(db, 'userProfiles', currentUserUid), userProfile);
         status.textContent = 'Profile updated successfully!';
         
-        // Show the status box
         status.style.display = 'block';
     
-        // Hide the message after 3 seconds
         setTimeout(() => {
             status.style.display = 'none';
-            status.textContent = ''; // Clear the message as well
+            status.textContent = '';
         }, 3000);
     } catch (error) {
         status.textContent = 'Error updating profile: ' + error.message;
         
-        // Show the status box
         status.style.display = 'block';
     
-        // Hide the message after 3 seconds
         setTimeout(() => {
             status.style.display = 'none';
-            status.textContent = ''; // Clear the message as well
+            status.textContent = '';
         }, 3000);
     }       
 });
