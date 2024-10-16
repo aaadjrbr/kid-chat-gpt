@@ -5,13 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Forgot My PIN - Alfie AI</title>
     <link rel="stylesheet" href="styles/forgot-pin.css">
+    <link href="https://fonts.googleapis.com/css2?family=Protest+Strike&display=swap" rel="stylesheet">
 </head>
 <body>
-    <br/><br/>
     <div class="forgot-pin-container">
-        <h2>Reset Your PIN</h2>
+        <h2>Reset Your PIN 🔑</h2>
         <h3><a href="./profiles.html">Go back</a></h3>
         <br/>
+
+        <a href="#" id="toggleBox">What is a PIN?</a>
+        <div id="contentBox" class="hidden">
+        <p>
+            You can use your PIN to create, delete, or edit profiles. If you forget your PIN, you can reset it by answering the 'Best friend' security question. After three failed attempts, the current PIN will be deleted, and you will be prompted to create a new one by returning to the profiles page.
+        </p>
+        </div>
+        <br/><br/>
         <form id="forgot-pin-form">
             <label for="new-pin">Enter New 4-Digit PIN:</label><br>
             <input type="number" id="new-pin" maxlength="4" placeholder="New PIN" required><br>
@@ -27,7 +35,7 @@
         </form>
         <p id="status-message" class="status-message"></p>
     </div>
-    <br/><br/>
+
     <script src="scripts/firebase-config.js" type="module"></script>
     <script src="scripts/forgot-pin.js" type="module"></script>
 </body>

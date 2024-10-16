@@ -11,6 +11,11 @@ body {
     margin: 0;
 }
 
+h2 {
+    font-family: "Protest Strike", sans-serif;
+    font-weight: 400 !important;
+}
+
 h3 a {
     color: rgb(255, 255, 255);
     font-size: 0.9em;
@@ -52,7 +57,8 @@ h3 a:hover {
     font-weight: 600;
     text-align: left;
     display: block;
-    margin-bottom: 5px;
+    text-align: center !important;
+    margin-bottom: -5px;
 }
 
 /* Input field styling */
@@ -118,4 +124,33 @@ h3 a:hover {
     .forgot-pin-container button {
         font-size: 1em;
     }
+}
+
+a#toggleBox {
+    color: #2575fc;
+}
+
+a#toggleBox:hover {
+    color: #2574fcd0;
+}
+
+#contentBox {
+    display: none;
+    opacity: 0;
+    margin-top: 10px;
+    transition: opacity 0.5s ease-in-out;
+    padding: 10px;
+    border-radius: 8px;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+}
+
+#contentBox.visible {
+    display: block;
+    opacity: 1;
+}
+
+.hidden {
+    display: none;
+    opacity: 0;
 }

@@ -13,15 +13,31 @@ async function checkUserPin() {
     
     onAuthStateChanged(auth, async (user) => {
         if (user) {
+            // Check session storage for cached PIN status
+            const cachedPinStatus = sessionStorage.getItem('userPinExists');
+            
+            // If cached status exists, no need to check the database
+            if (cachedPinStatus === 'true') {
+                console.log("User PIN already cached. No need to check the database.");
+                return;
+            } else if (cachedPinStatus === 'false') {
+                console.log("No PIN found in cache. Showing popup.");
+                showPinCreationPopup(user.uid);
+                return;
+            }
+
+            // If no cache, check the database
             const userPinRef = doc(db, 'userpin', user.uid);
             const userPinDoc = await getDoc(userPinRef);
             
             // If the user's pin document doesn't exist, show the popup for creating a PIN
             if (!userPinDoc.exists()) {
                 console.log("No PIN found in userpin collection. Showing popup.");
+                sessionStorage.setItem('userPinExists', 'false'); // Cache the result in session storage
                 showPinCreationPopup(user.uid);
             } else {
                 console.log("User already has a PIN in the userpin collection.");
+                sessionStorage.setItem('userPinExists', 'true'); // Cache the result in session storage
             }
         } else {
             console.error("User not authenticated.");

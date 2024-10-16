@@ -69,3 +69,23 @@ async function resetPin(event) {
 
 // Attach form submission handler
 document.getElementById('forgot-pin-form').addEventListener('submit', resetPin);
+
+// Toggle
+document.getElementById('toggleBox').addEventListener('click', function(e) {
+    e.preventDefault(); // Prevent the default link behavior
+    const contentBox = document.getElementById('contentBox');
+    
+    if (contentBox.classList.contains('visible')) {
+        // Hide the box with fade-out effect
+        contentBox.classList.remove('visible');
+        setTimeout(() => {
+            contentBox.classList.add('hidden');
+        }, 500); // Matches the CSS transition duration
+    } else {
+        // Show the box with fade-in effect
+        contentBox.classList.remove('hidden');
+        setTimeout(() => {
+            contentBox.classList.add('visible');
+        }, 10); // Small delay to allow the opacity transition
+    }
+});
