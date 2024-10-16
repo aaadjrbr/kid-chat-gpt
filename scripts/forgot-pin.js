@@ -46,7 +46,7 @@ async function resetPin(event) {
                     } else {
                         // After 3 failed attempts, delete the userpin and bestfriend fields
                         await deleteDoc(userPinRef);
-                        statusMessage.textContent = "You have exceeded the maximum number of attempts. Your PIN has been deleted. Please create a new one.";
+                        statusMessage.textContent = "You have exceeded the maximum number of attempts. Your PIN has been deleted. Please go back and create a new one.";
                         attemptCount = 0; // Reset the attempt count
                     }
 

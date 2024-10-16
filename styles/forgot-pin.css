@@ -1,7 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
 /* General body styling */
 body {
-    font-family: 'Open Sans', sans-serif;
-    background-color: #f4f4f9;
+    font-family: 'Roboto', sans-serif;
+    background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -9,13 +11,27 @@ body {
     margin: 0;
 }
 
+h3 a {
+    color: rgb(255, 255, 255);
+    font-size: 0.9em;
+    text-decoration: none;
+    background-color: #ffae00;
+    padding: 8px;
+    border-radius: 15px;
+}
+
+h3 a:hover {
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+    border: 3px solid #ffffff;
+}
+
 /* Container for the form */
 .forgot-pin-container {
-    background-color: white;
+    background-color: #d5eaf8;
     border-radius: 15px;
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
     padding: 30px;
-    width: 100%;
+    width: 80%;
     max-width: 400px;
     text-align: center;
     border: 1px solid #e0e0e0;
@@ -24,14 +40,16 @@ body {
 /* Title styling */
 .forgot-pin-container h2 {
     font-size: 1.8em;
-    color: #333;
+    color: #6a11cb;
+    font-weight: 600;
     margin-bottom: 20px;
 }
 
 /* Label styling */
 .forgot-pin-container label {
     font-size: 1em;
-    color: #555;
+    color: #6a11cb;
+    font-weight: 600;
     text-align: left;
     display: block;
     margin-bottom: 5px;
@@ -40,6 +58,7 @@ body {
 /* Input field styling */
 .forgot-pin-container input[type="number"],
 .forgot-pin-container input[type="text"] {
+    font-family: 'Roboto', sans-serif;
     width: 80%;
     padding: 12px;
     margin-bottom: 20px;
@@ -60,7 +79,8 @@ body {
 
 /* Button styling */
 .forgot-pin-container button {
-    background-color: #0057d9;
+    font-family: 'Roboto', sans-serif;
+    background-image: linear-gradient(to right, #6a11cb, #2575fc);
     color: white;
     padding: 12px 20px;
     font-size: 1.2em;
@@ -74,7 +94,7 @@ body {
 
 /* Hover effect for the button */
 .forgot-pin-container button:hover {
-    background-color: #0043a5;
+    background-image: linear-gradient(to right, #2575fc, #6a11cb);
 }
 
 /* Status message styling */
