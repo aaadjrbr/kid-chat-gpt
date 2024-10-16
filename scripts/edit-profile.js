@@ -69,11 +69,14 @@ onAuthStateChanged(auth, async (user) => {
     }
 });
 
-// Function to fetch and populate the user data
+// Function to fetch and populate the user data, checking for "isPremium", "isGold", and "tokens"
 async function fetchUserData(uid) {
-    const userDoc = await getDoc(doc(db, 'userProfiles', uid));
+    const userDocRef = doc(db, 'userProfiles', uid);
+    const userDoc = await getDoc(userDocRef);
+
     if (userDoc.exists()) {
         const userData = userDoc.data();
+
         document.getElementById('name').value = userData.name || '';
         document.getElementById('email').value = userData.email || '';
         document.getElementById('phone').value = userData.phone || '';
@@ -96,11 +99,34 @@ async function fetchUserData(uid) {
 
         // Populate the kids section
         if (userData.kids && userData.kids.length > 0) {
-            // Populate all kids, starting with Kid 1 and allowing removal of the first kid
             userData.kids.forEach((kid) => {
-                addKidInput(kid); 
+                addKidInput(kid);
             });
         }
+
+        // Ensure the fields "isPremium", "isGold", and "tokens" exist in the Firestore document
+        let updatesNeeded = false;
+        const updates = {};
+
+        if (userData.isPremium === undefined) {
+            updates.isPremium = false;
+            updatesNeeded = true;
+        }
+
+        if (userData.isGold === undefined) {
+            updates.isGold = false;
+            updatesNeeded = true;
+        }
+
+        if (userData.tokens === undefined) {
+            updates.tokens = 30; // Default tokens for a free user
+            updatesNeeded = true;
+        }
+
+        if (updatesNeeded) {
+            await updateDoc(userDocRef, updates);
+        }
+
     } else {
         console.log("No existing profile data for this user.");
     }
@@ -114,7 +140,6 @@ async function removeKidFromFirestore(kidToRemove) {
             const userData = userDoc.data();
             const updatedKids = userData.kids.filter(kid => kid !== kidToRemove); // Remove the kid from the array
 
-            // Update the Firestore document with the new array of kids
             await updateDoc(doc(db, 'userProfiles', currentUserUid), { kids: updatedKids });
             status.textContent = 'Kid removed successfully!';
         }
@@ -166,7 +191,10 @@ userForm.addEventListener('submit', async (e) => {
     const name = document.getElementById('name').value;
     const email = document.getElementById('email').value;
     const phone = document.getElementById('phone').value;
-    const kids = Array.from(document.getElementsByClassName('kid-input')).map(kidInput => kidInput.value);
+    // Filter out any empty kid inputs to prevent saving them in Firestore
+    const kids = Array.from(document.getElementsByClassName('kid-input'))
+                      .map(kidInput => kidInput.value)
+                      .filter(kid => kid.trim() !== '');
 
     let profilePictureUrl = currentProfilePictureRef;
     const storage = getStorage();
@@ -180,16 +208,25 @@ userForm.addEventListener('submit', async (e) => {
         profilePictureUrl = await getDownloadURL(storageRef);
     }
 
+    // Fetch existing user profile to ensure we don't overwrite fields like "isPremium", "isGold", and "tokens"
+    const userDocRef = doc(db, 'userProfiles', currentUserUid);
+    const userDoc = await getDoc(userDocRef);
+    const existingData = userDoc.exists() ? userDoc.data() : {};
+
     const userProfile = {
         name,
         email,
         phone,
         kids,
-        profilePicture: profilePictureUrl || 'https://via.placeholder.com/50'
+        profilePicture: profilePictureUrl || 'https://via.placeholder.com/50',
+        // Merge existing fields to avoid overwriting them
+        isPremium: existingData.isPremium || false,
+        isGold: existingData.isGold || false,
+        tokens: existingData.tokens || 30
     };
 
     try {
-        await setDoc(doc(db, 'userProfiles', currentUserUid), userProfile);
+        await setDoc(doc(db, 'userProfiles', currentUserUid), userProfile, { merge: true });
         status.textContent = 'Profile updated successfully!';
         
         status.style.display = 'block';
