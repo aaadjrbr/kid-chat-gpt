@@ -6,14 +6,12 @@
     --color-bg2: rgb(103, 162, 235);
   }
 
-body {
+  body {
     font-family: 'Roboto', sans-serif;
     background: radial-gradient(circle, var(--color-bg1) 0%, var(--color-bg2) 100%);
-    display: flex;
-    justify-content: center;
-    align-items: center;
     height: 100vh;
     margin: 0;
+    text-align: center; /* Center horizontally */
 }
 
 * {
@@ -42,21 +40,38 @@ h3 a:hover {
 
 /* Container for the form */
 .forgot-pin-container {
-    background-color: #fff8e1; /* Soft, warm background color */
-    border: 3px solid #fbc02d; /* Cute yellow border */
+    background-color: #fff8e1;
+    border: 3px solid #fbc02d;
     border-radius: 15px;
     padding: 20px;
     width: 65% !important;
     text-align: center;
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-    position: fixed;
-    top: 50%;
+    position: absolute;
+    top: 20%; /* Adjusted top value */
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -20%);
     z-index: 1000;
     font-family: 'M PLUS Rounded 1c', sans-serif;
-    max-height: 90vh; /* Adjust to avoid exceeding the viewport height */
-    overflow-y: auto; /* Enable vertical scrolling if content overflows */
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+/* Adjustments for mobile */
+@media (max-width: 600px) {
+    .forgot-pin-container {
+        width: 80%;
+        top: 10%; /* Move closer to the top on small screens */
+        transform: translate(-50%, -10%); /* Adjust the transform to match the top */
+    }
+
+    .forgot-pin-container h2 {
+        font-size: 1.5em;
+    }
+
+    .forgot-pin-container button {
+        font-size: 1em;
+    }
 }
 
 /* Title styling */
