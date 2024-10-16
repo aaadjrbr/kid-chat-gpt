@@ -530,7 +530,7 @@ button:hover {
     padding: 10px;
     border: 2px solid #fbc02d; /* Matching border with the popup */
     border-radius: 10px;
-    margin-bottom: 15px;
+    margin-bottom: -15px;
     font-size: 1.2em;
 }
 

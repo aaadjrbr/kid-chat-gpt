@@ -1,6 +1,6 @@
 import { db } from './firebase-config.js';
 import { doc, getDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js";
 
 let attemptCount = 0; // Track the number of incorrect attempts
 
@@ -8,6 +8,7 @@ let attemptCount = 0; // Track the number of incorrect attempts
 async function resetPin(event) {
     event.preventDefault();
     const auth = getAuth();
+    
     onAuthStateChanged(auth, async (user) => {
         if (user) {
             const userPinRef = doc(db, 'userpin', user.uid);
@@ -46,8 +47,11 @@ async function resetPin(event) {
                     } else {
                         // After 3 failed attempts, delete the userpin and bestfriend fields
                         await deleteDoc(userPinRef);
-                        statusMessage.textContent = "You have exceeded the maximum number of attempts. Your PIN has been deleted. Please go back and create a new one.";
-                        attemptCount = 0; // Reset the attempt count
+                        statusMessage.textContent = "You have exceeded the maximum number of attempts. Your PIN has been deleted.";
+                        
+                        // Log out the user and redirect to login.html
+                        await signOut(auth);
+                        window.location.href = 'login.html';  // Redirect to login page
                     }
 
                     statusMessage.style.color = 'red';

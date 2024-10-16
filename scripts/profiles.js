@@ -45,6 +45,11 @@ async function checkUserPin() {
     });
 }
 
+// Invalidate the cache if the user leaves the page (navigates away or closes the tab)
+window.addEventListener('beforeunload', (event) => {
+    sessionStorage.removeItem('userPinExists'); // Invalidate cache when leaving the page
+});
+
 // Function to show the PIN creation popup
 function showPinCreationPopup(userId) {
     // Create the popup container
@@ -64,13 +69,13 @@ function showPinCreationPopup(userId) {
 
     // Add title and inputs
     popupContainer.innerHTML = `
-        <h3>Create Your Personal PIN</h3>
+        <h3>Create Your Personal PIN 🔑</h3>
         <label for="user-pin">Enter a 4-digit PIN:</label><br>
         <input type="number" id="user-pin" maxlength="4" placeholder="4-digit PIN" required><br><br>
         
         <label for="bestfriend">Who was your best friend during childhood?</label><br>
         <input type="text" id="bestfriend" placeholder="Best friend" required><br><br>
-        <p>Remember: To create, save and edit accounts you need your PIN.</p>
+        <p>Remember: To create, save and/or edit accounts you need your PIN.</p>
         <button id="save-pin-btn">Save</button>
     `;
 
