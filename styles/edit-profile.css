@@ -16,7 +16,8 @@ body {
 }
 
 * {
-    font-family: 'M PLUS Rounded 1c', sans-serif;
+    font-family: 'Roboto', sans-serif;
+    box-sizing: border-box; /* Prevent overflow issues with padding/margins */
 }
 
 h2 {
@@ -45,16 +46,16 @@ h3 a:hover {
     border: 3px solid #fbc02d;
     border-radius: 15px;
     padding: 15px;
-    width: 80%; /* Reduce width for smaller screens */
-    max-width: 600px; /* Ensure it doesn’t grow too wide */
-    margin: 0 auto; /* Center the container */
+    width: 90%; /* Reduced width for mobile screens */
+    max-width: 600px;
+    margin: 0 auto;
     text-align: center;
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-    position: relative; /* Changed from absolute to relative for better scrolling */
+    position: relative;
     top: 20px;
     z-index: 1000;
     font-family: 'M PLUS Rounded 1c', sans-serif;
-    max-height: 90vh;
+    max-height: 85vh;
     overflow-y: auto;
     overflow-x: hidden; /* Prevent horizontal overflow */
 }
@@ -88,16 +89,8 @@ h3 a:hover {
     margin-bottom: 20px;
 }
 
-#profile-img {
-    border-radius: 50%;
-    width: 80px;
-    height: 80px;
-    object-fit: cover;
-    margin-bottom: 10px;
-}
-
 #delete-btn, div#profile-picture-container button {
-    background-color: #ff4b5c !important; /* Red button for delete */
+    background-color: #ff4b5c !important;
     color: white;
     border: none;
     padding: 8px 16px;
@@ -107,7 +100,7 @@ h3 a:hover {
 }
 
 #delete-btn:hover, div#profile-picture-container button:hover {
-    background-color: #ff1e3a !important; /* Darker red on hover */
+    background-color: #ff1e3a !important;
 }
 
 /* Input field styling */
@@ -116,13 +109,13 @@ h3 a:hover {
 .forgot-pin-container input[type="tel"],
 .forgot-pin-container input[type="file"] {
     font-family: 'M PLUS Rounded 1c', sans-serif;
-    width: 65%; /* Ensure inputs stay within the container */
-    max-width: 500px; /* Cap the width */
+    width: 80%; /* Make sure inputs take up full width on small screens */
+    max-width: 500px;
     padding: 10px;
     margin-bottom: 20px;
     border: 1px solid #d0d0d0;
     border-radius: 8px;
-    font-size: 0.9em; /* Reduced font size for smaller screens */
+    font-size: 0.9em; 
     background-color: #fdfdfd;
     box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05);
     outline: none;
@@ -130,7 +123,7 @@ h3 a:hover {
 }
 
 .forgot-pin-container button {
-    background-color: #ffa726; 
+    background-color: #ffa726;
     color: #fff;
     font-weight: 500;
     border: none;
@@ -150,16 +143,22 @@ h3 a:hover {
 /* Mobile Adjustments */
 @media (max-width: 600px) {
     .forgot-pin-container {
-        width: 80%; /* Use full width for mobile screens */
+        width: 95%; /* Increase width to 95% for better space utilization */
         padding: 10px;
-        top: 10px; /* Adjust positioning */
+        top: 10px;
+        max-height: 65vh;
     }
 
     .forgot-pin-container h2 {
-        font-size: 1.4em;
+        font-size: 1.2em;
     }
 
     .forgot-pin-container button {
         font-size: 0.9em;
+    }
+
+    #status {
+        bottom: 10px; /* Adjust position for smaller screens */
+        right: 10px;
     }
 }
