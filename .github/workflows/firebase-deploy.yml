@@ -1,37 +1,35 @@
-name: Firebase Deploy
+name: Deploy to Firebase Hosting
 
 on:
   push:
     branches:
-      - main  # This triggers the workflow when changes are pushed to the main branch
+      - main  # This triggers deployment on pushes to the 'main' branch
 
 jobs:
-  build-and-deploy:
+  build_and_deploy:
     runs-on: ubuntu-latest
 
     steps:
       # Step 1: Checkout the repository
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - name: Checkout Repository
+        uses: actions/checkout@v2
 
-      # Step 2: Set up Node.js environment (using Node.js 18)
+      # Step 2: Set up Node.js (Use Node.js 18 for Firebase CLI compatibility)
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v2
         with:
-          node-version: '18'  # Set this to at least version 18
+          node-version: '18'  # Node.js 18 or higher is required for Firebase CLI
 
-      # Step 3: Install dependencies
-      - name: Install dependencies
-        run: npm install
+      # Step 3: Install Dependencies (if needed)
+      - name: Install Dependencies
+        run: npm install  # If you have dependencies to install
 
-      # Step 4: Run the build script (if needed)
-      - name: Run build
-        run: npm run build
+      # Step 4: Build Project (if your project has a build process)
+      - name: Build Project
+        run: npm run build  # Only include this step if you need to build the project
 
       # Step 5: Deploy to Firebase Hosting
       - name: Deploy to Firebase Hosting
-        uses: FirebaseExtended/action-hosting-deploy@v0
-        with:
-          repoToken: "${{ secrets.GITHUB_TOKEN }}"
-          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_KIDS_CHATGPT }}"
-          channelId: live
+        run: |
+          npm install -g firebase-tools
+          firebase deploy --token ${{ secrets.FIREBASE_SERVICE_ACCOUNT_KIDS_CHATGPT }} --project kids-chatgpt
