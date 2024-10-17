@@ -1,0 +1,37 @@
+name: Firebase Deploy
+
+on:
+  push:
+    branches:
+      - main  # This will trigger the workflow when changes are pushed to the main branch
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout your repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Node.js environment
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'  # Adjust the version if your project uses a different one
+
+      # Step 3: Install dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # Step 4: Run your build script (assuming you have a build script defined in package.json)
+      - name: Run build
+        run: npm run build
+
+      # Step 5: Deploy to Firebase Hosting
+      - name: Deploy to Firebase Hosting
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: "${{ secrets.GITHUB_TOKEN }}"
+          firebaseServiceAccount: "${{ secrets.FIREBASE_SERVICE_ACCOUNT_KIDS_CHATGPT }}"
+          channelId: live

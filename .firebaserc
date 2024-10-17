@@ -1,0 +1,11 @@
+{
+  "projects": {
+    "default": "kids-chatgpt",
+    "random-stuff": "random-stuff-adj",
+    "Kids-ChatGPT": "comprare-site",
+    "kids chat gpt": "kids-chatgpt"
+  },
+  "targets": {},
+  "etags": {},
+  "dataconnectEmulatorConfig": {}
+}
