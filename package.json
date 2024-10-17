@@ -1,0 +1,8 @@
+{
+    "dependencies": {
+      "@google-cloud/text-to-speech": "^5.5.0",
+      "aws-sdk": "^2.1691.0",
+      "node-fetch": "^3.3.2"
+    }
+  }
+  

@@ -3,7 +3,7 @@ name: Firebase Deploy
 on:
   push:
     branches:
-      - main  # This will trigger the workflow when changes are pushed to the main branch
+      - main  # Run this workflow on pushes to the main branch
 
 jobs:
   build-and-deploy:
@@ -14,21 +14,25 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      # Step 2: Set up Node.js environment
+      # Step 2: Set the working directory (if your package.json is in a subfolder)
+      - name: Set working directory
+        working-directory: ./subfolder-name  # Set this to the folder where your package.json is located
+
+      # Step 3: Set up Node.js environment
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16'  # Adjust the version if your project uses a different one
+          node-version: '16'
 
-      # Step 3: Install dependencies
+      # Step 4: Install dependencies
       - name: Install dependencies
         run: npm install
 
-      # Step 4: Run your build script (assuming you have a build script defined in package.json)
+      # Step 5: Run your build script
       - name: Run build
         run: npm run build
 
-      # Step 5: Deploy to Firebase Hosting
+      # Step 6: Deploy to Firebase Hosting
       - name: Deploy to Firebase Hosting
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
