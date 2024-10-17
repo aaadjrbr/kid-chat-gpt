@@ -2,14 +2,13 @@
 @import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800;900&display=swap');
 
 :root {
-    --color-bg1: rgb(243, 138, 184);
-    --color-bg2: rgb(103, 162, 235);
+    --color-bg1: rgb(255, 230, 241);
+    --color-bg2: rgb(193, 206, 223);
 }
 
 body {
     font-family: 'Roboto', sans-serif;
     background: radial-gradient(circle, var(--color-bg1) 0%, var(--color-bg2) 100%);
-    height: 100vh;
     margin: 0;
     text-align: center;
     overflow-x: hidden; /* Prevent horizontal scrolling */
@@ -54,22 +53,7 @@ button.remove-kid-btn {
 
 /* Container for the form */
 .forgot-pin-container {
-    background-color: #fff8e1;
-    border: 3px solid #fbc02d;
-    border-radius: 15px;
-    padding: 15px;
-    width: 90%; /* Reduced width for mobile screens */
-    max-width: 600px;
-    margin: 0 auto;
-    text-align: center;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-    position: relative;
-    top: 20px;
-    z-index: 1000;
-    font-family: 'M PLUS Rounded 1c', sans-serif;
-    max-height: 85vh;
-    overflow-y: auto;
-    overflow-x: hidden; /* Prevent horizontal overflow */
+    padding: 40px;
 }
 
 #status {
@@ -142,7 +126,6 @@ button.remove-kid-btn {
     border: none;
     border-radius: 10px;
     padding: 10px 20px;
-    margin-bottom: -5px !important;
     font-size: 1em;
     cursor: pointer;
     margin: 5px;
@@ -165,7 +148,7 @@ div.user-box p {
         width: 95%; /* Increase width to 95% for better space utilization */
         padding: 10px;
         top: 10px;
-        max-height: 75vh;
+        max-height: 85vh;
     }
 
     .forgot-pin-container h2 {
