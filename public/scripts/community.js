@@ -136,6 +136,7 @@ async function loadVideos() {
 function displayVideo(video, videos) {
   const videoContainer = document.getElementById('video-container');
   videoContainer.innerHTML = `
+  <div class="video-stuff">
   <div class="title-video1">
     <h3>${video.videoTitle || 'Untitled Video'}</h3>  <!-- Display title -->
   </div>
@@ -143,6 +144,7 @@ function displayVideo(video, videos) {
     <div class="button-next-back">
       <button id="prev-video" ${videoIndex === 0 ? 'disabled' : ''}>Previous</button>
       <button id="next-video" ${videoIndex === videos.length - 1 ? 'disabled' : ''}>Next</button>
+    </div>
     </div>
   `;
 
@@ -214,9 +216,72 @@ document.getElementById('filter-btn').addEventListener('click', () => {
   loadMoreBtn.textContent = '✨ Load More Posts';
 
   loadPostsByCategory(selectedCategory);  // Load posts based on the selected category
+
+  // Scroll to the create-post section
+  document.getElementById('posts-container').scrollIntoView({
+    behavior: 'smooth' // Adds a smooth scrolling animation
+  });
 });
 
+// Handle adding a reply to a post
+async function handleReply(postId, repliesContainer) {
+  const auth = getAuth();
+  const user = auth.currentUser;
+
+  if (!user) return alert('Please log in to reply.');
+
+  // Check if the reply box already exists
+  let replyBox = repliesContainer.previousElementSibling?.classList.contains('reply-box')
+    ? repliesContainer.previousElementSibling
+    : null;
+
+  // Toggle reply box visibility
+  if (replyBox) {
+    replyBox.remove(); // If the reply box is already present, remove it (hide it)
+  } else {
+    // Create the reply box
+    replyBox = document.createElement('div');
+    replyBox.classList.add('reply-box');
+    replyBox.innerHTML = `
+      <textarea placeholder="Write your reply here..." class="reply-input"></textarea>
+      <button class="submit-reply-btn">Submit Reply</button>
+    `;
+    
+    // Insert the reply box above the replies
+    repliesContainer.insertAdjacentElement('beforebegin', replyBox);
+
+    // Add event listener for submitting the reply
+    replyBox.querySelector('.submit-reply-btn').addEventListener('click', async () => {
+      const replyContent = replyBox.querySelector('.reply-input').value;
+      if (!replyContent) return alert('Please enter a reply');
+
+      const postRef = doc(postsRef, postId);
+      const postSnapshot = await getDoc(postRef);
+      const postData = postSnapshot.data();
+
+      const newReply = {
+        userId: user.uid,
+        replyContent: replyContent,
+        timestamp: new Date(),
+      };
+
+      // Add the new reply to the existing replies array
+      const updatedReplies = [...postData.replies, newReply];
+
+      // Update the post document with the new reply
+      await updateDoc(postRef, {
+        replies: updatedReplies,
+      });
+
+      // Clear the input box and re-render the replies
+      replyBox.querySelector('.reply-input').value = '';
+      renderReplies(updatedReplies, repliesContainer, postId);
+    });
+  }
+}
+
 // Render post with user info and replies
+// Render post with user info, profile picture, and replies
 async function renderPost(postData, postId) {
   const userRef = doc(userProfilesRef, postData.userId);
   const userSnapshot = await getDoc(userRef);
@@ -225,16 +290,27 @@ async function renderPost(postData, postId) {
   const auth = getAuth();
   const currentUser = auth.currentUser;
 
-  // Convert timestamp to a proper date object
   const postTime = postData.timestamp && postData.timestamp.toDate ? postData.timestamp.toDate().toLocaleString() : 'Date not available';
 
   // Create HTML for the post
   const postElement = document.createElement('div');
   postElement.classList.add('post');
+
+  // Check if the user has a profile picture
+  const profilePictureUrl = userData.profilePicture || 'https://firebasestorage.googleapis.com/v0/b/kids-chatgpt.appspot.com/o/default-profile.webp?alt=media&token=8f1f9033-90a1-42c6-9845-aefd87fb6fdd';  // Fallback to default if no picture
+
   postElement.innerHTML = `
+    <div class="post-header">
+    <h4 class="author" style="text-align: right !important;">${userData.isAdmin ? '<span class="admin-tag">Admin 👑</span>' : ''}</h4>
+      <br>
+      <div class="post-info">
+        <img src="${profilePictureUrl}" class="profile-picture" alt="Profile Picture">
+        <h2>${userData.name}</h2>
+      </div>
+    </div>
     <h3>${postData.postTitle}</h3>
     <p>${postData.postContent}</p>
-    <div class="author">Posted by: ${userData.name} on ${postTime} ${userData.isAdmin ? '<span class="admin-tag">Admin 👑</span>' : ''}</div>
+    <div class="author">${postTime}</div>
     ${postData.edited ? '<div class="edited">Edited</div>' : ''}
     <div class="post-controls"></div>
     <button class="reply-btn">Reply</button>
@@ -243,31 +319,28 @@ async function renderPost(postData, postId) {
 
   const postControls = postElement.querySelector('.post-controls');
 
-  // Show "Edit" and "Delete" buttons only if current user is the author or if the current user is an admin
   if (currentUser && (currentUser.uid === postData.userId || currentUser.isAdmin)) {
     postControls.innerHTML = `
       <button class="edit-btn">Edit</button>
       <button class="delete-btn">Delete</button>
     `;
-    
+
     const editButton = postElement.querySelector('.edit-btn');
     const deleteButton = postElement.querySelector('.delete-btn');
 
-    editButton.addEventListener('click', () => editPost(postId, postData.postContent));
+    // Pass the postElement to the editPost function
+    editButton.addEventListener('click', () => editPost(postId, postData.postContent, postElement));
     deleteButton.addEventListener('click', () => {
       if (confirm('⚠️ Are you sure you want to delete this post?')) deletePost(postId);
     });
   }
 
-  // Append the post to the posts container
   document.getElementById('posts-container').appendChild(postElement);
 
-  // Add event listener for reply
   const replyButton = postElement.querySelector('.reply-btn');
   const repliesContainer = postElement.querySelector('.replies-container');
   replyButton.addEventListener('click', () => handleReply(postId, repliesContainer));
 
-  // Display replies
   renderReplies(postData.replies, repliesContainer, postId);
 }
 
@@ -275,31 +348,53 @@ async function renderPost(postData, postId) {
 async function renderReplies(replies, container, postId, limitNum = 3) {
   container.innerHTML = ''; // Clear previous replies
   const repliesToShow = replies.slice(0, limitNum);
-  
+
   const auth = getAuth();
   const currentUser = auth.currentUser;
 
   for (let reply of repliesToShow) {
-    // Properly format the reply timestamp
-    const replyTime = reply.timestamp && reply.timestamp.toDate ? reply.timestamp.toDate().toLocaleString() : 'Date not available';
+    // Fetch user data for the reply author
     const replyUserRef = doc(userProfilesRef, reply.userId);
     const replyUserSnapshot = await getDoc(replyUserRef);
-    const replyUserData = replyUserSnapshot.data();
-    
+    const replyUserData = replyUserSnapshot.exists() ? replyUserSnapshot.data() : null;
+
+    if (!replyUserData) {
+      console.error("Error fetching user data for reply:", reply);
+      continue; // Skip if user data is not available
+    }
+
+    // Properly format the reply timestamp
+    const replyTime = reply.timestamp instanceof Date
+      ? reply.timestamp.toLocaleString()
+      : reply.timestamp?.toDate?.().toLocaleString() || 'Date not available';
+
+    // Use the user's profile picture, or a default if not available
+    const profilePictureUrl = replyUserData.profilePicture || 'https://firebasestorage.googleapis.com/v0/b/kids-chatgpt.appspot.com/o/default-profile.webp?alt=media&token=8f1f9033-90a1-42c6-9845-aefd87fb6fdd';
+
+    // Create the reply element
     const replyElement = document.createElement('div');
     replyElement.classList.add('reply');
+    replyElement.setAttribute('data-reply-id', reply.timestamp);  // Unique ID for each reply
+
+    // Add the profile picture and reply content to the reply element
     replyElement.innerHTML = `
-      <p>${reply.replyContent}</p>
-      <div class="author">
-        Replied by: ${replyUserData.name} on ${replyTime} <br><br> ${replyUserData.isAdmin ? '<span class="admin-tag">Admin 👑</span>' : ' <br>'}
+    <div class="reply-header">
+        <h4 class="admin-tag" style="text-align: right !important;">${replyUserData.isAdmin ? 'Admin 👑' : ''}</h4>
+        <br>
+        <img src="${profilePictureUrl}" class="profile-picture-reply" alt="Profile Picture">
+        <div class="reply-info">
+          <h4>${replyUserData.name}</h4>
+        </div>
       </div>
+      <br>
+      <p>${reply.replyContent}</p>
+      <div class="reply-time">${replyTime}</div>
+      <br/>
       <div class="reply-controls"></div>
     `;
 
     const replyControls = replyElement.querySelector('.reply-controls');
-
-    // Show "Edit" and "Delete Reply" buttons only if current user is the reply author or post author or if the current user is an admin
-    if (currentUser && (currentUser.uid === reply.userId || currentUser.uid === postId || currentUser.isAdmin)) {
+    if (currentUser && (currentUser.uid === reply.userId || currentUser.isAdmin)) {
       replyControls.innerHTML = `
         <button class="edit-reply-btn">Edit</button>
         <button class="delete-reply-btn">Delete</button>
@@ -317,7 +412,7 @@ async function renderReplies(replies, container, postId, limitNum = 3) {
     container.appendChild(replyElement);
   }
 
-  // If there are more replies, show a "Load More" button
+  // Show "Load More Replies" if there are more replies
   if (replies.length > limitNum) {
     const loadMoreButton = document.createElement('button');
     loadMoreButton.textContent = 'Load More Replies';
@@ -330,22 +425,62 @@ async function renderReplies(replies, container, postId, limitNum = 3) {
 
 // Handle reply editing
 async function editReply(postId, replyToEdit, container) {
-  const newContent = prompt('Edit your reply:', replyToEdit.replyContent);
-  if (!newContent) return;
+  // Find the reply content element
+  const replyElement = container.querySelector(`.reply[data-reply-id="${replyToEdit.timestamp}"]`);
+  const originalContentElement = replyElement.querySelector('p');
 
-  const postRef = doc(postsRef, postId);
-  const postSnapshot = await getDoc(postRef);
-  const postData = postSnapshot.data();
+  // Check if an edit box already exists
+  let editBox = replyElement.querySelector('.edit-reply-box');
 
-  const updatedReplies = postData.replies.map((reply) =>
-    reply === replyToEdit ? { ...reply, replyContent: newContent } : reply
-  );
+  // Toggle edit box visibility
+  if (editBox) {
+    editBox.remove(); // If the edit box is already present, remove it (hide it)
+    originalContentElement.style.display = 'block'; // Show the original reply content again
+  } else {
+    // Hide the original reply content
+    originalContentElement.style.display = 'none';
 
-  await updateDoc(postRef, {
-    replies: updatedReplies,
-  });
+    // Create the edit box
+    editBox = document.createElement('div');
+    editBox.classList.add('edit-reply-box');
+    editBox.innerHTML = `
+      <br>
+      <textarea class="edit-reply-input">${replyToEdit.replyContent}</textarea>
+      <button class="submit-edit-reply-btn">Save Changes</button>
+      <button class="cancel-edit-reply-btn">Cancel</button>
+    `;
 
-  renderReplies(updatedReplies, container, postId);
+    // Insert the edit box before the original reply content
+    originalContentElement.insertAdjacentElement('beforebegin', editBox);
+
+    // Handle saving changes
+    editBox.querySelector('.submit-edit-reply-btn').addEventListener('click', async () => {
+      const newContent = editBox.querySelector('.edit-reply-input').value;
+      if (!newContent) return alert('Please enter your reply content.');
+
+      const postRef = doc(postsRef, postId);
+      const postSnapshot = await getDoc(postRef);
+      const postData = postSnapshot.data();
+
+      const updatedReplies = postData.replies.map((reply) =>
+        reply === replyToEdit ? { ...reply, replyContent: newContent } : reply
+      );
+
+      // Update the post document with the new replies
+      await updateDoc(postRef, {
+        replies: updatedReplies,
+      });
+
+      // Re-render the replies after editing
+      renderReplies(updatedReplies, container, postId);
+    });
+
+    // Handle canceling the edit
+    editBox.querySelector('.cancel-edit-reply-btn').addEventListener('click', () => {
+      editBox.remove(); // Remove the edit box if canceled
+      originalContentElement.style.display = 'block'; // Show the original reply content again
+    });
+  }
 }
 
 // Handle reply deletion
@@ -366,25 +501,59 @@ document.getElementById('load-more-btn').addEventListener('click', () => {
 });
 
 // Edit post function
-async function editPost(postId, currentContent) {
-  const newContent = prompt('Edit your post:', currentContent);
-  if (!newContent) return;
+async function editPost(postId, currentContent, postElement) {
+  // Find the post content element
+  const postContentElement = postElement.querySelector('p');
 
-  const postRef = doc(postsRef, postId);
-  await updateDoc(postRef, {
-    postContent: newContent,
-    edited: true
-  });
+  // Check if an edit box already exists
+  let editBox = postElement.querySelector('.edit-box');
 
-  document.getElementById('posts-container').innerHTML = ''; // Clear posts
-  loadPostsByCategory(selectedCategory); // Reload posts after editing
-}
+  // Toggle edit box visibility
+  if (editBox) {
+    editBox.remove(); // If the edit box is already present, remove it (hide it)
+    postContentElement.style.display = 'block'; // Show the original content again
+  } else {
+    // Hide the original post content
+    postContentElement.style.display = 'none';
 
-// Delete post function
-async function deletePost(postId) {
-  const postRef = doc(postsRef, postId);
-  await deleteDoc(postRef);
+    // Create the edit box
+    editBox = document.createElement('div');
+    editBox.classList.add('edit-box');
+    editBox.innerHTML = `
+      <textarea class="edit-post-input">${currentContent}</textarea>
+      <button class="submit-edit-post-btn">Save Changes</button>
+      <button class="cancel-edit-post-btn">Cancel</button>
+    `;
 
-  document.getElementById('posts-container').innerHTML = ''; // Clear posts
-  loadPostsByCategory(selectedCategory); // Reload posts after deletion
+    // Insert the edit box before the original content
+    postContentElement.insertAdjacentElement('beforebegin', editBox);
+
+    // Handle saving changes
+    editBox.querySelector('.submit-edit-post-btn').addEventListener('click', async () => {
+      const newContent = editBox.querySelector('.edit-post-input').value;
+      if (!newContent) return alert('Please enter post content.');
+
+      const postRef = doc(postsRef, postId);
+
+      // Update the post in Firestore
+      await updateDoc(postRef, {
+        postContent: newContent,
+        edited: true
+      });
+
+      // Remove the edit box and re-render the updated post content
+      editBox.remove();
+      postContentElement.textContent = newContent;
+      postContentElement.style.display = 'block'; // Show the updated content
+
+      // Optionally, show a message that the post was successfully edited
+      alert('Post updated successfully!');
+    });
+
+    // Handle canceling the edit
+    editBox.querySelector('.cancel-edit-post-btn').addEventListener('click', () => {
+      editBox.remove(); // Remove the edit box if canceled
+      postContentElement.style.display = 'block'; // Show the original content again
+    });
+  }
 }

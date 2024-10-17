@@ -81,7 +81,7 @@ async function fetchUserData(uid) {
         document.getElementById('email').value = userData.email || '';
         document.getElementById('phone').value = userData.phone || '';
 
-        currentProfilePictureRef = userData.profilePicture || 'https://via.placeholder.com/50';
+        currentProfilePictureRef = userData.profilePicture || 'https://firebasestorage.googleapis.com/v0/b/kids-chatgpt.appspot.com/o/default-profile.webp?alt=media&token=8f1f9033-90a1-42c6-9845-aefd87fb6fdd';
         const profileImage = document.createElement('img');
         profileImage.src = currentProfilePictureRef;
         profileImage.alt = "Profile Picture";
@@ -153,7 +153,7 @@ async function removeKidFromFirestore(kidToRemove) {
 async function deleteProfilePicture() {
     if (!confirm('Are you sure you want to delete your profile picture?')) return;
 
-    if (currentProfilePictureRef && currentProfilePictureRef !== 'https://via.placeholder.com/50') {
+    if (currentProfilePictureRef && currentProfilePictureRef !== 'https://firebasestorage.googleapis.com/v0/b/kids-chatgpt.appspot.com/o/default-profile.webp?alt=media&token=8f1f9033-90a1-42c6-9845-aefd87fb6fdd') {
         const storage = getStorage();
         const storageRef = ref(storage, currentProfilePictureRef);
         try {
@@ -162,7 +162,7 @@ async function deleteProfilePicture() {
 
             profilePictureContainer.innerHTML = '';
             const defaultImage = document.createElement('img');
-            defaultImage.src = 'https://via.placeholder.com/50';
+            defaultImage.src = 'https://firebasestorage.googleapis.com/v0/b/kids-chatgpt.appspot.com/o/default-profile.webp?alt=media&token=8f1f9033-90a1-42c6-9845-aefd87fb6fdd';
             defaultImage.alt = "Default Profile Picture";
             defaultImage.style.width = '150px';
             defaultImage.style.height = '150px';
@@ -218,7 +218,7 @@ userForm.addEventListener('submit', async (e) => {
         email,
         phone,
         kids,
-        profilePicture: profilePictureUrl || 'https://via.placeholder.com/50',
+        profilePicture: profilePictureUrl || 'https://firebasestorage.googleapis.com/v0/b/kids-chatgpt.appspot.com/o/default-profile.webp?alt=media&token=8f1f9033-90a1-42c6-9845-aefd87fb6fdd',
         // Merge existing fields to avoid overwriting them
         isPremium: existingData.isPremium || false,
         isGold: existingData.isGold || false,

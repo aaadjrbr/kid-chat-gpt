@@ -27,6 +27,7 @@
 
 <!-- Admin Video Form (Only visible to Admins) -->
 <form id="video-form" style="display:none;">
+  <h2>Only admins can see it!</h2>
   <label for="video-title">Video Title:</label>
   <input type="text" id="video-title" required placeholder="Enter video title" />
   
@@ -44,7 +45,23 @@
   <!-- Container for displaying YouTube videos -->
   <div id="video-container"></div>
   
+
+  <br/><br/>
+
+<div class="filter-post-stuff">
 <!-- Toggle button to show/hide the form -->
+  <!-- Category Selection -->
+   <section id="filter">
+    <h2 class="selec-cat">🔎 Select a Category</h2>
+    <select id="category-select">
+      <option value="Safety">Safety</option>
+      <option value="Bugs">Bugs</option>
+      <option value="Suggestions">Suggestions</option>
+      <option value="What is in your mind?">What is in your mind?</option>
+      <option value="Advices">Advices</option>
+    </select>
+    <button id="filter-btn">Filter Posts</button>
+  </section>
 <div style="display: flex; justify-content: center; margin: 20px 0; text-align: center;">
   <button id="toggle-post-form-btn">✨ Create a Post</button>
 </div>
@@ -65,28 +82,16 @@
     <button type="submit">Create Post</button>
   </form>
 </section>
-
+</div>
 
   <!-- Posts Section -->
   <section id="posts">
           <!-- Category Message -->
   <div id="category-message"></div> <!-- Added this line for the category message -->
     <br/>
-  <!-- Category Selection -->
-    <section id="filter">
-      <h2 class="selec-cat">🔎 Select a Category</h2>
-      <select id="category-select">
-        <option value="Safety">Safety</option>
-        <option value="Bugs">Bugs</option>
-        <option value="Suggestions">Suggestions</option>
-        <option value="What is in your mind?">What is in your mind?</option>
-        <option value="Advices">Advices</option>
-      </select>
-      <button id="filter-btn">Filter Posts</button>
-    </section>
     <hr/>
   <br/>
-  <h2>Posts</h2>
+  <h2>What is happening? (Posts)</h2>
     <div id="posts-container"></div>
     <button id="load-more-btn">Load More Posts</button>
   </section>
@@ -107,7 +112,7 @@ document.getElementById('toggle-post-form-btn').addEventListener('click', functi
     this.textContent = 'Hide Post Form'; // Change button text
   } else {
     postFormSection.style.display = 'none';  // Hide the form
-    this.textContent = 'Create a Post'; // Change button text back
+    this.textContent = '✨ Create a Post'; // Change button text back
   }
 });
   </script>
