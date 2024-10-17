@@ -28,4 +28,4 @@ jobs:
       - name: Deploy to Firebase Hosting
         run: |
           npm install -g firebase-tools
-          firebase deploy --token ${{ secrets.FIREBASE_SERVICE_ACCOUNT_KIDS_CHATGPT }} --project kids-chatgpt
+          firebase deploy --only hosting --token ${{ secrets.FIREBASE_SERVICE_ACCOUNT_KIDS_CHATGPT }} --project kids-chatgpt
