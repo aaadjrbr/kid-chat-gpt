@@ -88,8 +88,9 @@ button.remove-kid-btn {
 
 #profile-img, img {
     border-radius: 50%;
-    width: 80px;
-    height: 80px;
+    width: 80px !important;
+    height: 80px !important;
+    margin-top: 10px;
     object-fit: cover;
     margin-bottom: 10px;
 }
@@ -141,6 +142,7 @@ button.remove-kid-btn {
     border: none;
     border-radius: 10px;
     padding: 10px 20px;
+    margin-bottom: -5px !important;
     font-size: 1em;
     cursor: pointer;
     margin: 5px;
@@ -150,6 +152,11 @@ button.remove-kid-btn {
 .forgot-pin-container button:hover {
     background-color: #ff8a50;
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+div.user-box p {
+    padding: 10px;
+    /* margin-top: 10px !important; */
 }
 
 /* Mobile Adjustments */

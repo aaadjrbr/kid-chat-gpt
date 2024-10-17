@@ -8,6 +8,7 @@
 </head>
 <body>
     <div class="forgot-pin-container">
+        <div style="margin-top: 10px;"></div>
         <h2>Register User</h2>
         <h3><a href="./profiles.html">Go back</a></h3>
         
@@ -18,11 +19,12 @@
             <br/><br/>
             <div id="profile-toggle" style="display:none;">
                 <form id="user-form">
-                    <label for="profilePicture">Profile Picture:</label>
+                    <label for="profilePicture">Current Profile Picture:</label>
                     <div id="profile-picture-container">
-                        <img id="profile-img" src="default-pic.jpg" alt="Profile Picture" />
+                        <img id="profile-img" src="https://firebasestorage.googleapis.com/v0/b/kids-chatgpt.appspot.com/o/default-profile.webp?alt=media&token=8f1f9033-90a1-42c6-9845-aefd87fb6fdd" alt="Profile Picture" />
                         <button type="button" id="delete-btn">Delete Picture</button>
-                    </div>                    
+                    </div>     
+                    <label for="name">Choose a picture:</label><br>               
                     <input type="file" id="profilePicture" accept="image/*" /><br><br>
 
                     <label for="name">Name:</label><br>
@@ -41,6 +43,7 @@
                     <button type="button" id="add-kid-btn">Add Another Kid</button><br><br>
 
                     <button type="submit">Submit</button>
+                    <div style="margin-top: 15px;"></div>
                 </form>
             </div>
         </div>
