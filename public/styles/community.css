@@ -226,7 +226,7 @@ button.edit-btn:hover, button.delete-btn:hover, button.edit-reply-btn:hover, but
 
 .post p {
   margin-bottom: 25px;
-  font-size: 1.4em;
+  font-size: 1.2em !important;
   text-align: left !important;
 }
 
@@ -236,7 +236,7 @@ button.edit-btn:hover, button.delete-btn:hover, button.edit-reply-btn:hover, but
 }
 
 div.reply p {
-  font-size: 1.2em;
+  font-size: 1.1em !important;
 }
 
 div.reply h4 {
@@ -252,6 +252,19 @@ div.post h2 {
   font-size: 0.8em;
   color: #777;
   margin-bottom: 10px;
+}
+
+button.see-comments-btn {
+  background: none;
+  color: rgb(0, 119, 255);
+  font-size: 0.9em !important;
+}
+
+button.hide-comments-btn {
+  background: none;
+  color: rgb(0, 119, 255);
+  margin-bottom: 6px;
+  font-size: 0.9em !important;
 }
 
 button.reply-btn {

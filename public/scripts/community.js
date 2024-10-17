@@ -273,15 +273,21 @@ async function handleReply(postId, repliesContainer) {
         replies: updatedReplies,
       });
 
-      // Clear the input box and re-render the replies
+      // Clear the input box
       replyBox.querySelector('.reply-input').value = '';
-      renderReplies(updatedReplies, repliesContainer, postId);
+
+      // Automatically show the latest 3 replies
+      await renderReplies(updatedReplies, repliesContainer, postId);
+
+      // Automatically show the comments after a reply is submitted
+      repliesContainer.querySelector('.replies-list').style.display = 'block';
+      repliesContainer.querySelector('.see-comments-btn').style.display = 'none';
+      repliesContainer.querySelector('.hide-comments-btn').style.display = 'inline';
     });
   }
 }
 
 // Render post with user info and replies
-// Render post with user info, profile picture, and replies
 async function renderPost(postData, postId) {
   const userRef = doc(userProfilesRef, postData.userId);
   const userSnapshot = await getDoc(userRef);
@@ -341,13 +347,68 @@ async function renderPost(postData, postId) {
   const repliesContainer = postElement.querySelector('.replies-container');
   replyButton.addEventListener('click', () => handleReply(postId, repliesContainer));
 
-  renderReplies(postData.replies, repliesContainer, postId);
+  // Initially, display "See comments" button if there are replies
+  if (postData.replies && postData.replies.length > 0) {
+    repliesContainer.innerHTML = `
+      <button class="see-comments-btn">See comments</button>
+      <button class="hide-comments-btn" style="display: none;">Hide comments</button>
+      <div class="replies-list" style="display: none;"></div>
+    `;
+  } else {
+    repliesContainer.innerHTML = '<p>No replies yet</p>';
+  }
+  
+  const seeCommentsButton = repliesContainer.querySelector('.see-comments-btn');
+  const hideCommentsButton = repliesContainer.querySelector('.hide-comments-btn');
+  const repliesList = repliesContainer.querySelector('.replies-list');
+
+    // Make sure the seeCommentsButton exists before accessing style
+    if (seeCommentsButton) {
+      seeCommentsButton.style.display = 'inline';
+  }
+  
+  // Make sure the hideCommentsButton exists before accessing style
+  if (hideCommentsButton) {
+      hideCommentsButton.style.display = 'none';
+  }
+
+  // Handle showing replies when "See comments" is clicked
+  seeCommentsButton.addEventListener('click', async () => {
+    seeCommentsButton.style.display = 'none'; // Hide the "See comments" button
+    hideCommentsButton.style.display = 'inline'; // Show the "Hide comments" button
+    repliesList.style.display = 'block'; // Show replies
+  
+    // Load and display replies only the first time the button is clicked
+    if (!repliesList.hasChildNodes()) {
+      await renderReplies(postData.replies, repliesList, postId); // Show replies
+    }
+  });
+  
+  // Handle hiding replies when "Hide comments" is clicked
+  hideCommentsButton.addEventListener('click', () => {
+    hideCommentsButton.style.display = 'none'; // Hide the "Hide comments" button
+    seeCommentsButton.style.display = 'inline'; // Show the "See comments" button
+    repliesList.style.display = 'none'; // Hide replies
+  });
 }
 
 // Render replies with pagination (first 3 replies by default)
-async function renderReplies(replies, container, postId, limitNum = 3) {
+async function renderReplies(replies, container, postId, limitNum = 2) {
   container.innerHTML = ''; // Clear previous replies
-  const repliesToShow = replies.slice(0, limitNum);
+
+  // Check if there are replies
+  if (replies.length === 0) {
+    container.innerHTML = '<p>No replies yet</p>';
+    return;
+  }
+
+  const sortedReplies = replies.sort((a, b) => {
+    const aTime = a.timestamp?.toDate ? a.timestamp.toDate() : new Date(a.timestamp);
+    const bTime = b.timestamp?.toDate ? b.timestamp.toDate() : new Date(b.timestamp);
+    return bTime - aTime;
+  });
+
+  const repliesToShow = sortedReplies.slice(0, limitNum);
 
   const auth = getAuth();
   const currentUser = auth.currentUser;
@@ -376,7 +437,6 @@ async function renderReplies(replies, container, postId, limitNum = 3) {
     replyElement.classList.add('reply');
     replyElement.setAttribute('data-reply-id', reply.timestamp);  // Unique ID for each reply
 
-    // Add the profile picture and reply content to the reply element
     replyElement.innerHTML = `
     <div class="reply-header">
         <h4 class="admin-tag" style="text-align: right !important;">${replyUserData.isAdmin ? 'Admin 👑' : ''}</h4>
@@ -417,10 +477,29 @@ async function renderReplies(replies, container, postId, limitNum = 3) {
     const loadMoreButton = document.createElement('button');
     loadMoreButton.textContent = 'Load More Replies';
     loadMoreButton.addEventListener('click', () => {
-      renderReplies(replies, container, postId, limitNum + 3);
+      renderReplies(replies, container, postId, limitNum + 2);
     });
     container.appendChild(loadMoreButton);
   }
+
+  // Ensure "Hide comments" button stays visible after rendering replies
+  const hideCommentsButton = container.parentElement.querySelector('.hide-comments-btn');
+  const seeCommentsButton = container.parentElement.querySelector('.see-comments-btn');
+
+  if (hideCommentsButton) {
+    hideCommentsButton.style.display = 'inline';  // Ensure the hide button is visible
+  }
+  
+  if (seeCommentsButton) {
+    seeCommentsButton.style.display = 'none';  // Ensure the see button is hidden
+  }
+
+  // Add event listener for hiding replies again
+  hideCommentsButton?.addEventListener('click', () => {
+    hideCommentsButton.style.display = 'none';  // Hide the hide button
+    seeCommentsButton.style.display = 'inline';  // Show the see button
+    container.style.display = 'none';  // Hide replies
+  });
 }
 
 // Handle reply editing
