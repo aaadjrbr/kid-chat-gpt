@@ -133,43 +133,101 @@ async function loadVideos() {
 }
 
 // Display a video with navigation controls (next/previous)
-function displayVideo(video, videos) {
+// Display a video in the video-container
+function displayVideo(video) {
   const videoContainer = document.getElementById('video-container');
+  
+  if (!video || !video.videoUrl) {
+    console.error("No video URL provided.");
+    return;
+  }
+
   videoContainer.innerHTML = `
-  <div class="video-stuff">
-  <div class="title-video1">
-    <h3>${video.videoTitle || 'Untitled Video'}</h3>  <!-- Display title -->
-  </div>
-    <iframe width="560" height="315" src="${convertToEmbedUrl(video.videoUrl)}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-    <div class="button-next-back">
-      <button id="prev-video" ${videoIndex === 0 ? 'disabled' : ''}>Previous</button>
-      <button id="next-video" ${videoIndex === videos.length - 1 ? 'disabled' : ''}>Next</button>
-    </div>
+    <div class="video-stuff">
+      <div class="title-video1">
+        <h3>${video.videoTitle || 'Untitled Video'}</h3>
+      </div>
+      <iframe width="560" height="315" src="${convertToEmbedUrl(video.videoUrl)}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
     </div>
   `;
-
-  // Add event listeners for next/previous buttons
-  document.getElementById('prev-video').addEventListener('click', () => {
-    if (videoIndex > 0) {
-      videoIndex--;
-      displayVideo(videos[videoIndex], videos);
-    }
-  });
-
-  document.getElementById('next-video').addEventListener('click', () => {
-    if (videoIndex < videos.length - 1) {
-      videoIndex++;
-      displayVideo(videos[videoIndex], videos);
-    }
-  });
 }
 
 // Convert YouTube URL to embed format
 function convertToEmbedUrl(url) {
+  if (!url) return '';
   const urlObj = new URL(url);
   const videoId = urlObj.searchParams.get('v');
   return `https://www.youtube.com/embed/${videoId}`;
 }
+
+let lastVisibleVideo = null; // Track the last video for pagination
+let videoLimit = 5; // Number of videos to load at once
+
+// Open video modal
+document.getElementById('see-all-videos-btn').addEventListener('click', () => {
+  document.getElementById('video-modal').style.display = 'block';
+  loadVideosWithPagination(); // Load videos when modal is opened
+});
+
+// Close video modal
+document.getElementById('close-video-modal').addEventListener('click', () => {
+  document.getElementById('video-modal').style.display = 'none';
+});
+
+// Load videos with pagination
+async function loadVideosWithPagination() {
+  const videoListContainer = document.getElementById('video-list-container');
+  
+  // Clear the video list before loading new videos
+  if (!lastVisibleVideo) videoListContainer.innerHTML = ''; 
+  
+  // Query Firestore for videos with pagination
+  let q = query(videosRef, orderBy('timestamp', 'desc'), limit(videoLimit));
+  if (lastVisibleVideo) {
+    q = query(videosRef, orderBy('timestamp', 'desc'), startAfter(lastVisibleVideo), limit(videoLimit));
+  }
+
+  const querySnapshot = await getDocs(q);
+
+  querySnapshot.forEach((doc) => {
+    const video = doc.data();
+    const videoElement = document.createElement('div');
+    videoElement.innerHTML = `
+      <div>
+        <h4>${video.videoTitle || 'Untitled Video'}</h4>
+        <button class="play-video-btn" data-url="${video.videoUrl}">Play Video ▶️</button>
+      </div>
+    `;
+    videoListContainer.appendChild(videoElement);
+  });
+
+  // Track the last visible video for pagination
+  if (querySnapshot.docs.length > 0) {
+    lastVisibleVideo = querySnapshot.docs[querySnapshot.docs.length - 1];
+  }
+
+  // Hide "Load More" button if no more videos
+  if (querySnapshot.size < videoLimit) {
+    document.getElementById('load-more-videos-btn').style.display = 'none';
+  } else {
+    document.getElementById('load-more-videos-btn').style.display = 'block';
+  }
+}
+
+// Load more videos when the "Load More" button is clicked
+document.getElementById('load-more-videos-btn').addEventListener('click', () => {
+  loadVideosWithPagination();
+});
+
+// Play video when a video is clicked
+document.addEventListener('click', (e) => {
+  if (e.target && e.target.classList.contains('play-video-btn')) {
+    const videoUrl = e.target.getAttribute('data-url');
+    displayVideo({ videoUrl }); // Use your existing displayVideo function to play the video
+    document.getElementById('video-modal').style.display = 'none'; // Close modal after selecting a video
+  }
+});
+
 
 // Fetch posts by category with pagination
 async function loadPostsByCategory(category) {
