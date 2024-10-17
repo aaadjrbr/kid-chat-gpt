@@ -1,0 +1,491 @@
+/* Global Styles */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+
+:root {
+  --color-bg1: rgb(243, 138, 184);
+  --color-bg2: rgb(103, 162, 235);
+}
+
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Roboto', sans-serif;
+}
+
+body {
+  background: radial-gradient(circle, var(--color-bg1) 0%, var(--color-bg2) 100%);
+  color: #333;
+  font-size: 16px;
+}
+
+h1 {
+  font-family: "Protest Strike", sans-serif;
+  font-size: 2.6em;
+  color: #ffffff;
+  font-weight: 400;
+}
+
+h2 {
+  color: #333;
+  text-align: center;
+  margin-bottom: 20px;
+  font-weight: 700;
+}
+
+button {
+  background: linear-gradient(135deg, #007bff, #0056b3);
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+button:hover {
+  background: linear-gradient(135deg, #0056b3, #004080);
+}
+
+button .material-icons {
+  margin-right: 8px;
+  font-size: 18px;
+}
+
+/* Header Styles */
+header {
+  background: linear-gradient(135deg, #007bff, #0056b3);
+  color: white;
+  padding: 20px;
+  text-align: center;
+  top: 0;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+div#video-container h3 {
+  font-size: 1.6em;
+  background: #fff;
+  padding: 10px;
+  border-radius: 10px
+}
+
+.title-video1 {
+  display: flex;
+  justify-content: center;
+  margin: 20px auto;
+}
+
+div#posts-container p {
+  text-align: center;
+}
+
+#auth-status {
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+#logout-btn {
+  background: linear-gradient(135deg, #dc3545, #c82333);
+  font-size: 14px;
+  margin-top: 10px;
+  border-radius: 25px;
+}
+
+#logout-btn:hover {
+  background: linear-gradient(135deg, #c82333, #a71e28);
+}
+
+/* Post Form */
+#create-post {
+  width: 80%;
+  max-width: 700px;
+  margin: 20px auto;
+  padding: 25px;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+#filter {
+  margin-top: -10px !important;
+  max-width: 700px;
+  width: 60%;
+  font-size: 1em !important;
+  margin: 20px auto;
+}
+
+#create-post:hover {
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+#create-post input, #create-post textarea, #create-post select {
+  width: 100%;
+  padding: 15px;
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+  background-color: #f9f9f9;
+}
+
+#create-post button {
+  width: 100%;
+  border-radius: 25px;
+}
+
+#filter select, #filter button {
+  width: 100%;
+  margin-top: 10px;
+}
+
+button.edit-btn, button.delete-btn, button.edit-reply-btn, button.delete-reply-btn {
+  margin-top: 6px;
+  font-size: 0.8em;
+  background: linear-gradient(135deg, #dcdf3b, #dcdf3b);
+  color: #000;
+}
+
+button.edit-btn:hover, button.delete-btn:hover, button.edit-reply-btn:hover, button.delete-reply-btn:hover {
+  background: linear-gradient(135deg, #dcdf3bd2, #dcdf3bd0);
+}
+
+.button-go-back-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px; /* Optional: add some spacing from the top */
+}
+
+.button-go-back {
+  background-color: #ffa726;
+  border: none;
+  cursor: pointer;
+  border-radius: 15px;
+  padding: 10px;
+  color: #fff;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.button-go-back:hover {
+  background-color: #fb8c00;
+  transform: translateY(-2px);
+}
+
+/* Posts Section */
+#posts {
+  max-width: 700px;
+  width: 90%;
+  margin: 20px auto;
+  padding: 25px;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.158);
+}
+
+.page-entire {
+  background-color: #ffffff33;
+}
+
+.post {
+  margin-bottom: 20px;
+  padding: 20px;
+  background-color: #e7f4ee;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease;
+}
+
+.post:hover {
+  transform: scale(1.02);
+}
+
+.post h3 {
+  margin-bottom: 10px;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.post p {
+  margin-bottom: 25px;
+  font-size: 1.4em;
+  text-align: left !important;
+}
+
+div.reply p {
+  font-size: 1.1em;
+  font-weight: bold;
+}
+
+.post .author {
+  font-size: 0.8em;
+  color: #777;
+  margin-bottom: 10px;
+}
+
+button.reply-btn {
+  margin-top: 8px;
+  margin-bottom: 8px;
+  font-size: 0.8em;
+}
+
+.post .post-controls button {
+  margin-right: 10px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.edited {
+  font-size: 12px;
+  color: #888;
+  font-style: italic;
+}
+
+.admin-tag {
+  color: #fff;
+  background: #ff5733;
+  font-weight: bold;
+  font-size: 1em;
+  padding: 8px;
+  border-radius: 8px;
+  margin-left: 10px;
+}
+
+/* Replies Section */
+.replies-container {
+  margin-top: 10px;
+  padding-left: 15px;
+  border-left: 3px solid #eee;
+}
+
+.reply {
+  padding: 15px;
+  background-color: #c5dcff;
+  border-radius: 15px;
+  margin-bottom: 10px;
+}
+
+.reply .author {
+  font-size: 12px;
+  color: #555;
+}
+
+.reply-controls button {
+  font-size: 12px;
+  margin-right: 5px;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Video Section */
+#video-container {
+  max-width: 700px;
+  margin: 20px auto;
+  text-align: center;
+}
+
+/* Category Message */
+#category-message {
+  font-size: 16px;
+  text-align: center;
+  color: #555;
+  margin-top: 15px;
+}
+
+/* Load More Button */
+#load-more-btn {
+  display: block;
+  width: 80%;
+  max-width: 600px;
+  margin: 20px auto;
+  text-align: center;
+  background: linear-gradient(135deg, #ff9f1c, #ff9f1c);
+  border-radius: 30px;
+  padding: 12px 0;
+  font-size: 0.9em;
+}
+
+#load-more-btn:hover {
+  background: linear-gradient(135deg, #ff851b, #ff851b);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  body {
+    font-size: 14px;
+  }
+
+  #create-post, #filter, #posts {
+    padding: 20px;
+  }
+
+  #create-post button, #filter button {
+    font-size: 14px;
+  }
+
+  .post h3 {
+    font-size: 18px;
+  }
+
+  .post p {
+    font-size: 14px;
+  }
+
+  #load-more-btn {
+    font-size: 14px;
+  }
+}
+
+/* Admin Video Form Styling */
+#video-form {
+  display: none;
+  width: 80%;
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 25px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  font-family: 'Roboto', sans-serif;
+}
+
+#video-form label {
+  font-size: 16px;
+  color: #333;
+  display: block;
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+
+#video-form input {
+  width: 100%;
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+  background-color: #f9f9f9;
+  transition: border-color 0.3s ease;
+  margin-bottom: 20px;
+}
+
+#video-form input:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+#video-form button {
+  width: 100%;
+  padding: 12px 0;
+  border: none;
+  border-radius: 30px;
+  background: linear-gradient(135deg, #28a745, #218838);
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+#video-form button:hover {
+  background: linear-gradient(135deg, #218838, #1a6f2e);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Styling for next and back buttons */
+.button-next-back {
+  display: flex;
+  width: 60%;
+  justify-content: space-between; /* Ensures buttons are spaced apart */
+  align-items: center;
+  gap: 20px; /* Adds space between buttons */
+  margin: 20px auto; /* Centers the container horizontally */
+  max-width: 400px; /* Limits the width to prevent it from stretching too far */
+}
+
+.button-next-back button {
+  flex: 1; /* Ensures both buttons take equal width */
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #007bff, #0056b3);
+  color: white;
+  border: none;
+  border-radius: 30px;
+  width: 60%;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.button-next-back button:hover {
+  background: linear-gradient(135deg, #0056b3, #004080);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+#category-message {
+  font-weight: bold;
+}
+
+.selec-cat {
+  font-size: 1.2em !important;
+  margin-bottom: -2px;
+}
+
+/* Styling for the Category Select Dropdown */
+select#category-select {
+  width: 100%;
+  text-align: center !important;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1em;
+  background-color: #f9f9f9;
+  color: #333;
+  cursor: pointer;
+  appearance: none; /* Hides the default arrow in some browsers */
+  background-image: url('https://fonts.gstatic.com/s/i/materialiconsoutlined/arrow_drop_down/v12/24px.svg');
+  background-repeat: no-repeat;
+  background-position: right 15px center;
+  background-size: 20px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+select#category-select:focus {
+  border-color: #007bff;
+  padding: 5px !important;
+  font-size: 0.9em !important;
+  outline: none;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Adds a subtle blue glow when focused */
+}
+
+select#category-select:hover {
+  border-color: #0056b3;
+}
+
+/* Responsive iframe styling */
+iframe {
+  width: 90%;
+  max-width: 700px; /* Restricts maximum width */
+  height: 400px; /* Adjusts the height relative to width */
+  border: 8px solid #fff;
+  border-radius: 20px; /* Rounds the edges for a modern look */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Adds a subtle shadow for depth */
+  margin: 20px auto;
+  display: block;
+}
+
+/* Adjust height dynamically for smaller screens */
+@media (max-width: 768px) {
+  iframe {
+    height: 250px; /* Makes it smaller on mobile devices */
+  }
+}

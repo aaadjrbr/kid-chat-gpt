@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🌍 Parents' Community - Alfie AI</title>
+  <link rel="stylesheet" href="styles/community.css"> <!-- Optional CSS for styling -->
+  <link href="https://fonts.googleapis.com/css2?family=Protest+Strike&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Navbar or Header -->
+  <header>
+    <h1>🌍 Parents' Community</h1>
+    <div id="auth-status" style="display: none;"></div>
+  <div style="display: none;">
+    <button id="logout-btn">Logout</button>
+  </div>
+<div class="button-go-back-container">
+    <a class="button-go-back" style="text-align: center; text-decoration: none;" href="./profiles.html">
+        <span>Go back</span>
+    </a>
+</div>
+  </header>
+
+<div class="page-entire">
+<br/>
+
+<!-- Admin Video Form (Only visible to Admins) -->
+<form id="video-form" style="display:none;">
+  <label for="video-title">Video Title:</label>
+  <input type="text" id="video-title" required placeholder="Enter video title" />
+  
+  <label for="video-url">YouTube Video URL:</label>
+  <input type="url" id="video-url" required placeholder="Enter YouTube URL" />
+  
+  <button type="submit">Post Video</button>
+</form>
+
+<!-- Video Container for displaying YouTube videos -->
+
+<div class="button-next-back"></div>
+
+  
+  <!-- Container for displaying YouTube videos -->
+  <div id="video-container"></div>
+  
+<!-- Toggle button to show/hide the form -->
+<div style="display: flex; justify-content: center; margin: 20px 0; text-align: center;">
+  <button id="toggle-post-form-btn">✨ Create a Post</button>
+</div>
+
+<!-- Post Creation Form (Initially hidden) -->
+<section id="create-post" style="display: none;">
+  <h2>Create a Post</h2>
+  <form id="post-form">
+    <input type="text" id="post-title" placeholder="Post Title" required />
+    <textarea id="post-content" placeholder="Post Content" required></textarea>
+    <select id="post-category" required>
+      <option value="Safety">Safety</option>
+      <option value="Bugs">Bugs</option>
+      <option value="Suggestions">Suggestions</option>
+      <option value="What is in your mind?">What is in your mind?</option>
+      <option value="Advices">Advices</option>
+    </select>
+    <button type="submit">Create Post</button>
+  </form>
+</section>
+
+
+  <!-- Posts Section -->
+  <section id="posts">
+          <!-- Category Message -->
+  <div id="category-message"></div> <!-- Added this line for the category message -->
+    <br/>
+  <!-- Category Selection -->
+    <section id="filter">
+      <h2 class="selec-cat">🔎 Select a Category</h2>
+      <select id="category-select">
+        <option value="Safety">Safety</option>
+        <option value="Bugs">Bugs</option>
+        <option value="Suggestions">Suggestions</option>
+        <option value="What is in your mind?">What is in your mind?</option>
+        <option value="Advices">Advices</option>
+      </select>
+      <button id="filter-btn">Filter Posts</button>
+    </section>
+    <hr/>
+  <br/>
+  <h2>Posts</h2>
+    <div id="posts-container"></div>
+    <button id="load-more-btn">Load More Posts</button>
+  </section>
+
+<br/>
+</div> <!--Page entire-->
+
+  <br/><br/>
+
+  <script type="module" src="scripts/community.js"></script>
+
+  <script>
+    // Toggle post creation form visibility
+document.getElementById('toggle-post-form-btn').addEventListener('click', function() {
+  const postFormSection = document.getElementById('create-post');
+  if (postFormSection.style.display === 'none') {
+    postFormSection.style.display = 'block';  // Show the form
+    this.textContent = 'Hide Post Form'; // Change button text
+  } else {
+    postFormSection.style.display = 'none';  // Hide the form
+    this.textContent = 'Create a Post'; // Change button text back
+  }
+});
+  </script>
+</body>
+</html>
