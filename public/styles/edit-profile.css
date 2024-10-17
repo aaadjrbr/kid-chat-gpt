@@ -46,6 +46,8 @@ button#add-kid-btn {
 }
 
 button.remove-kid-btn {
+    margin-top: -10px !important;
+    margin-bottom: 12px !important;
     background-color: #ff6f61 !important;
     font-size: 0.8em !important;
 }
@@ -156,7 +158,7 @@ button.remove-kid-btn {
         width: 95%; /* Increase width to 95% for better space utilization */
         padding: 10px;
         top: 10px;
-        max-height: 65vh;
+        max-height: 75vh;
     }
 
     .forgot-pin-container h2 {
