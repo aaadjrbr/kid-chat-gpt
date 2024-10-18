@@ -176,7 +176,7 @@ async function loadVideosWithPagination() {
     querySnapshot.forEach((doc) => {
       const video = doc.data();
       const videoId = doc.id; // Get the document ID
-      loadedVideos.push(video); 
+      loadedVideos.push(video); // Store all loaded videos
       const videoElement = createVideoElement(video, videoId); // Pass the videoId for deletion
       videoContainer.appendChild(videoElement);
     });
@@ -192,7 +192,38 @@ async function loadVideosWithPagination() {
       document.getElementById('load-more-videos-btn').style.display = 'block';
     }
   }
+
+  // Show "Hide Videos" button if there are more than 5 videos
+  if (loadedVideos.length > 5) {
+    document.getElementById('hide-videos-btn').style.display = 'block';
+  }
 }
+
+// Hide back to first 5 videos
+function hideVideosToFirstBatch() {
+  const videoContainer = document.getElementById('video-container');
+  videoContainer.innerHTML = ''; // Clear all current videos
+  
+  // Only show the first 5 videos from the loadedVideos array
+  const firstFiveVideos = loadedVideos.slice(0, 5);
+  
+  firstFiveVideos.forEach((video, index) => {
+    const videoId = `video-${index}`;
+    const videoElement = createVideoElement(video, videoId);
+    videoContainer.appendChild(videoElement);
+  });
+
+  // Reset the "Load More" button since we are back to first batch
+  document.getElementById('load-more-videos-btn').style.display = 'block';
+
+  // Hide "Hide Videos" button after reverting back to the first 5 videos
+  document.getElementById('hide-videos-btn').style.display = 'none';
+}
+
+// Add event listener for "Hide" button to hide extra videos and show first 5
+document.getElementById('hide-videos-btn').addEventListener('click', () => {
+  hideVideosToFirstBatch();
+});
 
 // Create video elements with delete option hidden by default
 function createVideoElement(video, videoId) {
