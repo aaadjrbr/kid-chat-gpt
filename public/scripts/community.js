@@ -9,6 +9,8 @@ let lastVisiblePost = null;
 let limitNum = 5; // Number of posts to load at once
 let videoIndex = 0; // To handle video navigation
 let selectedCategory = 'Safety'; // Default category
+let allVideos = []; // Store all loaded videos for client-side search
+let searchTimeout = null; // Search functionality
 
 // Listen for user login status
 onAuthStateChanged(getAuth(), async (user) => {
@@ -175,11 +177,15 @@ document.getElementById('close-video-modal').addEventListener('click', () => {
 });
 
 // Load videos with pagination
+// Load videos with pagination
 async function loadVideosWithPagination() {
   const videoListContainer = document.getElementById('video-list-container');
   
-  // Clear the video list before loading new videos
-  if (!lastVisibleVideo) videoListContainer.innerHTML = ''; 
+  // If no videos have been loaded yet, clear the container
+  if (!lastVisibleVideo) {
+    videoListContainer.innerHTML = ''; 
+    allVideos = []; // Clear previous videos when starting a new load
+  }
   
   // Query Firestore for videos with pagination
   let q = query(videosRef, orderBy('timestamp', 'desc'), limit(videoLimit));
@@ -191,13 +197,8 @@ async function loadVideosWithPagination() {
 
   querySnapshot.forEach((doc) => {
     const video = doc.data();
-    const videoElement = document.createElement('div');
-    videoElement.innerHTML = `
-      <div>
-        <h4>${video.videoTitle || 'Untitled Video'}</h4>
-        <button class="play-video-btn" data-url="${video.videoUrl}">Play Video ▶️</button>
-      </div>
-    `;
+    allVideos.push(video); // Store each video in the array
+    const videoElement = createVideoElement(video);
     videoListContainer.appendChild(videoElement);
   });
 
@@ -214,6 +215,59 @@ async function loadVideosWithPagination() {
   }
 }
 
+// Helper function to create video elements
+function createVideoElement(video) {
+  const videoElement = document.createElement('div');
+  videoElement.innerHTML = `
+    <div>
+      <h4>${video.videoTitle || 'Untitled Video'}</h4>
+      <button class="play-video-btn" data-url="${video.videoUrl}">Play Video ▶️</button>
+    </div>
+  `;
+  return videoElement;
+}
+
+// Search functionality (client-side)
+document.getElementById('video-search').addEventListener('input', (e) => {
+  const searchTerm = e.target.value.trim().toLowerCase();
+
+  if (searchTimeout) {
+    clearTimeout(searchTimeout);
+  }
+
+  // Add a delay to avoid multiple reads on every keystroke
+  searchTimeout = setTimeout(() => {
+    if (searchTerm) {
+      searchVideosByTitle(searchTerm);  // Search locally from `allVideos`
+    } else {
+      displayVideos(allVideos); // Reset to show all videos if search is cleared
+    }
+  }, 300); // 300ms delay
+});
+
+// Local search function
+function searchVideosByTitle(searchTerm) {
+  const filteredVideos = allVideos.filter((video) =>
+    video.videoTitle.toLowerCase().includes(searchTerm)
+  );
+  displayVideos(filteredVideos);
+}
+
+// Display videos in the modal
+function displayVideos(videos) {
+  const videoListContainer = document.getElementById('video-list-container');
+  videoListContainer.innerHTML = ''; // Clear previous results
+
+  if (videos.length > 0) {
+    videos.forEach((video) => {
+      const videoElement = createVideoElement(video);
+      videoListContainer.appendChild(videoElement);
+    });
+  } else {
+    videoListContainer.innerHTML = '<p>No videos found.</p>';
+  }
+}
+
 // Load more videos when the "Load More" button is clicked
 document.getElementById('load-more-videos-btn').addEventListener('click', () => {
   loadVideosWithPagination();
@@ -227,7 +281,6 @@ document.addEventListener('click', (e) => {
     document.getElementById('video-modal').style.display = 'none'; // Close modal after selecting a video
   }
 });
-
 
 // Fetch posts by category with pagination
 async function loadPostsByCategory(category) {
