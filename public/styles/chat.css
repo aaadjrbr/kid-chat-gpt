@@ -173,8 +173,11 @@ input#user-input:hover {
 
 /* Style for bold text */
 b {
-    font-weight: bold;
-    color: #333;
+    font-weight: 600;
+    color: #ffffff;
+    background: #ffffff33;
+    padding: 4px;
+    border-radius: 10px;
 }
 
 .blinking-cursor {
