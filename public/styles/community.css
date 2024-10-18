@@ -29,7 +29,7 @@ h1 {
 }
 
 h2 {
-  color: #333;
+  color: #0056b3;
   text-align: center;
   margin-bottom: 20px;
   font-weight: 700;
@@ -219,8 +219,8 @@ button.edit-btn:hover, button.delete-btn:hover, button.edit-reply-btn:hover, but
 }
 
 .post h3 {
-  margin-bottom: 10px;
-  font-size: 22px;
+  margin-bottom: 15px;
+  font-size: 1.2em;
   font-weight: 700;
 }
 
@@ -231,12 +231,18 @@ button.edit-btn:hover, button.delete-btn:hover, button.edit-reply-btn:hover, but
 }
 
 .filter-post-stuff {
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.158);
   background: linear-gradient(135deg, #007bff, #0056b3);
   padding: 30px;
 }
 
 div.reply p {
   font-size: 1.2em !important;
+}
+
+div.replies-list p {
+  /* font-size: 0.8em !important; */
+  margin-top: 15px;
 }
 
 div.reply h4 {
@@ -280,6 +286,31 @@ button.reply-btn {
   margin-right: 10px;
   display: inline-flex;
   align-items: center;
+}
+
+.delete-video-btn {
+  display: none;           /* Ensures the button takes up its own line */
+  margin-top: -20px;         /* Space between video and button */
+  padding: 10px 20px;       /* Comfortable size */
+  background: red;    /* Visible red color */
+  margin-right: 530px;
+  margin-bottom: 35px;
+  color: white;             /* White text */
+  border: none;             /* No border */
+  border-radius: 5px;       /* Rounded corners */
+  cursor: pointer;          /* Pointer on hover */
+  font-size: 14px;          /* Legible font size */
+}
+
+.delete-video-btn:hover {
+  background: darkred; /* Darken background on hover */
+}
+
+@media (max-width: 768px) {
+  .delete-video-btn {
+    margin-right: 150px;
+  }
+
 }
 
 .edited {
@@ -326,9 +357,13 @@ button.reply-btn {
 
 /* Video Section */
 #video-container {
-  max-width: 700px;
+  max-width: 85%;
   margin: 20px auto;
   text-align: center;
+  height: 800px !important;
+  background: #ffffffb3;
+  border-radius: 30px;
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.158);
 }
 
 /* Category Message */
@@ -440,6 +475,11 @@ button.reply-btn {
 #video-form button:hover {
   background: linear-gradient(135deg, #218838, #1a6f2e);
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+div#video-container p {
+  margin-bottom: 20px;
+  color: #585757;
 }
 
 /* Styling for next and back buttons */
@@ -641,8 +681,8 @@ h4.admin-tag {
   flex-direction: column;
 }
 
-div#video-list-container h4 {
-  font-size: 1.3em;
+div.video-block h4 {
+  font-size: 1.5em;
   color: #0056b3;
 }
 

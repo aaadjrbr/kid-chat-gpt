@@ -7,42 +7,55 @@ const userProfilesRef = collection(db, 'userProfiles');
 const videosRef = collection(db, 'videos'); // Collection for YouTube videos
 let lastVisiblePost = null;
 let limitNum = 5; // Number of posts to load at once
-let videoIndex = 0; // To handle video navigation
+let videoLimit = 5; // Show 5 videos at a time
 let selectedCategory = 'Safety'; // Default category
-let allVideos = []; // Store all loaded videos for client-side search
-let searchTimeout = null; // Search functionality
+let loadedVideos = []; // Store loaded videos for pagination
+let lastVisibleVideo = null;
+let globalUserData = null;
 
 // Listen for user login status
 onAuthStateChanged(getAuth(), async (user) => {
   const authStatus = document.getElementById('auth-status');
-  const videoForm = document.getElementById('video-form');
-  
+  const videoForm = document.getElementById('video-form'); 
+
   if (user) {
     authStatus.textContent = `Logged in as: ${user.email}`;
     document.getElementById('logout-btn').style.display = 'block';
-    
-    // Fetch current user info and check if they are an admin
+
     const userRef = doc(userProfilesRef, user.uid);
     const userSnapshot = await getDoc(userRef);
-    const userData = userSnapshot.data();
 
-    if (userData && userData.isAdmin) {
-      videoForm.style.display = 'block'; // Show video form for admins
+    if (userSnapshot.exists()) {
+      globalUserData = userSnapshot.data();
+      console.log('Fetched user data:', globalUserData); // Log for debugging
+
+      // Make sure globalUserData and isAdmin are checked correctly
+      if (globalUserData?.isAdmin) {
+        videoForm.style.display = 'block'; // Show video form for admins
+        console.log('User is admin'); // Log for debugging
+      } else {
+        videoForm.style.display = 'none'; // Hide video form for non-admins
+        console.log('User is not admin or globalUserData is not set'); // Log if not admin
+      }
+
+      // Toggle delete buttons for admins
+      toggleDeleteButtonsForAdmin(); // Call the function to show buttons for admin
     } else {
-      videoForm.style.display = 'none'; // Hide video form for non-admins
+      console.error('User profile not found in Firestore.');
     }
   } else {
     authStatus.textContent = 'Not logged in';
     document.getElementById('logout-btn').style.display = 'none';
     videoForm.style.display = 'none'; // Hide video form if not logged in or not admin
+    globalUserData = null; // Clear userData when not logged in
   }
 });
 
-// Fetch recent posts on page load
+// Fetch recent posts and load videos with pagination on page load
 document.addEventListener('DOMContentLoaded', () => {
   displayCategoryMessage(selectedCategory); // Display category message on page load
   loadPostsByCategory(selectedCategory);
-  loadVideos(); // Load videos on page load
+  loadVideosWithPagination(); // Load videos with pagination on page load
 });
 
 // Display selected category message
@@ -55,11 +68,15 @@ function displayCategoryMessage(category) {
 document.getElementById('video-form').addEventListener('submit', async (e) => {
   e.preventDefault();
   const videoUrl = document.getElementById('video-url').value;
-  
+  const videoTitle = document.getElementById('video-title').value; // Fetch video title
+
   try {
-    await addVideo(videoUrl); // Function to save video in Firestore
+    await addVideo(videoUrl, videoTitle); // Function to save video in Firestore
     document.getElementById('video-form').reset(); // Clear the form
-    loadVideos(); // Reload the videos after posting
+    // Reset pagination and reload videos
+    lastVisibleVideo = null;
+    loadedVideos = [];
+    loadVideosWithPagination();
   } catch (error) {
     console.error('Error adding video:', error);
   }
@@ -125,69 +142,20 @@ async function addVideo(videoUrl, videoTitle) {
   alert('Video posted!');
 }
 
-// Load YouTube videos for users to watch
-async function loadVideos() {
-  const querySnapshot = await getDocs(query(videosRef, orderBy('timestamp', 'desc')));
-  const videos = querySnapshot.docs.map(doc => doc.data());
-  if (videos.length > 0) {
-    displayVideo(videos[videoIndex], videos);
-  }
-}
-
-// Display a video with navigation controls (next/previous)
-// Display a video in the video-container
-function displayVideo(video) {
+// Load YouTube videos with pagination
+async function loadVideosWithPagination() {
   const videoContainer = document.getElementById('video-container');
   
-  if (!video || !video.videoUrl) {
-    console.error("No video URL provided.");
+  if (!videoContainer) {
+    console.error('Video container not found');
     return;
   }
 
-  videoContainer.innerHTML = `
-    <div class="video-stuff">
-      <div class="title-video1">
-        <h3>${video.videoTitle || 'Untitled Video'}</h3>
-      </div>
-      <iframe width="560" height="315" src="${convertToEmbedUrl(video.videoUrl)}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-    </div>
-  `;
-}
-
-// Convert YouTube URL to embed format
-function convertToEmbedUrl(url) {
-  if (!url) return '';
-  const urlObj = new URL(url);
-  const videoId = urlObj.searchParams.get('v');
-  return `https://www.youtube.com/embed/${videoId}`;
-}
-
-let lastVisibleVideo = null; // Track the last video for pagination
-let videoLimit = 5; // Number of videos to load at once
-
-// Open video modal
-document.getElementById('see-all-videos-btn').addEventListener('click', () => {
-  document.getElementById('video-modal').style.display = 'block';
-  loadVideosWithPagination(); // Load videos when modal is opened
-});
-
-// Close video modal
-document.getElementById('close-video-modal').addEventListener('click', () => {
-  document.getElementById('video-modal').style.display = 'none';
-});
-
-// Load videos with pagination
-// Load videos with pagination
-async function loadVideosWithPagination() {
-  const videoListContainer = document.getElementById('video-list-container');
-  
-  // If no videos have been loaded yet, clear the container
   if (!lastVisibleVideo) {
-    videoListContainer.innerHTML = ''; 
-    allVideos = []; // Clear previous videos when starting a new load
+    videoContainer.innerHTML = ''; // Clear previous videos on initial load or reset
+    loadedVideos = []; // Reset loadedVideos when starting a new load
   }
-  
-  // Query Firestore for videos with pagination
+
   let q = query(videosRef, orderBy('timestamp', 'desc'), limit(videoLimit));
   if (lastVisibleVideo) {
     q = query(videosRef, orderBy('timestamp', 'desc'), startAfter(lastVisibleVideo), limit(videoLimit));
@@ -195,125 +163,175 @@ async function loadVideosWithPagination() {
 
   const querySnapshot = await getDocs(q);
 
-  querySnapshot.forEach((doc) => {
-    const video = doc.data();
-    allVideos.push(video); // Store each video in the array
-    const videoElement = createVideoElement(video);
-    videoListContainer.appendChild(videoElement);
-  });
-
-  // Track the last visible video for pagination
-  if (querySnapshot.docs.length > 0) {
-    lastVisibleVideo = querySnapshot.docs[querySnapshot.docs.length - 1];
-  }
-
-  // Hide "Load More" button if no more videos
-  if (querySnapshot.size < videoLimit) {
+  if (querySnapshot.empty) {
+    if (!lastVisibleVideo) {
+      videoContainer.innerHTML = '<p>No videos to display</p>';
+    } else {
+      const noMoreMsg = document.createElement('p');
+      noMoreMsg.textContent = '❌ No more videos to display';
+      videoContainer.appendChild(noMoreMsg);
+    }
     document.getElementById('load-more-videos-btn').style.display = 'none';
   } else {
-    document.getElementById('load-more-videos-btn').style.display = 'block';
+    querySnapshot.forEach((doc) => {
+      const video = doc.data();
+      const videoId = doc.id; // Get the document ID
+      loadedVideos.push(video); 
+      const videoElement = createVideoElement(video, videoId); // Pass the videoId for deletion
+      videoContainer.appendChild(videoElement);
+    });
+
+    lastVisibleVideo = querySnapshot.docs[querySnapshot.docs.length - 1];
+
+    if (querySnapshot.size < videoLimit) {
+      document.getElementById('load-more-videos-btn').style.display = 'none';
+      const noMoreMsg = document.createElement('p');
+      noMoreMsg.textContent = '❌ No more videos to display';
+      videoContainer.appendChild(noMoreMsg);
+    } else {
+      document.getElementById('load-more-videos-btn').style.display = 'block';
+    }
   }
 }
 
-// Helper function to create video elements
-function createVideoElement(video) {
+// Create video elements with delete option hidden by default
+function createVideoElement(video, videoId) {
   const videoElement = document.createElement('div');
+  videoElement.classList.add('video-block');
+  
   videoElement.innerHTML = `
-    <div>
-      <h4>${video.videoTitle || 'Untitled Video'}</h4>
-      <button class="play-video-btn" data-url="${video.videoUrl}">Play Video ▶️</button>
-    </div>
+    <br>
+    <h4>${video.videoTitle || 'Untitled Video'}</h4>
+    <iframe width="560" height="315" src="${convertToEmbedUrl(video.videoUrl)}" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+    <br>
   `;
+
+  // Create the delete button and hide it by default
+  const deleteButton = document.createElement('button');
+  deleteButton.textContent = '🗑️ Delete 👆 ▶️';
+  deleteButton.classList.add('delete-video-btn');
+  deleteButton.style.display = 'none'; // Initially hide the button
+
+  deleteButton.addEventListener('click', () => deleteVideo(videoId, videoElement)); // Attach event to delete video
+  videoElement.appendChild(deleteButton); // Append the delete button after the title and video
+
   return videoElement;
 }
 
-// Search functionality (client-side)
-document.getElementById('video-search').addEventListener('input', (e) => {
-  const searchTerm = e.target.value.trim().toLowerCase();
-
-  if (searchTimeout) {
-    clearTimeout(searchTimeout);
-  }
-
-  // Add a delay to avoid multiple reads on every keystroke
-  searchTimeout = setTimeout(() => {
-    if (searchTerm) {
-      searchVideosByTitle(searchTerm);  // Search locally from `allVideos`
-    } else {
-      displayVideos(allVideos); // Reset to show all videos if search is cleared
-    }
-  }, 300); // 300ms delay
-});
-
-// Local search function
-function searchVideosByTitle(searchTerm) {
-  const filteredVideos = allVideos.filter((video) =>
-    video.videoTitle.toLowerCase().includes(searchTerm)
-  );
-  displayVideos(filteredVideos);
-}
-
-// Display videos in the modal
-function displayVideos(videos) {
-  const videoListContainer = document.getElementById('video-list-container');
-  videoListContainer.innerHTML = ''; // Clear previous results
-
-  if (videos.length > 0) {
-    videos.forEach((video) => {
-      const videoElement = createVideoElement(video);
-      videoListContainer.appendChild(videoElement);
+// Function to toggle delete buttons visibility for admins
+function toggleDeleteButtonsForAdmin() {
+  if (globalUserData && globalUserData.isAdmin) {
+    const deleteButtons = document.querySelectorAll('.delete-video-btn');
+    deleteButtons.forEach(button => {
+      button.style.display = 'inline-block'; // Show the button if user is admin
     });
-  } else {
-    videoListContainer.innerHTML = '<p>No videos found.</p>';
   }
 }
 
-// Load more videos when the "Load More" button is clicked
+
+async function deleteVideo(videoId, videoElement) {
+  if (!confirm('Are you sure you want to delete this video?')) return;
+
+  try {
+    await deleteDoc(doc(videosRef, videoId)); // Delete the video from Firestore
+    videoElement.remove(); // Remove the video element from the DOM
+    alert('Video deleted successfully!');
+  } catch (error) {
+    console.error('Error deleting video:', error);
+    alert('Failed to delete the video. Please try again.');
+  }
+}
+
+// Add event listener for "Load More" button
 document.getElementById('load-more-videos-btn').addEventListener('click', () => {
   loadVideosWithPagination();
 });
 
-// Play video when a video is clicked
-document.addEventListener('click', (e) => {
-  if (e.target && e.target.classList.contains('play-video-btn')) {
-    const videoUrl = e.target.getAttribute('data-url');
-    displayVideo({ videoUrl }); // Use your existing displayVideo function to play the video
-    document.getElementById('video-modal').style.display = 'none'; // Close modal after selecting a video
+// Event listener for "Hide" button to reset back to 5 recent videos
+document.getElementById('hide-videos-btn').addEventListener('click', () => {
+  const videoContainer = document.getElementById('video-container');
+  if (videoContainer) {
+    videoContainer.innerHTML = ''; // Clear all loaded videos
+    // Reset pagination
+    lastVisibleVideo = null;
+    loadedVideos = [];
+    loadVideosWithPagination(); // Reload the first batch
+    // Show "Load More" button again
+    document.getElementById('load-more-videos-btn').style.display = 'block';
+    // Remove "No more videos" message if present
+    const noMoreMsg = videoContainer.querySelector('p');
+    if (noMoreMsg && noMoreMsg.textContent === '❌ No more videos to display') {
+      noMoreMsg.remove();
+    }
   }
 });
 
+// Convert YouTube URL to embed format
+function convertToEmbedUrl(url) {
+  if (!url) return '';
+  try {
+    const urlObj = new URL(url);
+    const videoId = urlObj.searchParams.get('v'); // Extract the video ID from the YouTube URL
+    if (videoId) {
+      return `https://www.youtube.com/embed/${videoId}`; // Convert it to an embed URL
+    } else {
+      // Handle youtu.be URLs or other formats
+      const pathname = urlObj.pathname;
+      if (pathname.startsWith('/embed/')) {
+        return url; // Already in embed format
+      } else if (pathname.startsWith('/')) {
+        return `https://www.youtube.com/embed/${pathname.slice(1)}`;
+      } else {
+        return '';
+      }
+    }
+  } catch (error) {
+    console.error('Invalid URL format:', url);
+    return '';
+  }
+}
+
 // Fetch posts by category with pagination
 async function loadPostsByCategory(category) {
-    const postsContainer = document.getElementById('posts-container');
+  const postsContainer = document.getElementById('posts-container');
+  if (!postsContainer) {
+    console.error('Posts container not found');
+    return;
+  }
+
+  // If changing category, reset pagination
+  if (category !== selectedCategory) {
     postsContainer.innerHTML = '';  // Clear the posts container to avoid duplicates
-    
-    let q = query(postsRef, where('postCategory', '==', category), orderBy('timestamp', 'desc'), limit(limitNum));
-    if (lastVisiblePost) {
-      q = query(postsRef, where('postCategory', '==', category), orderBy('timestamp', 'desc'), startAfter(lastVisiblePost), limit(limitNum));
+    lastVisiblePost = null;
+  }
+
+  let q = query(postsRef, where('postCategory', '==', category), orderBy('timestamp', 'desc'), limit(limitNum));
+  if (lastVisiblePost) {
+    q = query(postsRef, where('postCategory', '==', category), orderBy('timestamp', 'desc'), startAfter(lastVisiblePost), limit(limitNum));
+  }
+
+  const querySnapshot = await getDocs(q);
+  
+  if (querySnapshot.empty && !lastVisiblePost) {
+    postsContainer.innerHTML = '<p>❌ No posts found</p>';
+  } else {
+    querySnapshot.forEach((doc) => {
+      renderPost(doc.data(), doc.id);
+    });
+
+    // Update the last visible post for pagination
+    if (querySnapshot.docs.length > 0) {
+      lastVisiblePost = querySnapshot.docs[querySnapshot.docs.length - 1];
     }
-  
-    const querySnapshot = await getDocs(q);
-    
-    if (querySnapshot.empty && !lastVisiblePost) {
-      postsContainer.innerHTML = '<p>❌ No posts found</p>';
-    } else {
-      querySnapshot.forEach((doc) => {
-        renderPost(doc.data(), doc.id);
-      });
-  
-      // Update the last visible post for pagination
-      if (querySnapshot.docs.length > 0) {
-        lastVisiblePost = querySnapshot.docs[querySnapshot.docs.length - 1];
-      }
-  
-      // If no more posts are available
-      if (querySnapshot.size < limitNum) {
-        const loadMoreBtn = document.getElementById('load-more-btn');
-        loadMoreBtn.disabled = true;  // Disable the button if no more posts
-        loadMoreBtn.textContent = '✅ No more posts to load';
-      }
+
+    // If no more posts are available
+    if (querySnapshot.size < limitNum) {
+      const loadMoreBtn = document.getElementById('load-more-btn');
+      loadMoreBtn.disabled = true;  // Disable the button if no more posts
+      loadMoreBtn.textContent = '✅ No more posts to load';
     }
-  }  
+  }
+}
 
 // Event listener for category selection and filtering
 document.getElementById('filter-btn').addEventListener('click', () => {
@@ -445,18 +463,26 @@ async function renderPost(postData, postId) {
     const editButton = postElement.querySelector('.edit-btn');
     const deleteButton = postElement.querySelector('.delete-btn');
 
-    // Pass the postElement to the editPost function
-    editButton.addEventListener('click', () => editPost(postId, postData.postContent, postElement));
-    deleteButton.addEventListener('click', () => {
-      if (confirm('⚠️ Are you sure you want to delete this post?')) deletePost(postId);
-    });
+    // Add null checks before attaching event listeners
+    if (editButton) {
+      editButton.addEventListener('click', () => editPost(postId, postData.postContent, postElement));
+    }
+    if (deleteButton) {
+      deleteButton.addEventListener('click', () => {
+        if (confirm('⚠️ Are you sure you want to delete this post?')) deletePost(postId);
+      });
+    }
   }
 
   document.getElementById('posts-container').appendChild(postElement);
 
   const replyButton = postElement.querySelector('.reply-btn');
   const repliesContainer = postElement.querySelector('.replies-container');
-  replyButton.addEventListener('click', () => handleReply(postId, repliesContainer));
+
+  // Add null check before attaching event listener
+  if (replyButton) {
+    replyButton.addEventListener('click', () => handleReply(postId, repliesContainer));
+  }
 
   // Initially, display "See comments" button if there are replies
   if (postData.replies && postData.replies.length > 0) {
@@ -473,34 +499,47 @@ async function renderPost(postData, postId) {
   const hideCommentsButton = repliesContainer.querySelector('.hide-comments-btn');
   const repliesList = repliesContainer.querySelector('.replies-list');
 
-    // Make sure the seeCommentsButton exists before accessing style
-    if (seeCommentsButton) {
-      seeCommentsButton.style.display = 'inline';
-  }
+  // Make sure the buttons exist before accessing their styles
+  if (seeCommentsButton) {
+    seeCommentsButton.style.display = 'inline';
+    seeCommentsButton.addEventListener('click', async () => {
+      seeCommentsButton.style.display = 'none'; // Hide the "See comments" button
+      hideCommentsButton.style.display = 'inline'; // Show the "Hide comments" button
+      repliesList.style.display = 'block'; // Show replies
   
-  // Make sure the hideCommentsButton exists before accessing style
-  if (hideCommentsButton) {
-      hideCommentsButton.style.display = 'none';
+      // Load and display replies only the first time the button is clicked
+      if (!repliesList.hasChildNodes()) {
+        await renderReplies(postData.replies, repliesList, postId); // Show replies
+      }
+    });
   }
-
-  // Handle showing replies when "See comments" is clicked
-  seeCommentsButton.addEventListener('click', async () => {
-    seeCommentsButton.style.display = 'none'; // Hide the "See comments" button
-    hideCommentsButton.style.display = 'inline'; // Show the "Hide comments" button
-    repliesList.style.display = 'block'; // Show replies
-  
-    // Load and display replies only the first time the button is clicked
-    if (!repliesList.hasChildNodes()) {
-      await renderReplies(postData.replies, repliesList, postId); // Show replies
-    }
-  });
   
   // Handle hiding replies when "Hide comments" is clicked
-  hideCommentsButton.addEventListener('click', () => {
-    hideCommentsButton.style.display = 'none'; // Hide the "Hide comments" button
-    seeCommentsButton.style.display = 'inline'; // Show the "See comments" button
-    repliesList.style.display = 'none'; // Hide replies
-  });
+  if (hideCommentsButton) {
+    hideCommentsButton.addEventListener('click', () => {
+      hideCommentsButton.style.display = 'none'; // Hide the "Hide comments" button
+      seeCommentsButton.style.display = 'inline'; // Show the "See comments" button
+      repliesList.style.display = 'none'; // Hide replies
+    });
+  }
+}
+
+// Function to delete a post
+async function deletePost(postId) {
+  try {
+    const postRef = doc(postsRef, postId);
+    await deleteDoc(postRef); // Delete the post from Firestore
+    alert('Post deleted successfully! Refresh the page.');
+    
+    // Optionally, you can remove the post from the DOM here
+    const postElement = document.querySelector(`[data-post-id="${postId}"]`);
+    if (postElement) {
+      postElement.remove(); // Remove post element from the DOM
+    }
+  } catch (error) {
+    console.error('Error deleting post:', error);
+    alert('Failed to delete the post. Please try again.');
+  }
 }
 
 // Render replies with pagination (first 3 replies by default)
