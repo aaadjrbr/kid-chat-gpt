@@ -4,6 +4,7 @@ import { db } from './firebase-config.js';
 import { collection, addDoc, getDocs, setDoc, doc, serverTimestamp, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js";
 import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-functions.js";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-storage.js";
 
 const messagesContainer = document.getElementById('messages');
 const userInput = document.getElementById('user-input');
@@ -76,6 +77,17 @@ async function initializeChat() {
     }
 }
 
+function updateGoldPremiumDiv() {
+    const goldPremiumDiv = document.getElementById('gold-premium-users');
+    
+    // Only show the div if the user is either Premium or Gold
+    if (isGold || isPremium) {
+        goldPremiumDiv.style.display = 'block'; // Show the div
+    } else {
+        goldPremiumDiv.style.display = 'none';  // Keep it hidden for free users
+    }
+}
+
 let userProfileCache = null; // Global cache for user profile
 
 async function fetchUserProfile() {
@@ -106,6 +118,9 @@ async function fetchUserProfile() {
             } else {
                 userTokens = userProfileCache.tokens; // Use the existing tokens value
             }
+
+            // After setting isPremium and isGold values
+            updateGoldPremiumDiv(); // Check and display/hide the div based on user status
 
             // Update Badge
             updateBadge();
@@ -318,6 +333,107 @@ function typeMultipleMessages(messages, pauseDuration = 5000, defaultMessage = "
     nextMessage();
 }
 
+// Function to compress and resize the image
+function compressImage(imageFile, maxWidth, maxHeight, quality = 0.7) {
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+            img.src = e.target.result;
+        };
+
+        reader.onerror = (error) => reject(error);
+
+        img.onload = function() {
+            const canvas = document.createElement('canvas');
+            let width = img.width;
+            let height = img.height;
+
+            // Calculate new dimensions while maintaining aspect ratio
+            if (width > height) {
+                if (width > maxWidth) {
+                    height *= maxWidth / width;
+                    width = maxWidth;
+                }
+            } else {
+                if (height > maxHeight) {
+                    width *= maxHeight / height;
+                    height = maxHeight;
+                }
+            }
+
+            // Set canvas dimensions
+            canvas.width = width;
+            canvas.height = height;
+
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+
+            // Convert to data URL with lower quality
+            canvas.toBlob(
+                (blob) => {
+                    resolve(blob); // Resolve with the compressed blob
+                },
+                'image/jpeg', // Format (you can change to 'image/png' if needed)
+                quality // Compression quality (0 to 1)
+            );
+        };
+
+        reader.readAsDataURL(imageFile); // Read the image file
+    });
+}
+
+// Clear image preview when the user removes the image
+document.getElementById('remove-image-btn').addEventListener('click', function() {
+    clearImagePreview(); // Call the function to clear the preview
+});
+
+// Function to upload image to Firebase Storage (or another service)
+let compressedImageBlob = null; // Store compressed image blob globally
+
+document.getElementById('image-upload').addEventListener('change', async function(event) {
+    const imageFile = event.target.files[0];
+    const imagePreview = document.getElementById('image-preview');
+    const removeImageButton = document.getElementById('remove-image-btn');
+
+    if (imageFile) {
+        // Compress the image and store it globally
+        compressedImageBlob = await compressImage(imageFile, 800, 800, 0.6);
+
+        // Display compressed image preview
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            imagePreview.src = e.target.result;
+            imagePreview.style.display = 'block';
+            removeImageButton.style.display = 'block';
+        };
+        reader.readAsDataURL(compressedImageBlob);
+
+        isImageUploaded = true;
+        userInput.disabled = true;
+        displayMessage("🖼️ Oopsie! You need to send the picture first before we can chat! 📸😊", "bot");
+    }
+});
+
+// Modified function to upload image to Firebase Storage
+async function uploadImageToStorage(compressedImageBlob) {
+    if (!compressedImageBlob) {
+        throw new Error("No image found for upload.");
+    }
+
+    const storage = getStorage(); // Initialize Firebase Storage
+    const storageRef = ref(storage, `images/${Date.now()}.jpg`); // Use current timestamp for unique file name
+
+    // Upload the compressed image
+    await uploadBytes(storageRef, compressedImageBlob);
+    console.log("Compressed image uploaded successfully!");
+
+    // Get the URL of the uploaded image
+    const downloadURL = await getDownloadURL(storageRef);
+    return downloadURL; // Return the public URL of the uploaded image
+}
+
 async function startNewChatSession() {
     const chatSessionsMetaRef = doc(db, `parents/${parentId}/kids/${kidId}/meta/documentId`);
     
@@ -418,96 +534,180 @@ function stopMicAnimation() {
     }
 }
 
-// Update sendMessage function to use the cached profile
+let isImageUploaded = false; // Flag to check if an image has been uploaded
+
+// Event listener for removing the image
+document.getElementById('remove-image-btn').addEventListener('click', function() {
+    clearImagePreview();
+    isImageUploaded = false; // Reset the flag
+    userInput.disabled = false; // Re-enable text input when image is removed
+});
+
+// Function to clear the image preview and reset input
+function clearImagePreview() {
+    const imagePreview = document.getElementById('image-preview');
+    const imageUpload = document.getElementById('image-upload');
+    const removeImageButton = document.getElementById('remove-image-btn');
+    
+    imagePreview.src = ''; // Clear the image preview
+    imagePreview.style.display = 'none'; // Hide the preview
+    imageUpload.value = ''; // Clear the file input
+    removeImageButton.style.display = 'none'; // Hide the remove button
+    userInput.disabled = false; // Re-enable the input field again
+}
+
+// Modified sendMessage function to handle token deductions and image sending
 async function sendMessage() {
-    if (userTokens <= 0) {
-        const userProfileRef = doc(db, `userProfiles/${parentId}`);
-        try {
-            const userProfileSnapshot = await getDoc(userProfileRef);
-            if (!userProfileSnapshot.data().tokensDepletedTimestamp) {
-                await updateDoc(userProfileRef, {
-                    tokensDepletedTimestamp: serverTimestamp() // Save Firebase server timestamp when tokens deplete
-                });
-                console.log('Tokens depleted, timestamp saved');
-            }
-            startTokenRefillTimer(); // Start countdown based on this timestamp
-        } catch (error) {
-            console.error("Error saving tokens depleted timestamp:", error);
-        }
-        displayMessage("Uh-oh! Looks like you've used up all your magic chat tokens for now! ✨ Don't worry, they'll be back soon! 🚀", "bot");
-        return;
-    }
+    const message = userInput.value.trim(); // Get user input text
+    const imagePreview = document.getElementById('image-preview'); // Check if an image is uploaded
 
-    const message = userInput.value.trim().toLowerCase();
-    if (message === '') return;
+    // Log for message and image status
+    console.log("Message:", message, "Image uploaded:", !!imagePreview.src);
 
-    // If no chat session is active, start a new chat session.
+    // If both message and image are empty, do nothing
+    if (message === '' && !imagePreview.src) return;
+
+    // Disable input and send button to prevent multiple submissions
+    userInput.disabled = true;
+    sendBtn.disabled = true;
+
+    // If no chat session is active, start a new chat session
     if (!currentChatSessionRef) {
         await startNewChatSession();
+        console.log("New chat session started.");
     }
 
-    // Deduct one token for each message sent.
-    userTokens--;
-    updateTokenBar();
+    // Handle image sending if an image is uploaded
+    if (imagePreview.src && isImageUploaded) {
+        try {
+            // Ensure you're uploading the compressed image, not the original file
+            const imageUrl = await uploadImageToStorage(compressedImageBlob); // Upload compressed image to Firebase
 
-    // Update Firestore with the new token count immediately
-    try {
-        const userProfileRef = doc(db, `userProfiles/${parentId}`);
-        await updateDoc(userProfileRef, { tokens: userTokens });
+            // Deduct 20 tokens for the image upload
+            if (userTokens >= 20) {
+                userTokens -= 20;
+                await updateTokensInFirestore(); // Update Firestore after deducting tokens
+                console.log('20 tokens deducted for image upload');
+            } else {
+                displayMessage("Oops! You don't have enough tokens to upload the image.", "bot");
+                return;
+            }
 
-        // Call the updateTokensInFirestore function to update Firestore and refresh the cache
-        await updateTokensInFirestore(userTokens);  // This only refreshes the cache, without changing your logic.
+            // Display the image locally
+            displayImage(imageUrl, 'user');
 
-        console.log("Tokens updated in Firestore:", userTokens);
+            // Save image URL to chat session
+            await saveMessageToCurrentChat({ imageUrl }, 'user');
+            console.log("Image message saved to chat.");
 
-        // If tokens run out, start the refill timer
-        if (userTokens <= 0 && !tokenInterval) {
-            startTokenRefillTimer();
+            // Clear image preview after sending
+            clearImagePreview();
+
+            // Re-enable input for text after image is sent
+            isImageUploaded = false;
+            userInput.disabled = false; // Enable input again
+
+            // Create a simple prompt for the image
+            const promptForImage = `Describe the image in a fun, simple way for a ${kidAge}-year-old. Make sure the response is short, playful, and easy to understand, using emojis! 🖼️😊`;
+
+            // Send the image prompt to get a response
+            const response = await getChatResponseFunction({ imageUrl, prompt: promptForImage });
+            const botResponse = response.data.message || "I can't seem to process that image. Try a different one!";
+            console.log("Bot response for image:", botResponse);
+
+            // Display the bot's response
+            displayMessage(botResponse, 'bot');
+            await saveMessageToCurrentChat({ text: botResponse }, 'bot');
+
+            // **Store image description into the conversation context (memory)**
+            conversationContext.push({
+                role: "assistant",
+                content: `Description of image: ${botResponse}`  // Save bot's response regarding the image
+            });
+
+            console.log("Image description saved in memory:", botResponse);
+
+        } catch (error) {
+            console.error("Error uploading or processing image:", error);
+            displayMessage("Sorry, there was an error uploading the image.", 'bot');
+        } finally {
+            // Re-enable the input and button after the image is processed
+            sendBtn.disabled = false;
         }
-    } catch (error) {
-        console.error("Error updating tokens in Firestore:", error);
     }
 
-    displayMessage(message, 'user');
-    userInput.value = '';
+    // Handle text message (from user)
+    if (message) {
+        console.log("Handling user message...");
 
-    // Save user message to session context
-    conversationContext.push({ role: "user", content: message });
-    await saveMessageToCurrentChat(message, 'user');
+        if (userTokens > 0) {
+            // Deduct 1 token for the user message
+            userTokens -= 1;
+            await updateTokensInFirestore(); // Update Firestore with new token count
+            console.log('1 token deducted for user message:', userTokens);
+        } else {
+            displayMessage("🌟 Oopsie! Looks like you're out of magic tokens! 🪄✨ Refresh the page and send me a message to see when you can chat again! 😊💬", "bot");
+            return;
+        }
 
-    try {
-        displayTypingMessage("", 'typing'); // Show "Thinking..." message
-        document.getElementById('thinking').style.display = 'block'; // Show "Thinking..." status
-        userInput.disabled = true;
-        sendBtn.disabled = true;
+        // Display user message
+        displayMessage(message, 'user');
+        userInput.value = ''; // Clear input field
 
-        setTimeout(async () => {
-            // After 1.5 seconds, display the bot's response
-            let response = await getChatResponse(); // Call function to get the bot's response
+        // Save text message to chat session
+        conversationContext.push({ role: "user", content: message });
+        await saveMessageToCurrentChat({ text: message }, 'user');
+        console.log("User message saved to chat.");
 
-            // Save bot response to session context
-            conversationContext.push({ role: "assistant", content: response });
-            displayTypingMessage(response, 'bot'); // Display text response
+        try {
+            // Display typing indicator for bot response
+            displayTypingMessage("Thinking...", 'bot');
 
-            removeTypingMessage(); // Hide "Thinking..." message and enable input again
-            await saveMessageToCurrentChat(response, 'bot');
+            // Fetch bot response
+            const response = await getChatResponse();
+            let botResponse = typeof response === 'object' && response.message ? response.message : response;
 
-        }, 1500); // 1.5 second delay before showing the bot's message
+            // Ensure that the response is always a string
+            botResponse = botResponse || "Oops! I couldn't think of a response. Try again later.";
 
-    } catch (error) {
-        console.error("Error sending message:", error);
-        removeTypingMessage();
-        displayMessage("Oops! Something went wrong. Please try again later.", "bot");
+            // Deduct 1 token for the bot response
+            if (userTokens > 0) {
+                userTokens -= 1;
+                await updateTokensInFirestore(); // Update Firestore with the new token count
+                console.log('1 token deducted for bot response:', userTokens);
+            }
+
+            // Push bot response to the conversation context
+            conversationContext.push({ role: "assistant", content: botResponse });
+
+            // Display bot's response
+            displayMessage(botResponse, 'bot');
+            console.log("Bot response displayed:", botResponse);
+
+            // Save bot's response to the chat session
+            await saveMessageToCurrentChat({ text: botResponse }, 'bot');
+
+        } catch (error) {
+            console.error("Error sending message:", error);
+            displayMessage("Oops! Something went wrong. Please try again later.", "bot");
+        } finally {
+            // Re-enable input and send button after the bot's response is processed
+            userInput.disabled = false;
+            sendBtn.disabled = false;
+
+            // Remove typing indicator
+            removeTypingMessage();
+        }
     }
 }
 
-async function updateTokensInFirestore(newTokenCount) {
+async function updateTokensInFirestore() {
     const userProfileRef = doc(db, `userProfiles/${parentId}`);
-    await updateDoc(userProfileRef, { tokens: newTokenCount });
+    await updateDoc(userProfileRef, { tokens: userTokens });
 
-    // Refresh the cache with the latest data from Firestore
+    // Refresh the profile cache
     const updatedProfileSnapshot = await getDoc(userProfileRef);
-    userProfileCache = updatedProfileSnapshot.data(); // Update the cached profile
+    userProfileCache = updatedProfileSnapshot.data();
 }
 
 async function checkTokenRefillTime() {
@@ -713,12 +913,22 @@ async function saveMessageToCurrentChat(message, sender) {
     }
 
     try {
-        await addDoc(currentChatSessionRef, {
-            text: message,
+        // Save either the text or image URL separately
+        let messageData = {
             sender: sender,
-            timestamp: serverTimestamp()
-        });
-        console.log(`Message saved: ${message} (Sender: ${sender})`);
+            timestamp: serverTimestamp(),
+        };
+
+        if (message.text) {
+            messageData.text = message.text; // Save the text message
+        }
+
+        if (message.imageUrl) {
+            messageData.imageUrl = message.imageUrl; // Save the image URL
+        }
+
+        await addDoc(currentChatSessionRef, messageData);
+        console.log(`Message saved: ${message.text || message.imageUrl} (Sender: ${sender})`);
     } catch (error) {
         console.error("Error saving message:", error);
     }
@@ -726,14 +936,46 @@ async function saveMessageToCurrentChat(message, sender) {
 
 function displayMessage(text, sender) {
     const messageDiv = document.createElement('div');
-    messageDiv.textContent = text;
     messageDiv.className = sender;
+
+    if (sender === 'bot') {
+        const formattedText = formatMessageText(text); // Apply any formatting if needed
+        const messageContent = document.createElement('div');
+        messageContent.className = 'bot-message-content';
+        messageContent.innerHTML = formattedText;  // Insert formatted text
+        
+        // Add a speaker button for bot messages
+        const speakerButton = document.createElement('button');
+        speakerButton.className = 'speaker-btn material-icons';
+        speakerButton.innerHTML = 'volume_up';  // Use volume icon
+        speakerButton.onclick = () => speakText(text);  // Trigger TTS only when clicked
+
+        messageDiv.appendChild(messageContent);
+        messageDiv.appendChild(speakerButton);
+
+    } else if (sender === 'user') {
+        messageDiv.textContent = text;  // Display user text as plain text
+    } else if (sender === 'image') {
+        const imageElement = document.createElement('img');
+        imageElement.src = text;  // Display image
+        imageElement.alt = "Uploaded Image";
+        imageElement.style.maxWidth = "100%";
+        imageElement.style.borderRadius = "8px";
+        messageDiv.appendChild(imageElement);
+    }
+
     messagesContainer.appendChild(messageDiv);
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
 }
 
 function formatMessageText(text) {
-    // Replace **text** with <b>text</b> for bold
+    // Ensure the input is always treated as a string
+    if (typeof text !== 'string') {
+        console.warn("Received non-string message, converting to string:", text);
+        text = String(text); // Force conversion to string
+    }
+
+    // Now format the message
     let formattedText = text
         .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')  // Bold
         .replace(/```html([\s\S]*?)```/g, (match, code) => createCodeBlock(code, 'language-html'))  // HTML code block
@@ -770,23 +1012,23 @@ function displayTypingMessage(text, sender) {
     const messageDiv = document.createElement('div');
     messageDiv.className = sender;
 
-    if (sender === 'bot') {
+    if (sender === 'bot' && text !== "Thinking...") {
         const formattedText = formatMessageText(text); // Format the bot message
         messageDiv.innerHTML = '';  // Start empty and build the text
         const messageContent = document.createElement('div');
         messageContent.className = 'bot-message-content';  // Add class for extra spacing
         messageContent.innerHTML = formattedText;  // Insert formatted text (uses innerHTML)
 
-        // Create speaker button with Material Icon
-        const speakerButton = document.createElement('button');
-        speakerButton.className = 'speaker-btn material-icons';  // Add Material Icons class
-        speakerButton.innerHTML = 'volume_up';  // Use 'volume_up' icon for the speaker
-        speakerButton.onclick = () => speakText(text);  // Trigger text-to-speech
+        // Only add speaker button if there's a valid response (not for 'Thinking...')
+        if (text && text !== "Thinking...") {
+            const speakerButton = document.createElement('button');
+            speakerButton.className = 'speaker-btn material-icons';  // Add Material Icons class
+            speakerButton.innerHTML = 'volume_up';  // Use 'volume_up' icon for the speaker
+            speakerButton.onclick = () => speakText(text);  // Trigger text-to-speech
+            messageDiv.appendChild(speakerButton);
+        }
 
-        // Append speaker button and message content to the message div
         messageDiv.appendChild(messageContent);
-        messageDiv.appendChild(speakerButton);
-
         messagesContainer.appendChild(messageDiv);
 
         // Add fade-in effect when the bot message is added
@@ -806,6 +1048,7 @@ function displayTypingMessage(text, sender) {
 
     messagesContainer.scrollTop = messagesContainer.scrollHeight; // Scroll to bottom
 }
+
 
 function removeTypingMessage() {
     const typingMessage = document.querySelector('.typing');
@@ -883,6 +1126,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Function to speak the given text using default US English voice
 const speakText = (text) => {
+    // Check if speech synthesis is already speaking, cancel if so
+    if (speechSynthesis.speaking) {
+        speechSynthesis.cancel(); // Cancel any ongoing speech
+    }
+
     const synth = window.speechSynthesis;
     const utterance = new SpeechSynthesisUtterance(removeEmojis(text)); // Removing emojis before speaking
 
@@ -905,28 +1153,23 @@ const speakText = (text) => {
     // Adjust the speech rate (make it slower for kids)
     utterance.rate = 0.85; // Slower rate, adjust as necessary
 
-    // Speak the text
+    // Speak the text only when user clicks the speaker
     synth.speak(utterance);
 };
 
-// Function to choose the best voice
 const chooseVoice = (voices, utterance) => {
-    // Try preferred voices in order
     const preferredVoices = ['Google US English', 'Samantha', 'Karen', 'Google UK English Female'];
 
-    // Attempt to find the preferred voice
     let selectedVoice = null;
     for (const preferredVoice of preferredVoices) {
         selectedVoice = voices.find(voice => voice.name === preferredVoice);
-        if (selectedVoice) break; // Stop once the first match is found
+        if (selectedVoice) break;
     }
 
-    // If no preferred voice found, try any available English (US) voice
     if (!selectedVoice) {
         selectedVoice = voices.find(voice => voice.lang === 'en-US');
     }
 
-    // Apply the selected voice if found
     if (selectedVoice) {
         utterance.voice = selectedVoice;
         console.log(`Using voice: ${selectedVoice.name}`);
@@ -937,8 +1180,14 @@ const chooseVoice = (voices, utterance) => {
 
 // Function to remove emojis from the text
 function removeEmojis(text) {
-    return text.replace(/([\u2700-\u27BF]|[\uE000-\uF8FF]|[\uFE00-\uFE0F]|\uD83C[\uD000-\uDFFF]|\uD83D[\uD000-\uDFFF]|\uD83E[\uD000-\uDFFF])/g, '');
+    if (typeof text !== 'string') {
+        console.warn('Non-string passed to removeEmojis:', text);
+        text = String(text); // Convert to string if necessary
+    }
+
+    return text.replace(/([\u2700-\u27BF]|[\uE000-\uF8FF]|\uFE00-\uFE0F|[\uD83C-\uDBFF\uDC00-\uDFFF])/g, '');
 }
+
 
 // Ensure voices are populated on page load
 document.addEventListener('DOMContentLoaded', () => {

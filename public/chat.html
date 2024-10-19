@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Alfie AI. Chat safely!</title>
     <link rel="stylesheet" href="styles/chat.css">
+    <link rel="icon" href="https://emojiisland.com/cdn/shop/products/Dog_Emoji_large.png?v=1571606065" type="image/x-icon">
     <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Kiwi+Maru:wght@300;400;500&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -34,14 +35,24 @@
         <div id="messages"></div>
         <div id="input-container">
             <div id="thinking"><image class="image-thinking" src="./thinking.gif"></div>
-            <div class="input-wrapper">
-                <input type="text" id="user-input" placeholder="How can I help?">
-                <button id="mic-btn" class="mic-button">
-                    <span class="material-icons">mic</span>
-                </button>
-            </div>
-            <button id="send-btn">Send</button>
-            <div id="mic-waves" class="wave-container"></div>
+                <div class="input-wrapper">
+                    <input type="text" id="user-input" placeholder="How can I help?">
+                    <button id="mic-btn" class="mic-button">
+                        <span class="material-icons">mic</span>
+                    </button>
+                </div>
+            <!-- Make sure it only displays for paid users -->
+            <div id="gold-premium-users" style="display: none;">
+                <img id="image-preview" style="display:none; max-width: 100px; border-radius: 8px;" />
+                <button id="remove-image-btn" style="display: none;">❌</button>
+                <!-- Add a file input for uploading images -->
+                <input type="file" id="image-upload" accept="image/*" style="display: none;">
+                <label for="image-upload" id="image-upload-btn">
+                <span class="material-icons">image</span>
+                </label>
+            </div >
+                <button id="send-btn">Send</button>
+                <div id="mic-waves" class="wave-container"></div>                
         </div>
     </div>                           
     </div>
