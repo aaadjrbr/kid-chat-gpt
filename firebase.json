@@ -5,6 +5,33 @@
       "firebase.json",
       "**/.*",
       "**/node_modules/**"
+    ],
+    "cleanUrls": true,
+    "rewrites": [
+      {
+        "source": "/community",
+        "destination": "/community.html"
+      },
+      {
+        "source": "/profiles",
+        "destination": "/profiles.html"
+      },
+      {
+        "source": "/login",
+        "destination": "/login.html"
+      },
+      {
+        "source": "/forgot-pin",
+        "destination": "/forgot-pin.html"
+      },
+      {
+        "source": "/edit-profile",
+        "destination": "/edit-profile.html"
+      },
+      {
+        "source": "/lp/click-here",
+        "destination": "/lp/click-here.html"
+      }
     ]
   }
 }
