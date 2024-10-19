@@ -336,6 +336,12 @@ async function loadPostsByCategory(category) {
     lastVisiblePost = null;
   }
 
+  // Clear any previous "No posts found" message before new query
+  const noPostsMessage = postsContainer.querySelector('p');
+  if (noPostsMessage && noPostsMessage.textContent.includes('No posts found')) {
+    noPostsMessage.remove();  // Remove the message
+  }
+
   let q = query(postsRef, where('postCategory', '==', category), orderBy('timestamp', 'desc'), limit(limitNum));
   if (lastVisiblePost) {
     q = query(postsRef, where('postCategory', '==', category), orderBy('timestamp', 'desc'), startAfter(lastVisiblePost), limit(limitNum));
@@ -343,8 +349,11 @@ async function loadPostsByCategory(category) {
 
   const querySnapshot = await getDocs(q);
   
-  if (querySnapshot.empty && !lastVisiblePost) {
-    postsContainer.innerHTML = '<p>❌ No posts found</p>';
+  if (querySnapshot.empty) {
+    // Only show "No posts found" if it's the first batch and no posts are found
+    if (!lastVisiblePost) {
+      postsContainer.innerHTML = '<p>❌ No posts found</p>';
+    }
   } else {
     querySnapshot.forEach((doc) => {
       renderPost(doc.data(), doc.id);
