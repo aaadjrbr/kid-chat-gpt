@@ -110,7 +110,7 @@ async function fetchUserProfile() {
 
             // If the tokens field doesn't exist, create it and assign default values based on status
             if (userProfileCache.tokens === undefined) {
-                userTokens = isGold ? 999 : (isPremium ? 100 : 5);
+                userTokens = isGold ? 20 : (isPremium ? 30 : 5);
 
                 // Update Firestore with the default token count if missing
                 await updateDoc(userProfileRef, { tokens: userTokens });
@@ -168,14 +168,14 @@ function updateBadge() {
         badgeContainer.className = "badge gold";
         conversationContext.push({
             role: "system",
-            content: "This user is a Gold member, which means they have unlimited tokens! 🌟 Keep chatting as much as you like!"
+            content: "This user is a Gold member with 20 tokens per hour. Be encouraging and let them know how many tokens they have left if they ask."
         });
     } else if (isPremium) {
         badgeContainer.textContent = "Premium";
         badgeContainer.className = "badge premium";
         conversationContext.push({
             role: "system",
-            content: "This user is a Premium member with 100 tokens per hour. Be encouraging and let them know how many tokens they have left if they ask."
+            content: "This user is a Premium member with 30 tokens per hour. Be encouraging and let them know how many tokens they have left if they ask."
         });
     } else {
         badgeContainer.textContent = "Free";
@@ -241,8 +241,8 @@ async function fetchKidData() {
                     role: "system", 
                     content: `You are aware of the different types of users based on their membership status. If the kid asks about this, explain it in a fun and simple way:
                     
-                    - **Gold Members**: "You have a shiny Gold badge at the top of the chat! 🏅 This means you have **unlimited messages**! You can chat as much as you want! 🌟"
-                    - **Premium Members**: "You have a cool Premium badge! 🌟 Premium users can chat up to **100 times an hour**. That's a lot of chatting!"
+                    - **Gold Members**: "You have a shiny Gold badge at the top of the chat! 🏅 This means you have **20 messages per hour**! We can chat a lot! 🌟"
+                    - **Premium Members**: "You have a cool Premium badge! 🌟 Premium users can chat up to **30 times an hour**. That's a lot of chatting!"
                     - **Free Members**: "You're a Free member! You can chat up to **5 times an hour**. That's a great start! 😊"
                     
                     If they want to know more about upgrading or pricing, encourage them to ask their parents to visit the contact page: "If you want to know more about the other memberships, ask your parents to call us on the Contact page! They'll know more about pricing and how it works! 😊📞"`
@@ -670,12 +670,13 @@ async function sendMessage() {
             // Ensure that the response is always a string
             botResponse = botResponse || "Oops! I couldn't think of a response. Try again later.";
 
-            // Deduct 1 token for the bot response
-            if (userTokens > 0) {
-                userTokens -= 1;
-                await updateTokensInFirestore(); // Update Firestore with the new token count
-                console.log('1 token deducted for bot response:', userTokens);
-            }
+// Deduct 1 token for the bot response
+// if (userTokens > 0) {
+//     userTokens -= 1;
+//     await updateTokensInFirestore(); // Update Firestore with the new token count
+//     console.log('1 token deducted for bot response:', userTokens);
+// }
+
 
             // Push bot response to the conversation context
             conversationContext.push({ role: "assistant", content: botResponse });
@@ -715,8 +716,8 @@ async function checkTokenRefillTime() {
 
     const tokensDepletedTimestamp = userProfile.tokensDepletedTimestamp;
 
-    const goldTokenLimit = 999;
-    const premiumTokenLimit = 100;
+    const goldTokenLimit = 20;
+    const premiumTokenLimit = 30;
     const freeTokenLimit = 5;
 
     // Check if tokens were depleted at some point (i.e., if tokensDepletedTimestamp exists)
@@ -777,8 +778,8 @@ async function startTokenRefillTimer() {
     const userProfileSnapshot = await getDoc(userProfileRef);
     const userProfile = userProfileSnapshot.data();
 
-    const goldTokenLimit = 999;
-    const premiumTokenLimit = 100;
+    const goldTokenLimit = 20;
+    const premiumTokenLimit = 30;
     const freeTokenLimit = 5;
 
     if (!userProfile.tokensDepletedTimestamp) {
@@ -798,7 +799,7 @@ async function startTokenRefillTimer() {
         if (timeLeft <= 0) {
             // Refill tokens based on user type
             if (isGold) {
-                userTokens = goldTokenLimit; // Gold members get 999 tokens
+                userTokens = goldTokenLimit; // Gold members get 20 tokens
             } else if (isPremium) {
                 userTokens = premiumTokenLimit;
             } else {
@@ -841,7 +842,7 @@ function updateTokenBar() {
     let tokenPercentage;
 
     // Gold, Premium, and Free users all have a set token limit now
-    let tokenLimit = isGold ? 999 : (isPremium ? 100 : 5);  // Adjust token limit based on user status
+    let tokenLimit = isGold ? 20 : (isPremium ? 30 : 5);  // Adjust token limit based on user status
 
     tokenPercentage = (userTokens / tokenLimit) * 100;
     tokenBar.style.width = `${tokenPercentage}%`;
