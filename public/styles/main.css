@@ -108,6 +108,16 @@ body {
   box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
 }
 
+.rounded {
+  margin-top: 105px !important;
+}
+
+@media (max-width: 768px) {
+  .rounded {
+    margin-top: 20px !important;
+  }
+}
+
 .carousel-control-next-icon {
   background-image: url(https://firebasestorage.googleapis.com/v0/b/kids-chatgpt.appspot.com/o/static%2Fright-arrow.png?alt=media&token=8dbd342b-ef73-43b9-82b2-f1701ce6101a);
 }
