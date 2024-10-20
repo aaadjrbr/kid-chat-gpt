@@ -26,32 +26,40 @@ switch (mode) {
 // Handle password reset
 async function handleResetPassword(actionCode) {
     try {
-        // Verify the reset code and show the form if valid
+        // Verify the reset code
         await verifyPasswordResetCode(auth, actionCode);
+
+        // Show the reset password form if the code is valid
         messageElement.style.display = 'none';
         passwordResetForm.style.display = 'block';
 
-        // Handle password reset form submission
+        // Handle form submission
         passwordResetForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const newPassword = document.getElementById('new-password').value;
             const confirmPassword = document.getElementById('confirm-password').value;
 
+            // Validate passwords
             if (newPassword !== confirmPassword) {
-                resetErrorMessage.textContent = "Passwords do not match.";
+                resetErrorMessage.textContent = "Passwords do not match. Please try again.";
+                resetErrorMessage.style.color = 'red';
                 return;
             }
 
+            // Perform password reset
             try {
                 await confirmPasswordReset(auth, actionCode, newPassword);
-                messageElement.textContent = 'Password has been reset successfully!';
+                messageElement.textContent = '✅ Password has been reset successfully!';
+                messageElement.style.color = 'green';
                 passwordResetForm.style.display = 'none';
             } catch (error) {
-                resetErrorMessage.textContent = 'Error resetting password. Please try again.';
+                resetErrorMessage.textContent = '❌ Error resetting password. Please try again.';
+                console.error(error);
             }
         });
     } catch (error) {
-        messageElement.textContent = 'Error resetting your password. The link may be invalid or expired. Please try again.';
+        messageElement.textContent = '❌ Error resetting your password. The link may be invalid or expired. Please try again.';
+        messageElement.style.color = 'red';
         console.error(error);
     }
 }
@@ -63,7 +71,16 @@ async function handleVerifyEmail(actionCode) {
         messageElement.style.display = 'none';
         emailVerificationSuccess.style.display = 'block';
     } catch (error) {
-        messageElement.textContent = 'Error verifying your email. The link may be invalid or expired. Please try again.';
+        if (error.code === 'auth/invalid-action-code') {
+            messageElement.textContent = '❌ Invalid or expired verification link. Please request a new verification email.';
+        } else if (error.code === 'auth/expired-action-code') {
+            messageElement.textContent = '❌ Verification link has expired. Please request a new verification email.';
+        } else if (error.code === 'auth/email-already-verified') {
+            messageElement.textContent = '✅ Your email has already been verified. You can log in.';
+        } else {
+            messageElement.textContent = '❌ Error verifying your email. Please try again.';
+        }
+        messageElement.style.color = 'red';
         console.error(error);
     }
 }
