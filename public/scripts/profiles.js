@@ -243,8 +243,8 @@ export async function loadProfiles() {
                     optionsContainer.classList.add('profile-options');
                     optionsContainer.style.display = 'none'; // Hide options by default
                     optionsContainer.innerHTML = `
-                        <button onclick="viewChatHistory('${kidId}', '${kid.name}', event)">📝 Chat History</button>
-                        <button onclick="startNewChat('${kidId}', '${kid.name}', event)">✨ New Chat</button>
+                        <button class="history-btn" onclick="viewChatHistory('${kidId}', '${kid.name}', event)">📝 Chat History</button>
+                        <button class="start-chat-btn" onclick="startNewChat('${kidId}', '${kid.name}', event)">✨ New Chat</button>
                     `;
                     profileDiv.appendChild(optionsContainer);
 

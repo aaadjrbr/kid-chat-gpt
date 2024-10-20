@@ -18,17 +18,20 @@ button, input {
 
 button#toggle-add-profile, .toggle-add-profile2 {
     font-family: 'Fredoka One', 'Raleway', sans-serif;
-    color:#000000;
-    background: #ffc107;
+    color:#ffffff;
+    background: #0d6dfdec;
+    border: 3px solid #0d6dfd;
     padding: 15px;
     font-size: 1.1em;
     border-radius: 35px;
-    transition: opacity 0.5s ease-in-out; /* Smooth transition for fading */
+    transition: background-color 0.3s;
 }
 
 button#toggle-add-profile:hover, .toggle-add-profile2:hover {
-    background-image: linear-gradient(to right, #ffffff1c, #ffffff70);
+    background-image: linear-gradient(to right, #ffffff57, #ffffff6e);
+    border: 3px solid #0d6efd;
     transform: scale(1.05);
+    transition: background-color 0.3s;
 }
 
 button#save-changes-button {
@@ -46,6 +49,35 @@ button#delete-profile-button {
 
 button#delete-profile-button:hover {
     background-color: #df2f2f;
+}
+
+button.history-btn {
+    background: none !important;
+    color: #212529;
+    font-family: 'Fredoka One', 'Raleway', sans-serif;
+    font-size: 1em !important;
+    margin-top: -30px !important;
+    padding: 0px !important;
+    margin-bottom: 25px !important;
+}
+
+button.history-btn:hover {
+    background: none;
+}
+
+button.start-chat-btn {
+    background: #198754 !important;
+    border: 3px solid #198754;
+    font-family: 'Fredoka One', 'Raleway', sans-serif;
+    font-weight: 400 !important;
+    font-size: 1em !important;
+    border-radius: 35px !important;
+    color: #ffffff;
+}
+
+button.start-chat-btn:hover {
+    background: #198754c7 !important;
+    border: 3px solid #198754;
 }
 
 h2 {
@@ -161,10 +193,10 @@ form#add-profile-form {
 .profile-item {
     background-color: #ffc10796;
     border: 4px solid #ffc107;
-    border-radius: 50%;
+    border-radius: 50% !important;
     padding: 20px;
-    width: 150px;
-    height: 150px;
+    width: 150px !important;
+    height: 150px !important;
     text-align: center;
     cursor: pointer;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -408,7 +440,7 @@ button:hover {
 }
 
 .info-bottom a:hover p {
-    color: #08d9d6; /* Change color on hover */
+    color: #6a0dad; /* Change color on hover */
 }
 
 #pin-popup {
