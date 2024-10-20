@@ -5,7 +5,7 @@
 body {
     font-family: "Open Sans", sans-serif;
     font-weight: 400;
-    background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+    background-color: #e3e3e9; /* Light greyish background for a cleaner look */
     margin: 0;
     padding: 20px;
     color: #000000;
@@ -17,11 +17,18 @@ button, input {
 }
 
 button#toggle-add-profile, .toggle-add-profile2 {
-    background-image: linear-gradient(to right, #6a11cb, #2575fc);
+    font-family: 'Fredoka One', 'Raleway', sans-serif;
+    color:#000000;
+    background: #ffc107;
+    padding: 15px;
+    font-size: 1.1em;
+    border-radius: 35px;
+    transition: opacity 0.5s ease-in-out; /* Smooth transition for fading */
 }
 
 button#toggle-add-profile:hover, .toggle-add-profile2:hover {
-    background-image: linear-gradient(to right, #2575fc, #6a11cb);
+    background-image: linear-gradient(to right, #ffffff1c, #ffffff70);
+    transform: scale(1.05);
 }
 
 button#save-changes-button {
@@ -47,19 +54,21 @@ h2 {
 }
 
 .modal-title {
+    font-family: 'Fredoka One', 'Raleway', sans-serif;
     color: #6a11cb;
     font-size: 1.4em;
-    font-weight: 600;
+    font-weight: 500;
 }
 
 .modal-options {
+    font-family: 'Fredoka One', 'Raleway', sans-serif;
     color: #6a11cb;
     font-size: 1.2em;
-    font-weight: 600;
+    font-weight: 500;
 }
 
 .title1 {
-    font-family: "Protest Strike", sans-serif;
+    font-family: 'Fredoka One', 'Raleway', sans-serif;
     font-size: 2.6em;
     color: #6a11cb;
     font-weight: 400;
@@ -91,7 +100,7 @@ form#add-profile-form {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 5px;
+    gap: 10px;
 }
 
 .profile-options {
@@ -142,14 +151,16 @@ form#add-profile-form {
 }
 
 .loading-txt {
+    font-family: 'Fredoka One', 'Raleway', sans-serif;
     font-size: 1.3em;
+    font-weight: 500;
     color: #6a11cb;
 }
 
 /* Profile item styling */
 .profile-item {
-    background-image: linear-gradient(to right, #6b11cb2f, #2574fc34);
-    border: 4px solid #6a11cb;
+    background-color: #ffc107;
+    border: 4px solid #ffc107;
     border-radius: 50%;
     padding: 20px;
     width: 150px;
@@ -165,18 +176,19 @@ form#add-profile-form {
 }
 
 .profile-item:hover {
-    background-image: linear-gradient(to right, #2574fc1c, #6b11cb2a);
+    background-image: linear-gradient(to right, #ffffff1c, #ffffff70);
+    border: 4px solid #212529;
     transform: scale(1.05);
 }
 
 /* Kid name styling inside the profile */
 .profile-item span {
-    font-family: "Protest Strike", sans-serif !important;
+    font-family: 'Fredoka One', 'Raleway', sans-serif !important; 
     font-weight: 300 !important;
     font-size: 1.2em !important;
     display: block;
     margin-top: 10px;
-    color: #6a11cb;
+    color: #212529;
     font-size: 1.1em;
     font-weight: 900;
 }
@@ -215,7 +227,7 @@ form#add-profile-form {
 
 button.edit-button {
     background: none;
-    color: #6a11cb;
+    color: #212529;
     font-size: 1.1em;
     margin-top: 10px;
 }
@@ -270,31 +282,10 @@ button:hover {
     }
 }
 
-/* Profile item styling */
-.profile-item {
-    background-color: #fff;
-    border-radius: 50%;
-    width: 150px;
-    height: 150px;
-    text-align: center;
-    cursor: pointer;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    margin: 10px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    transition: transform 0.3s;
-}
-
-.profile-item:hover {
-    transform: scale(1.05);
-}
-
 /* Profile image styling */
 .profile-image {
     border-radius: 50%;
-    border: 3px solid #ffffff6b;
+    border: 3px solid #212529;
     width: 80px;
     height: 80px;
 }
@@ -319,6 +310,7 @@ button:hover {
 }
 
 .gallery-image:hover {
+    border: 4px solid #6a11cb !important;
     transform: scale(1.1);
 }
 
@@ -380,11 +372,12 @@ button:hover {
 }
 
 #logout-button {
+    font-family: 'Fredoka One', 'Raleway', sans-serif;
     background-color: #ff4d4d; /* Red color for the button */
     color: white;
     border: none;
     padding: 10px 20px;
-    border-radius: 5px;
+    border-radius: 35px;
     cursor: pointer;
     font-size: 16px;
     transition: background-color 0.3s ease;
@@ -406,6 +399,7 @@ button:hover {
 }
 
 .info-bottom p {
+    font-family: 'Fredoka One', 'Raleway', sans-serif;
     display: inline-block; /* Display the <p> elements inline */
     margin: 0; /* Remove default margins */
     font-size: 16px; /* Set font size */
@@ -413,7 +407,7 @@ button:hover {
 }
 
 .info-bottom a:hover p {
-    color: #007bff; /* Change color on hover */
+    color: #08d9d6; /* Change color on hover */
 }
 
 #pin-popup {
@@ -505,7 +499,7 @@ button:hover {
 }
 
 #pin-verification-popup {
-    background-color: #fff8e1; /* Soft, warm background color */
+    background-color: #fff8e1 !important; /* Soft, warm background color */
     border: 3px solid #fbc02d; /* Cute yellow border */
     border-radius: 15px;
     padding: 20px;
