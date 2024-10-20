@@ -25,6 +25,10 @@ body {
   color: #08d9d6; /* Neon blue for hover effect */
 }
 
+a.btn.btn-lg.btn-warning.rounded-pill.mt-3:hover {
+  background-color: #ffffff9f !important;
+}
+
 /* Hero Section */
 #hero {
   background: linear-gradient(135deg, #6a0dad, #4a4de7); /* Smooth transition from purple to neon blue */
