@@ -1,6 +1,5 @@
-// auth.js
 import { auth } from './firebase-config.js';
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js";
+import { GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, sendEmailVerification } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js";
 
 // Elements
 const loginForm = document.getElementById('login-form');
@@ -26,30 +25,68 @@ loginForm.addEventListener('submit', async (e) => {
     const password = loginForm['password'].value;
 
     try {
-        await signInWithEmailAndPassword(auth, email, password);
-        window.location.href = 'profiles.html';
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+        if (user.emailVerified) {
+            window.location.href = 'profiles.html';  // Proceed if email is verified
+        } else {
+            errorMessage.textContent = "Please verify your email before logging in.";
+            errorMessage.style.display = 'block';
+        }
     } catch (error) {
         errorMessage.textContent = "Login failed. Please check your credentials.";
         errorMessage.style.display = 'block';
     }
 });
 
-// Handle Create Account form submission
+// Google Sign-In
+const googleProvider = new GoogleAuthProvider();
+
+document.getElementById('google-login-btn').addEventListener('click', async () => {
+    try {
+        const result = await signInWithPopup(auth, googleProvider);
+        window.location.href = 'profiles.html';  // Redirect after login
+    } catch (error) {
+        console.error("Google sign-in failed:", error);
+        errorMessage.textContent = "Google sign-in failed. Please try again.";
+        errorMessage.style.display = 'block';
+    }
+});
+
+// Handle Create Account form submission and send email verification
 createAccountForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const newEmail = createAccountForm['new-email'].value;
     const newPassword = createAccountForm['new-account-password'].value;
     const confirmPassword = createAccountForm['confirm-account-password'].value;
+    const termsCheckbox = document.getElementById('agreeTerms');
 
+    // Check if passwords match
     if (newPassword !== confirmPassword) {
         createErrorMessage.textContent = "Passwords do not match.";
         createErrorMessage.style.display = 'block';
         return;
     }
 
+    // Check if the terms checkbox is checked
+    if (!termsCheckbox.checked) {
+        createErrorMessage.textContent = "You must agree to the Terms of Service.";
+        createErrorMessage.style.display = 'block';
+        return;
+    }
+
     try {
-        await createUserWithEmailAndPassword(auth, newEmail, newPassword);
-        window.location.href = 'profiles.html';
+        // Create user account
+        const userCredential = await createUserWithEmailAndPassword(auth, newEmail, newPassword);
+        const user = userCredential.user;
+
+        // Send email verification
+        await sendEmailVerification(user);
+
+        createErrorMessage.textContent = "Account created! Please check your email to verify your account before logging in.";
+        createErrorMessage.style.display = 'block';
+
     } catch (error) {
         createErrorMessage.textContent = "Account creation failed. Please try again.";
         createErrorMessage.style.display = 'block';

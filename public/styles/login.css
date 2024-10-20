@@ -7,7 +7,7 @@
 body {
     font-family: 'Roboto', sans-serif;
     text-align: center;
-    background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+    background-color: #e3e3e9; /* Light greyish background for a cleaner look */
     margin: 0;
     padding: 0;
 }
@@ -31,8 +31,13 @@ h1 {
 
 h2 {
     font-family: "Fredoka", sans-serif;
-    font-weight: 400;
-    color: #6a11cb;
+    font-weight: 500;
+    color: #212529;
+}
+
+label {
+    font-family: "Fredoka", sans-serif;
+    font-size: 1.2em;
 }
 
 /* Form Styles */
@@ -40,8 +45,8 @@ form {
     width: 300px;
     margin: 20px auto;
     padding: 20px;
-    background-color: #d5eaf8;
-    border: 3px solid #6a11cb !important;
+    background-color: #ffc10796;
+    border: 4px solid #ffc107;
     border-radius: 25px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     width: 40%;
@@ -57,6 +62,7 @@ input {
     background-color: #f9f9f9;
     font-size: 16px;
     transition: all 0.3s ease;
+    font-family: "Fredoka", sans-serif !important;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
@@ -72,6 +78,14 @@ input:hover {
     background-color: #fff;
 }
 
+input#agreeTerms {
+    background: none !important;
+    box-shadow: none !important;
+    padding: 0px !important;
+    margin: 0px;
+    width: auto;
+}
+
 a {
     font-size: 0.9em;
     color: rgb(0, 89, 255);
@@ -84,20 +98,23 @@ a:hover {
 }
 
 button {
-    background-image: linear-gradient(to right, #6a11cb, #2575fc);
-    color: white;
-    padding: 10px 20px;
-    margin: 10px 0;
-    border: none;
-    border-radius: 5px;
     cursor: pointer;
-    width: 100%;
-    font-size: 16px;
-    transition: opacity 0.5s ease;
+    font-family: "Fredoka", sans-serif;
+    font-weight: 600;
+    color:#ffffff;
+    background: #0d6dfdec;
+    border: 3px solid #0d6dfd;
+    padding: 15px;
+    font-size: 1.1em;
+    border-radius: 35px;
+    transition: background-color 0.3s;
 }
 
 button:hover {
-    background-image: linear-gradient(to right, #2575fc, #6a11cb);
+    background-image: linear-gradient(to right, #ffffff57, #ffffff6e);
+    border: 3px solid #0d6efd;
+    transform: scale(1.05);
+    transition: background-color 0.3s;
 }
 
 /* Error Message Styles */
@@ -113,21 +130,18 @@ button:hover {
 }
 
 #toggle-create-account {
-    background: rgb(247,150,192);
-    background: radial-gradient(circle, rgba(247,150,192,1) 0%, rgba(118,174,241,1) 100%);
-    width: auto;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    margin: 0 auto;
+    background: #198754 !important;
+    border: 3px solid #198754;
+    font-family: "Fredoka", sans-serif;
+    font-weight: 600 !important;
+    font-size: 1em !important;
+    border-radius: 35px !important;
+    color: #ffffff;
 }
 
 #toggle-create-account:hover {
-    background: radial-gradient(circle, rgb(243, 138, 184) 0%, rgb(103, 162, 235) 100%);
-    color: rgb(255, 255, 255);
+    background: #198754c7 !important;
+    border: 3px solid #198754;
     transition: all 0.2s ease;
 }
 
@@ -224,7 +238,21 @@ ul {
     color: green;
 }
 
+footer a {
+    color: #ffffff;
+}
+
+footer a:hover {
+    color: #08d9d6; /* Consistent neon blue */
+}
+
+footer {
+    background-color: #212529;
+    padding: 15px;
+}
+
 footer p {
-    color: #333;
-    font-size: 0.8em;
+    color: #ffffff;
+    font-family: "Fredoka", sans-serif;
+    font-size: 0.9em;
 }

@@ -4,11 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Alfie AI. Chat safely! </title>
+    <link rel="icon" href="https://emojiisland.com/cdn/shop/products/Dog_Emoji_large.png?v=1571606065" type="image/x-icon">
     <link rel="stylesheet" href="styles/login.css">
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <h1>Alfie AI<br/><span class="sub-title">Chat safely!</span></h1>
+    <h1><img src="https://firebasestorage.googleapis.com/v0/b/kids-chatgpt.appspot.com/o/logo-alfie.webp?alt=media&token=92d7d084-ce10-486d-b00d-30c0b2642456" style="width: 210px; height: auto;"></h1>
     <div class="button-go-back-container">
         <a class="button-go-back" style="text-align: center; text-decoration: none; font-size: 1.2em;" href="./index.html">
             <span>Go back</span>
@@ -18,50 +19,70 @@
     
     <!-- Login Form -->
     <form id="login-form">
+        <label for="email">Parent Email</label>
         <input type="email" id="email" placeholder="Parent Email" required>
         <div class="password-container">
+            <label for="password">Password</label>
             <input type="password" id="password" placeholder="Password" required>
             <span class="toggle-password" id="toggle-password">👀</span>
         </div>
-        <button type="submit">Login</button>
-        <p id="error-message" style="color: red; display: none;"></p>
+        <button type="submit" style="width: 100%;">Login ✨</button><br/><br/>
+        <button id="google-login-btn" style="background-color: #000000; color: white; padding: 10px 20px; border: none; border-radius: 30px; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 100%;">
+            <img src="https://firebasestorage.googleapis.com/v0/b/kids-chatgpt.appspot.com/o/static%2Fgoogle-g.png?alt=media&token=d680ae54-ffab-4c98-9e92-7f6b21d83fe2" alt="Google G" style="width: 30px; height: 30px; margin-right: 10px;">
+            <span>Login with Google</span>
+        </button><br/><br/>               
+        <p id="error-message" style="font-size: 1.1em; color: red; display: none;"></p>
         <a href="#" id="forgot-password-link">Forgot Password?</a> <!-- Forgot Password Link -->
     </form>
 
     <!-- Password Reset Form, initially hidden -->
     <form id="password-reset-form" style="display: none;">
         <h2>Oops! Forgot my password</h2>
+        <label for="email">Email</label>
         <input type="email" id="reset-email" placeholder="Enter your email" required>
-        <button type="submit">Reset Password</button>
-        <p id="reset-error-message" style="color: red; display: none;"></p>
-        <p id="reset-success-message" style="color: green; display: none;"></p>
+        <button type="submit">Reset Password</button><br/><br/>
+        <p id="reset-error-message" style="font-size: 1.1em; color: red; display: none;"></p>
+        <p id="reset-success-message" style="font-size: 1.1em; color: green; display: none;"></p>
         <a href="#" id="i-remember">Nevermind</a>
     </form>
 
     <!-- Toggle to create a new profile -->
     <div class="center-container">
-        <button id="toggle-create-account">Create New Account</button>
+        <button id="toggle-create-account">Create New Account 💜</button>
     </div>
 
     <!-- Create Account Form, initially hidden -->
     <form id="create-account-form" style="display: none;">
         <h2 style="color: white;">Create New Account</h2>
+        <label for="email">Your Email</label>
         <input type="email" id="new-email" placeholder="Enter New Email" required>
         <div class="password-container">
+            <label for="new-account-password">Password</label>
             <input type="password" id="new-account-password" placeholder="Password" required>
             <span class="toggle-password" id="toggle-new-account-password">👀</span>
         </div>
         <div class="password-container">
+            <label for="confirm-account-password">Confirm Password</label>
             <input type="password" id="confirm-account-password" placeholder="Confirm Password" required>
             <span class="toggle-password" id="toggle-confirm-account-password">👀</span>
         </div>
-        <button type="submit">Create Account</button>
-        <p id="create-error-message" style="color: red; display: none;"></p>
+        <button type="submit">Create Account 🚀</button>
+        <p style="font-size: 0.9em; color: #fff;">
+            <em>*By creating an account, you acknowledge and agree to our <a href="./privacy-policy.html">Privacy Policy</a>.</em>
+        </p>
+        <div style="margin-bottom: 15px;">
+            <input type="checkbox" id="agreeTerms" name="agreeTerms" required style="margin-right: 10px;">
+            <label for="agreeTerms" style="color: #fff;">I have read and agree to the <a href="./privacy-policy.html" target="_blank" style="color: #006eff;">Terms of Service</a>.</label>            
+        </div>        
+        <p id="create-error-message" style="font-size: 1.1em; color: red; display: none;"></p>
     </form>
     <br/><br/>
-    <footer>
-        <p>Alfie AI. All Rights Reserved.</p>
-    </footer>
+  <!-- Footer -->
+  <footer class="bg-dark text-white text-center py-4">
+    <p><a href="./privacy-policy.html">Privacy Policy & Terms of Use</a></p>
+    <div style="margin-top: 40px;"></div>
+    <p>&copy; 2024 Alfie AI. All Rights Reserved.</p>
+  </footer>
     <br/><br/>
     <script src="scripts/firebase-config.js" type="module"></script>
     <script src="scripts/auth.js" type="module"></script>
