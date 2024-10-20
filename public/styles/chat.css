@@ -525,7 +525,7 @@ select.voice-select:focus {
 
 /* Token Bar */
 #token-bar {
-    width: 100%; /* Initially full, adjust width dynamically with JS */
+    width: 100% !important; /* Initially full, adjust width dynamically with JS */
     height: 100%; /* Matches the height of the container */
     background: rgb(247,150,192);
     background: radial-gradient(circle, rgba(247,150,192,1) 0%, rgba(118,174,241,1) 100%);
