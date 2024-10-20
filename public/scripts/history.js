@@ -93,35 +93,45 @@ async function loadChatMessages(parentId, kidId, chatId, year, month, day) {
         messagesSnapshot.forEach(doc => {
             const msg = doc.data();
             const senderName = msg.sender === 'bot' ? botName : kidName; // Use kidName instead of "User"
-    
+        
             const msgItem = document.createElement('li');
             msgItem.classList.add(msg.sender === 'bot' ? 'bot-message' : 'user-message');
-    
+        
             // Create a span for the sender name
             const senderSpan = document.createElement('span');
             senderSpan.textContent = `${senderName}: `;
-    
+        
             // Add a specific class to the bot's name
             if (msg.sender === 'bot') {
                 senderSpan.classList.add('bot-name'); // Add class for the bot's name
             }
-    
-            // Check if the message contains a URL that looks like an image
-            if (msg.text.startsWith("http") && (msg.text.includes(".png") || msg.text.includes(".jpg") || msg.text.includes(".jpeg"))) {
+        
+            // Check if the message contains an image URL
+            if (msg.imageUrl) {
                 const imageElement = document.createElement('img');
-                imageElement.src = msg.text;
+                imageElement.src = msg.imageUrl;
                 imageElement.alt = "Image";
                 imageElement.style.maxWidth = "100%";
                 imageElement.style.borderRadius = "8px";
+        
+                // Add error handling for broken images
+                imageElement.onerror = function () {
+                    imageElement.style.display = 'none'; // Hide broken image
+                    const errorMessage = document.createElement('p');
+                    errorMessage.textContent = "Image deleted/not found.";
+                    msgItem.appendChild(errorMessage); // Display the error message
+                };
+        
+                msgItem.appendChild(senderSpan);
                 msgItem.appendChild(imageElement);
-            } else {
+            } else if (msg.text) {
                 // Append sender name and text message separately
                 msgItem.appendChild(senderSpan);
                 msgItem.appendChild(document.createTextNode(msg.text));
             }
-    
+        
             messagesList.appendChild(msgItem);
-        });
+        });        
         messagesContainer.appendChild(messagesList);
     }
     
