@@ -224,7 +224,7 @@ export async function loadProfiles() {
                 profilesContainer.innerHTML = ''; // Clear the "Loading..." message
 
                 if (querySnapshot.empty) {
-                    profilesContainer.innerHTML = '<p>No profiles found. Please add a profile.</p>';
+                    profilesContainer.innerHTML = '<p>No profiles found. Please add a profile. 🚀✨</p>';
                     return;
                 }
 

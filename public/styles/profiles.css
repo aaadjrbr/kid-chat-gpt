@@ -182,8 +182,10 @@ form#add-profile-form {
     opacity: 0;
 }
 
-.loading-txt {
+.loading-txt, div#profiles-container p {
+    padding: 20px;
     font-family: 'Fredoka One', 'Raleway', sans-serif;
+    text-align: center;
     font-size: 1.3em;
     font-weight: 500;
     color: #6a11cb;
