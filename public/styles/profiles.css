@@ -159,7 +159,7 @@ form#add-profile-form {
 
 /* Profile item styling */
 .profile-item {
-    background-color: #ffc107;
+    background-color: #ffc10796;
     border: 4px solid #ffc107;
     border-radius: 50%;
     padding: 20px;
@@ -168,6 +168,7 @@ form#add-profile-form {
     text-align: center;
     cursor: pointer;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05);
     transition: transform 0.3s, background-color 0.3s;
     display: flex;
     flex-direction: column;
@@ -177,7 +178,7 @@ form#add-profile-form {
 
 .profile-item:hover {
     background-image: linear-gradient(to right, #ffffff1c, #ffffff70);
-    border: 4px solid #212529;
+    border: 4px solid #6a11cb;
     transform: scale(1.05);
 }
 
