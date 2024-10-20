@@ -54,6 +54,22 @@ input:focus {
     outline: none;
 }
 
+a.button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 5px;
+    display: inline-block;
+    font-family: 'Fredoka', sans-serif;
+    font-size: 1em;
+    text-align: center;
+}
+
+a.button:hover {
+    background-color: #0056b3;
+}
+
 button {
     cursor: pointer;
     font-family: "Fredoka", sans-serif;
