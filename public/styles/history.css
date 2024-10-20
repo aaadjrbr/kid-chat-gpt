@@ -5,24 +5,25 @@
 
 /* General styling */
 body {
-    font-family: 'Roboto', sans-serif;
-    background-image: radial-gradient(circle, rgba(92, 100, 255, 0.527) 0%, rgba(13, 53, 172, 0.61) 100%);
+    font-family: "Fredoka", sans-serif;
+    background-color: #e3e3e9; /* Light greyish background for a cleaner look */
     margin: 0;
     padding: 20px;
     color: #333;
 }
 
 button {
-    font-family: 'Roboto', sans-serif;
+    font-family: "Fredoka", sans-serif;
 }
 
 h2 {
-    font-family: 'Roboto', sans-serif;
+    font-family: "Fredoka", sans-serif;
     text-align: center;
 }
 
 h3 {
-    font-family: "Kiwi Maru", serif;
+    font-family: "Fredoka", sans-serif;
+    font-size: 1.4em;
     text-align: center;
 }
 
@@ -58,37 +59,36 @@ li.user-message span {
 }
 
 #day-picker-container {
-    display: grid;
+    /*display: grid;*/
     grid-template-columns: repeat(7, 1fr); /* 7 columns for days of the week */
     gap: 5px;
-    max-width: 100%;
+    max-width: 80%;
     margin: 20px auto;
 }
 
 /* Styling for individual day buttons in the calendar */
 .day-button {
-    background: rgb(247,150,192);
-    background: radial-gradient(circle, rgba(118,174,241,1) 0%, rgba(118,174,241,1) 100%);
-    border: none;
+    background: #0d6dfdec;
+    border: 3px solid #0d6dfd;
     color: white;
-    padding: 12px 16px;
-    font-size: 1em;
+    padding: 12px;
+    width: 60px;
+    height: 60px;
+    font-size: 1.2em;
     font-weight: 700;
     cursor: pointer;
-    border-radius: 50px;
+    border-radius: 50%;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease-in-out;
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.233);
     text-align: center;
     margin: 5px;
     transition: all 0.2s ease;
 }
 
 .day-button:hover {
-    background: radial-gradient(circle, rgb(243, 138, 184) 0%, rgb(103, 162, 235) 100%);
-    color: rgb(255, 255, 255);
+    border: 3px solid #0d6dfd !important;
+    background-image: linear-gradient(to right, #ffffff57, #ffffff6e);
     transition: all 0.2s ease;
-    transform: scale(1.05);
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
 }
 
 .day-button:active {
@@ -99,10 +99,12 @@ li.user-message span {
 @media (max-width: 600px) {
     #day-picker-container {
         grid-template-columns: repeat(4, 1fr); /* 4 columns for smaller screens */
+        width: 100%;
+        max-width: 100%;
     }
 
     .day-button {
-        font-size: 12px; /* Smaller text for smaller screens */
+        font-size: 1.2em; /* Smaller text for smaller screens */
         padding: 8px;
     }
 }
@@ -136,10 +138,11 @@ li.user-message span {
     width: 90%;
     margin: 10px auto; /* Centers the container horizontally */
     border-radius: 20px;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(240, 245, 255, 0.95));
-    filter: drop-shadow(0 3px 10px #0004);
+    background-color: #ffc107ee;
+    border: 4px solid #ffc107;
     padding: 10px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.041); /* Subtle shadow for depth */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.233);
 }
 
 .title-container {
@@ -148,16 +151,17 @@ li.user-message span {
     width: 90%;
     margin: 10px auto; /* Centers the container horizontally */
     border-radius: 20px;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(240, 245, 255, 0.95));
-    filter: drop-shadow(0 3px 10px #0004);
+    background: #0d6dfdec;
+    border: 3px solid #0d6dfd;
     padding: 10px;
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.233) !important;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.041); /* Subtle shadow for depth */
 }
 
 /* Chat history container styling */
 #history-container {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(240, 245, 255, 0.95));
-    filter: drop-shadow(0 3px 10px #0004);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.733), rgba(240, 245, 255, 0.705));
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.233) !important;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.041); /* Subtle shadow for depth */
     background-color: #fff;
     width: 80%;
@@ -235,22 +239,28 @@ div.sessions-container ul li {
 }
 
 li {
-    background: rgb(247, 150, 192);
-    background: radial-gradient(circle, rgba(247, 150, 192, 1) 0%, rgba(118, 174, 241, 1) 100%);
+    background: #198754;
+    border: 3px solid #198754;
     padding: 15px;
     margin-bottom: 8px;
     border-radius: 25px;
-    color: #000000;
+    color: #ffffff;
     cursor: pointer;
     transition: background-color 0.3s;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
     transition: all 0.2s ease;
 }
 
-li:hover {
-    background: radial-gradient(circle, rgb(243, 138, 184) 0%, rgb(103, 162, 235) 100%);
-    color: rgb(255, 255, 255);
+div.sessions-container ul li:hover {
+    background: #198754c7;
+    border: 3px solid #198754;
     transition: all 0.2s ease;
+}
+
+li:hover {
+    background: #ffffff3b;
+    border: 3px solid #198754 !important;
+    color: #000;
 }
 
 /* User message styling */
@@ -258,6 +268,7 @@ li:hover {
     background: linear-gradient(135deg, #6a82fb, #fc5c7d); /* Blue gradient with a slight pinkish tint for a modern look */
     padding: 12px;
     margin-bottom: 10px;
+    border: 3px solid #ffffff !important;
     color: white; /* Text color stands out on the gradient background */
     border-radius: 20px 20px 0 20px; /* Smooth, rounded edges */
     float: right;
@@ -273,6 +284,7 @@ li:hover {
     background: linear-gradient(135deg, #6a82fb, #6a82fbb9); /* Green gradient for a fresh, vibrant look */
     padding: 12px;
     margin-bottom: 10px;
+    border: 3px solid #ffffff !important;
     color: white; /* White text for high contrast against the gradient */
     border-radius: 20px 20px 20px 0; /* Smooth, rounded edges */
     float: left;
@@ -349,12 +361,11 @@ li:hover {
 }
 
 .kid-name-display {
-    font-size: 1.4em;
+    font-size: 1.8em;
     text-align: center;
-    font-family: "Kiwi Maru", serif;
     font-weight: 700;
     letter-spacing: 1px;
-    background: radial-gradient(circle, rgb(243, 138, 184) 0%, rgb(103, 162, 235) 100%);
+    background: radial-gradient(circle, rgb(238, 237, 237) 0%, rgb(103, 216, 245) 100%);
     color: rgb(255, 255, 255);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent; /* Makes the text fill transparent to show the gradient */
