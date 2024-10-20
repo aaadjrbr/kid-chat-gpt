@@ -31,6 +31,10 @@
       {
         "source": "/lp/click-here",
         "destination": "/lp/click-here.html"
+      },
+      {
+        "source": "/auth-action",
+        "destination": "/auth-action.html"
       }
     ]
   }
