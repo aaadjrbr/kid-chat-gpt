@@ -38,6 +38,7 @@ h2 {
 label {
     font-family: "Fredoka", sans-serif;
     font-size: 1.2em;
+    font-weight: 500;
 }
 
 /* Form Styles */
@@ -49,6 +50,7 @@ form {
     border: 4px solid #ffc107;
     border-radius: 25px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.233);
     width: 40%;
     text-align: center;
 }
@@ -136,12 +138,34 @@ button:hover {
     font-weight: 600 !important;
     font-size: 1em !important;
     border-radius: 35px !important;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     color: #ffffff;
 }
 
 #toggle-create-account:hover {
     background: #198754c7 !important;
     border: 3px solid #198754;
+    transition: all 0.2s ease;
+}
+
+#google-login-btn {
+    background: #000000;
+    border: 3px solid #000000;
+    color: white;
+    font-size: 1em;
+    border-radius: 30px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    transition: all 0.2s ease;
+}
+
+#google-login-btn:hover {
+    background: #1cffbb !important;
+    border: 3px solid #000000 !important;
+    color: #000;
     transition: all 0.2s ease;
 }
 
@@ -154,7 +178,8 @@ button:hover {
     background: radial-gradient(circle, rgba(247,150,192,1) 0%, rgba(118,174,241,1) 100%);
     border: 3px solid #ffffffbe !important;
     border-radius: 25px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.308);
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.233);
     width: 40%;
     text-align: center;
 }

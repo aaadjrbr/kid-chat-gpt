@@ -12,6 +12,7 @@ const errorMessage = document.getElementById('error-message');
 const createErrorMessage = document.getElementById('create-error-message');
 const resetErrorMessage = document.getElementById('reset-error-message');
 const resetSuccessMessage = document.getElementById('reset-success-message');
+const resendVerificationLink = document.getElementById('resend-verification-link');
 
 // Toggle visibility of Create Account form
 toggleCreateAccountButton.addEventListener('click', () => {
@@ -33,10 +34,12 @@ loginForm.addEventListener('submit', async (e) => {
         } else {
             errorMessage.textContent = "Please verify your email before logging in.";
             errorMessage.style.display = 'block';
+            resendVerificationLink.style.display = 'block';  // Show the resend link
         }
     } catch (error) {
         errorMessage.textContent = "Login failed. Please check your credentials.";
         errorMessage.style.display = 'block';
+        resendVerificationLink.style.display = 'none';  // Hide the resend link in case of other errors
     }
 });
 
@@ -119,6 +122,22 @@ passwordResetForm.addEventListener('submit', async (e) => {
         resetErrorMessage.textContent = "Failed to send reset email. Please try again.";
         resetErrorMessage.style.display = 'block';
         resetSuccessMessage.style.display = 'none';
+    }
+});
+
+// Handle Resend Verification Email
+resendVerificationLink.addEventListener('click', async (e) => {
+    e.preventDefault();
+    
+    const user = auth.currentUser;
+    
+    if (user && !user.emailVerified) {
+        try {
+            await sendEmailVerification(user);
+            alert("Verification email sent. Please check your inbox.");
+        } catch (error) {
+            alert("Failed to send verification email. Please try again.");
+        }
     }
 });
 
