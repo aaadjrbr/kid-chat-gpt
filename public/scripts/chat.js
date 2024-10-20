@@ -199,7 +199,7 @@ async function fetchKidData() {
             kidAge = kidData.age;
 
             // Dynamically update the placeholder with the kid's name
-            userInput.placeholder = `How can I help ${kidName}?`;
+            userInput.placeholder = `Hey, ${kidName}!`;
 
             // Start typing effect with the fetched kid name
             typeMultipleMessages([
