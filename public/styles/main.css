@@ -25,6 +25,16 @@ body {
   color: #08d9d6; /* Neon blue for hover effect */
 }
 
+p a {
+  color: #8dcbff;
+  text-decoration: none;
+}
+
+p a:hover {
+  text-decoration: underline;
+  color: #cbe6fc;
+}
+
 a.btn.btn-lg.btn-warning.rounded-pill.mt-3:hover {
   background-color: #ffffff9f !important;
 }

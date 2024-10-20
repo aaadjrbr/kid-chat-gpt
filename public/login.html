@@ -7,6 +7,99 @@
     <link rel="icon" href="https://emojiisland.com/cdn/shop/products/Dog_Emoji_large.png?v=1571606065" type="image/x-icon">
     <link rel="stylesheet" href="styles/login.css">
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap" rel="stylesheet">
+    <style>
+        /* Cookie Banner Styling */
+        #cookie-consent {
+            font-family: "Fredoka", sans-serif;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            background-color: #6b11cbf6;
+            color: white;
+            width: 100%;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        #cookie-consent p {
+            font-family: "Fredoka", sans-serif;
+            margin: 0;
+            font-size: 1em;
+            display: inline-block;
+        }
+
+        #cookie-consent a {
+            font-family: "Fredoka", sans-serif;
+            color: #ffd700;
+            text-decoration: none;
+        }
+
+        #cookie-consent a:hover {
+            text-decoration: underline;
+        }
+
+        .btn-accept {
+            font-family: "Fredoka", sans-serif;
+            background: #ffd700;
+            color: #6a11cb;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            margin-left: 15px;
+        }
+
+        .btn-accept:hover {
+            background: #f0d700;
+            border: none !important;
+        }
+
+        /* Toggle Switch Styling */
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            flex-wrap: wrap;
+        }
+
+        .toggle {
+            font-family: "Fredoka", sans-serif;
+            position: relative;
+            width: 40px;
+            height: 20px;
+            background-color: #ccc;
+            border-radius: 20px;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+
+        .toggle::before {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 16px;
+            height: 16px;
+            background-color: white;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .toggle.active {
+            background-color: #ffd700;
+        }
+
+        .toggle.active::before {
+            left: 22px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+    </style>
 </head>
 <body>
     <h1><img src="https://firebasestorage.googleapis.com/v0/b/kids-chatgpt.appspot.com/o/logo-alfie.webp?alt=media&token=92d7d084-ce10-486d-b00d-30c0b2642456" style="width: 210px; height: auto;"></h1>
@@ -86,6 +179,53 @@
     <p>&copy; 2024 Alfie AI. All Rights Reserved.</p>
   </footer>
     <br/><br/>
+
+    <div id="cookie-consent" class="hidden">
+        <br/>
+        <div>
+            <img src="https://firebasestorage.googleapis.com/v0/b/kids-chatgpt.appspot.com/o/logo-alfie.webp?alt=media&token=92d7d084-ce10-486d-b00d-30c0b2642456" style="width: 120px; height: auto;"> 
+            <br/>
+            <p>Alfie AI uses cookies 🍪 to ensure you get the best experience on our website. <a href="cookie-policy.html" target="_blank">Learn more in our Cookie Policy</a>.</p>
+            <br/><br/>
+            <div class="toggle-container">
+                <span>🐾 Track only necessary info</span>
+                <div id="tracking-toggle" class="toggle"></div>
+            </div>
+        </div>
+        <br/>
+        <button class="btn-accept" id="accept-cookies">Accept</button>
+        <br/><br/>
+    </div>
+    
+    <script>
+        // Check if user has already accepted cookies
+        const consentBanner = document.getElementById('cookie-consent');
+        const hasConsent = localStorage.getItem('cookieConsent');
+        
+        if (!hasConsent) {
+            consentBanner.classList.remove('hidden');
+        }
+    
+        // Accept Button Click Event
+        document.getElementById('accept-cookies').addEventListener('click', function() {
+            localStorage.setItem('cookieConsent', 'accepted');
+            consentBanner.classList.add('hidden');
+        });
+    
+        // Toggle Switch
+        const toggle = document.getElementById('tracking-toggle');
+        let trackingEnabled = true;  // By default, tracking is enabled
+    
+        toggle.addEventListener('click', function() {
+            toggle.classList.toggle('active');
+            trackingEnabled = !trackingEnabled; // Toggle tracking preference
+            if (trackingEnabled) {
+                console.log("Tracking all info.");
+            } else {
+                console.log("Tracking only necessary info.");
+            }
+        });
+    </script>
     <script src="scripts/firebase-config.js" type="module"></script>
     <script src="scripts/auth.js" type="module"></script>
 </body>
