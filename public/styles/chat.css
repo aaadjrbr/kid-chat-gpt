@@ -36,6 +36,7 @@ button, input {
     flex: 1;
     padding: 15px;
     overflow-y: auto; /* Adds scrolling */
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.233);
 }
 
 /* Input Field Container */
@@ -44,6 +45,7 @@ button, input {
     display: flex !important;
     padding: 10px;
     gap: 10px;
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.233);
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(240, 245, 255, 0.95)); /* Soft white to light bluish gradient */
     border-top: 1px solid #ccc;
     border-radius: 0 0 15px 15px;
@@ -102,6 +104,7 @@ input#user-input:hover {
     float: right;
     clear: both;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Adds a subtle shadow for a 3D effect */
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.233);
     font-family: 'Roboto', sans-serif;
     max-width: 70%; /* Limits the width for a better, contained look */
     word-wrap: break-word; /* Ensures text wraps within the balloon */
@@ -118,6 +121,7 @@ input#user-input:hover {
     float: left;
     clear: both;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.233);
     font-family: 'Roboto', sans-serif;
     max-width: 70%;
     word-wrap: break-word;
@@ -382,6 +386,7 @@ img {
     margin-left: 5px;
     padding: 10px;
     border-radius: 15px;
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.233);
     background: #0d6dfdec;
     border: 3px solid #0d6dfd !important;
     color: rgb(255, 255, 255);
@@ -513,6 +518,7 @@ select.voice-select:focus {
     padding: 0;
     color: white;
     border: none;
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.233);
     transition: all 0.2s ease;
   }
 .btn-6:hover {
@@ -536,6 +542,7 @@ select.voice-select:focus {
 #token-bar {
     width: 100%; /* Initially full, adjust width dynamically with JS */
     background: #0d6dfdec;
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.233);
     height: 25px;
     border: 2px solid #fff;
     border-radius: 15px; /* Rounded corners to match the container */
