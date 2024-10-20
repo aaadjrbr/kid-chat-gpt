@@ -164,14 +164,14 @@ async function fetchUserProfile() {
 
 function updateBadge() {
     if (isGold) {
-        badgeContainer.textContent = "Gold";
+        badgeContainer.textContent = "Gold 🏆";
         badgeContainer.className = "badge gold";
         conversationContext.push({
             role: "system",
             content: "This user is a Gold member with 20 tokens per hour. Be encouraging and let them know how many tokens they have left if they ask."
         });
     } else if (isPremium) {
-        badgeContainer.textContent = "Premium";
+        badgeContainer.textContent = "Premium 💎";
         badgeContainer.className = "badge premium";
         conversationContext.push({
             role: "system",
@@ -661,7 +661,7 @@ async function sendMessage() {
 
         try {
             // Display typing indicator for bot response
-            displayTypingMessage("Thinking...", 'bot');
+            //displayTypingMessage("Thinking...", 'bot');
 
             // Fetch bot response
             const response = await getChatResponse();
@@ -859,39 +859,6 @@ function updateTokenBar() {
     }
 }
 
-async function generateImage(prompt) {
-    try {
-        const response = await fetch("https://api.openai.com/v1/images/generations", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer YOUR_API_KEY_HERE` // Replace with your actual API key
-            },
-            body: JSON.stringify({
-                prompt: prompt, // Use the provided prompt
-                n: 1, // Number of images to generate
-                size: "512x512" // Size of the generated image
-            })
-        });
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data = await response.json();
-        if (data.data && data.data.length > 0) {
-            const imageUrl = data.data[0].url;
-            conversationContext.push({ role: "assistant", content: `[Image generated](${imageUrl})` });
-            return imageUrl;
-        } else {
-            throw new Error("Image generation failed.");
-        }
-    } catch (error) {
-        console.error("Error generating image:", error);
-        return "Sorry, I couldn't generate an image. Please try again later.";
-    }
-}
-
 function displayImage(imageUrl, sender) {
     const messageDiv = document.createElement('div');
     messageDiv.className = sender;
@@ -947,7 +914,7 @@ function displayMessage(text, sender) {
         
         // Add a speaker button for bot messages
         const speakerButton = document.createElement('button');
-        speakerButton.className = 'speaker-btn material-icons';
+        speakerButton.className = 'speaker-btn material-symbols-outlined';
         speakerButton.innerHTML = 'volume_up';  // Use volume icon
         speakerButton.onclick = () => speakText(text);  // Trigger TTS only when clicked
 

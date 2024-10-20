@@ -5,10 +5,14 @@
 
 /* General Styling */
 body {
-    font-family: 'Roboto', sans-serif;
-    background-image: radial-gradient(circle, rgba(92, 100, 255, 0.527) 0%, rgba(13, 53, 172, 0.61) 100%);
+    font-family: "Fredoka", sans-serif;
+    background-color: #e3e3e9; /* Light greyish background for a cleaner look */
     margin: 0;
     color: #333;
+}
+
+button, input {
+    font-family: "Fredoka", sans-serif !important;
 }
 
 /* Chat Container Styling */
@@ -105,7 +109,8 @@ input#user-input:hover {
 
 /* Bot Message */
 .bot {
-    background: linear-gradient(135deg, #6a82fb, #6a82fbb9); /* Gradient */
+    background: #0d6dfdec;
+    border: 3px solid #0d6dfd;
     padding: 16px;
     margin-bottom: 15px;
     color: white;
@@ -286,19 +291,20 @@ img {
     width: 90%;
     margin: 10px auto; /* Centers the container horizontally */
     border-radius: 20px;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(240, 245, 255, 0.95));
-    filter: drop-shadow(0 3px 10px #0004);
+    background-color: #ffc10796;
+    border: 4px solid #ffc107;
     padding: 10px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.041); /* Subtle shadow for depth */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.233);
 }
 
 #kid-name-display {
-    font-size: 1.4em;
+    font-size: 1.7em;
     text-align: center;
-    font-family: "Kiwi Maru", serif;
-    font-weight: 700;
+    font-family: "Fredoka", sans-serif;
+    font-weight: 600;
     letter-spacing: 1px;
-    background: radial-gradient(circle, rgb(243, 138, 184) 0%, rgb(103, 162, 235) 100%);
+    background: radial-gradient(circle, #212529 0%, #131416 100%);
     color: rgb(255, 255, 255);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent; /* Makes the text fill transparent to show the gradient */
@@ -376,7 +382,8 @@ img {
     margin-left: 5px;
     padding: 10px;
     border-radius: 15px;
-    background: radial-gradient(circle, rgb(243, 138, 184) 0%, rgb(103, 162, 235) 100%);
+    background: #0d6dfdec;
+    border: 3px solid #0d6dfd !important;
     color: rgb(255, 255, 255);
     border: none;
     cursor: pointer;
@@ -389,8 +396,9 @@ img {
 
 /* Hover effect for buttons */
 #send-btn:hover {
-    background: radial-gradient(circle, rgb(243, 138, 184) 0%, rgb(103, 162, 235) 100%);
-    color: rgb(255, 255, 255);
+    background: linear-gradient(to right, #ffffff57, #ffffff6e);
+    border: 3px solid #0d6efd;
+    color: #0d6efd;
     border-radius: 8px;
     transition: all 0.2s ease;
 }
@@ -499,8 +507,8 @@ select.voice-select:focus {
 
 /* 6 */
 .btn-6 {
-    background: rgb(247,150,192);
-    background: radial-gradient(circle, rgba(247,150,192,1) 0%, rgba(118,174,241,1) 100%);
+    background: #0d6dfdec;
+    border: 3px solid #0d6dfd;
     line-height: 42px;
     padding: 0;
     color: white;
@@ -508,7 +516,7 @@ select.voice-select:focus {
     transition: all 0.2s ease;
   }
 .btn-6:hover {
-    background: radial-gradient(circle, rgb(243, 138, 184) 0%, rgb(103, 162, 235) 100%);
+    background-image: linear-gradient(to right, #ffffff57, #ffffff6e);
     color: rgb(255, 255, 255);
     transition: all 0.2s ease;
 }
@@ -520,25 +528,28 @@ select.voice-select:focus {
     background-color: #e0e0e0; /* Light gray background for the container */
     border-radius: 15px; /* Rounded corners for a softer look */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for a nice effect */
-    height: 20px; /* Set height of the container */
+    height: 30px; /* Set height of the container */
+    overflow: hidden;
 }
 
 /* Token Bar */
 #token-bar {
-    width: 100% !important; /* Initially full, adjust width dynamically with JS */
-    height: 100%; /* Matches the height of the container */
-    background: rgb(247,150,192);
-    background: radial-gradient(circle, rgba(247,150,192,1) 0%, rgba(118,174,241,1) 100%);
+    width: 100%; /* Initially full, adjust width dynamically with JS */
+    background: #0d6dfdec;
+    height: 25px;
+    border: 2px solid #fff;
     border-radius: 15px; /* Rounded corners to match the container */
     transition: width 0.4s ease; /* Smooth transition when the bar updates */
 }
 
 /* User Badge Styling */
 .badge {
+    cursor: pointer;
     width: 90px;
     text-align: center;
     padding: 10px 15px;
     border-radius: 25px;
+    border: 2px solid #ffffff6b;
     font-weight: bold;
     font-size: 1em;
     margin: 15px auto;
@@ -546,7 +557,6 @@ select.voice-select:focus {
     color: #fff;
     position: relative;
     background: linear-gradient(135deg, #222, #444); /* Base gradient for depth */
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.6), 0 5px 8px rgba(255, 255, 255, 0.2) inset;
     transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
     overflow: hidden;
     z-index: 0;
@@ -554,8 +564,9 @@ select.voice-select:focus {
 
 /* Add a subtle glowing effect and 3D hover animation */
 .badge:hover {
-    transform: translateY(-8px) scale(1.05);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.8), 0 8px 16px rgba(255, 255, 255, 0.4) inset;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.308);
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.233);
+    border: 2px solid #fff;
 }
 
 /* Add a shiny overlay on hover */
@@ -578,12 +589,12 @@ select.voice-select:focus {
 
 /* Free Badge Style */
 .badge.free {
-    background: linear-gradient(135deg, #ff4b2b, #ff416c); /* Bold red gradient */
+    background: linear-gradient(135deg, #0d6dfd, #003c8b); /* Blue gradient */
 }
 
 /* Premium Badge Style */
 .badge.premium {
-    background: linear-gradient(135deg, #ffcc33, #ffb100); /* Golden yellow gradient */
+    background: linear-gradient(135deg, #198754, #0f5937); /* Green gradient */
     color: #fff;
 }
 
