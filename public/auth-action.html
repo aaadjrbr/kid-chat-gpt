@@ -11,8 +11,26 @@
 </head>
 <body>
     <div class="container">
+        <!-- Processing message -->
         <h1>⏳ Processing your request...</h1>
         <p id="message"></p>
+
+        <!-- Form for password reset -->
+        <form id="password-reset-form" style="display: none;">
+            <h2>Reset Your Password</h2>
+            <input type="password" id="new-password" placeholder="Enter New Password" required>
+            <input type="password" id="confirm-password" placeholder="Confirm New Password" required>
+            <button type="submit">Reset Password</button>
+            <p id="reset-error-message"></p>
+        </form>
+
+        <!-- Email verification message -->
+        <div id="email-verification-success" style="display: none;">
+            <h2>Email Verified 🎉</h2>
+            <p>Your email has been successfully verified. You can now log in to your account.</p>
+            <a href="./login.html"><button>Go to Login</button></a>
+        </div>
+
         <p><a href="./index.html">Go back home</a></p>
     </div>
 </body>

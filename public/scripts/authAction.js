@@ -1,14 +1,15 @@
 import { auth } from './firebase-config.js';
-import { applyActionCode, checkActionCode, verifyPasswordResetCode, confirmPasswordReset } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js";
+import { applyActionCode, verifyPasswordResetCode, confirmPasswordReset } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js";
 
 // Get the action mode and action code from the URL
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
 const mode = urlParams.get('mode');
 const actionCode = urlParams.get('oobCode');
-const continueUrl = urlParams.get('continueUrl');
-const lang = urlParams.get('lang') || 'en';
 const messageElement = document.getElementById('message');
+const passwordResetForm = document.getElementById('password-reset-form');
+const resetErrorMessage = document.getElementById('reset-error-message');
+const emailVerificationSuccess = document.getElementById('email-verification-success');
 
 // Handle different action types
 switch (mode) {
@@ -25,17 +26,32 @@ switch (mode) {
 // Handle password reset
 async function handleResetPassword(actionCode) {
     try {
-        const email = await verifyPasswordResetCode(auth, actionCode);
-        const newPassword = prompt('Enter a new password for your account:');
+        // Verify the reset code and show the form if valid
+        await verifyPasswordResetCode(auth, actionCode);
+        messageElement.style.display = 'none';
+        passwordResetForm.style.display = 'block';
 
-        if (newPassword) {
-            await confirmPasswordReset(auth, actionCode, newPassword);
-            messageElement.textContent = 'Password has been reset successfully!';
-        } else {
-            messageElement.textContent = 'Password reset was canceled.';
-        }
+        // Handle password reset form submission
+        passwordResetForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const newPassword = document.getElementById('new-password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+
+            if (newPassword !== confirmPassword) {
+                resetErrorMessage.textContent = "Passwords do not match.";
+                return;
+            }
+
+            try {
+                await confirmPasswordReset(auth, actionCode, newPassword);
+                messageElement.textContent = 'Password has been reset successfully!';
+                passwordResetForm.style.display = 'none';
+            } catch (error) {
+                resetErrorMessage.textContent = 'Error resetting password. Please try again.';
+            }
+        });
     } catch (error) {
-        messageElement.textContent = 'Error resetting your password. Please try again.';
+        messageElement.textContent = 'Error resetting your password. The link may be invalid or expired. Please try again.';
         console.error(error);
     }
 }
@@ -44,9 +60,10 @@ async function handleResetPassword(actionCode) {
 async function handleVerifyEmail(actionCode) {
     try {
         await applyActionCode(auth, actionCode);
-        messageElement.textContent = 'Your email has been verified successfully! You can now log in.';
+        messageElement.style.display = 'none';
+        emailVerificationSuccess.style.display = 'block';
     } catch (error) {
-        messageElement.textContent = 'Error verifying your email. Please try again.';
+        messageElement.textContent = 'Error verifying your email. The link may be invalid or expired. Please try again.';
         console.error(error);
     }
 }

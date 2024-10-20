@@ -1,9 +1,10 @@
 // firebase-config.js
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
-import { getAuth } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js";
+import { getAuth, sendEmailVerification, sendPasswordResetEmail, signInWithPopup, applyActionCode, verifyPasswordResetCode, confirmPasswordReset } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js";
 import { getFirestore } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
 import { getStorage } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-storage.js"; // Import Firebase Storage
 
+// Firebase config
 const firebaseConfig = {
     apiKey: "AIzaSyDKhZZs3zN4AsRrv11YflMuj5MDasA6s0A",
     authDomain: "kids-chatgpt.firebaseapp.com",
@@ -14,7 +15,11 @@ const firebaseConfig = {
     measurementId: "G-3XSXSF20Y3"
 };
 
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 export const storage = getStorage(app); // Export storage reference
+
+// Export auth functions for use in other parts of your app
+export { sendEmailVerification, sendPasswordResetEmail, signInWithPopup, applyActionCode, verifyPasswordResetCode, confirmPasswordReset };
