@@ -247,9 +247,8 @@ ul {
 /* Toggle Password Icon */
 .toggle-password {
     position: absolute;
-    right: 25px;
+    right: 15px;
     top: 50%;
-    transform: translateY(-50%);
     cursor: pointer;
     font-size: 15px;
 }
