@@ -19,7 +19,7 @@
         position: fixed;
         bottom: 0;
         left: 0;
-        background-color: #6b11cbf6;
+        background-color: #000000ed;
         color: white;
         width: 100%;
         align-items: center;
@@ -30,7 +30,8 @@
         font-family: "Fredoka One", sans-serif;
         margin: 0;
         font-size: 1em;
-        display: inline-block;
+        margin: auto;
+        text-align: center !important;
     }
 
     #cookie-consent a {
@@ -44,6 +45,8 @@
     }
 
     .btn-accept {
+        display: flex;
+        margin: auto;
         font-family: "Fredoka One", sans-serif;
         background: #ffd700;
         color: #6a11cb;
@@ -52,7 +55,7 @@
         border-radius: 5px;
         font-size: 1em;
         cursor: pointer;
-        margin-left: 15px;
+        text-align: center !important;
     }
 
     .btn-accept:hover {
@@ -290,10 +293,10 @@
   <div id="cookie-consent" class="hidden">
     <br/>
     <div>
-        <img src="https://firebasestorage.googleapis.com/v0/b/kids-chatgpt.appspot.com/o/logo-alfie.webp?alt=media&token=92d7d084-ce10-486d-b00d-30c0b2642456" style="width: 120px; height: auto;"> 
+        <img src="https://firebasestorage.googleapis.com/v0/b/kids-chatgpt.appspot.com/o/logo-alfie.webp?alt=media&token=92d7d084-ce10-486d-b00d-30c0b2642456" style="width: 120px; height: auto; text-align: center; display: flex; margin: auto;"> 
         <br/>
         <p>Alfie AI uses cookies 🍪 to ensure you get the best experience on our website. <a href="cookie-policy.html" target="_blank">Learn more in our Cookie Policy</a>.</p>
-        <br/><br/>
+        <br/>
         <div class="toggle-container">
             <span>🐾 Track only necessary info</span>
             <div id="tracking-toggle" class="toggle"></div>
@@ -301,7 +304,7 @@
     </div>
     <br/>
     <button class="btn-accept" id="accept-cookies">Accept</button>
-    <br/><br/>
+    <br/>
 </div>
 
 <script>
