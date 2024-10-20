@@ -259,27 +259,28 @@ async function fetchKidData() {
 }
 
 // Function to simulate typing effect for the name
+let typingInterval = null;
+
 function typeMessage(message, delayBeforeErase = 2000, callback) {
     const kidNameElement = document.getElementById('kid-name');
     const cursorElement = document.createElement('span');
     cursorElement.classList.add('cursor');
-    kidNameElement.after(cursorElement); // Add the cursor after the name element
+    kidNameElement.after(cursorElement);
 
     let index = 0;
 
-    // Clear previous message before typing the new one
     kidNameElement.textContent = '';
 
-    // Typing effect
-    const typingInterval = setInterval(() => {
+    if (typingInterval) clearInterval(typingInterval);  // Clear any previous interval
+
+    typingInterval = setInterval(() => {
         if (index < message.length) {
             kidNameElement.textContent += message.charAt(index);
             index++;
         } else {
-            clearInterval(typingInterval);
-            cursorElement.style.display = 'none'; // Hide the cursor when typing is done
+            clearInterval(typingInterval);  // Clear the interval after typing completes
+            cursorElement.style.display = 'none';
 
-            // Delay before erasing
             setTimeout(() => {
                 eraseMessage(callback);
             }, delayBeforeErase);
