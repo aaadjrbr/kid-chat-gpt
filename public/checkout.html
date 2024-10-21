@@ -11,12 +11,30 @@
 <body>
     <div class="container">
         <p>Already a member?<br/>Mange your Subscription: <a href="https://billing.stripe.com/p/login/3cs3dOaZsecP1JCbII" target="_blank">here</a></p>
-        <button class="go-back" onclick="goBack()">Go Back</button>
+        <button class="go-back" onclick="window.location.href='./profiles.html'">Go Back</button>
     </div>
-    <script async src="https://js.stripe.com/v3/pricing-table.js"></script>
-    <stripe-pricing-table pricing-table-id="prctbl_1QCL3DE9KmsmeowF7qkD1qgH"
-    publishable-key="pk_live_51QC3nIE9KmsmeowF1GMxMmYgUDEH5zNK7YE9UX1gvBjQ5K9ZNfeHiGGG6yvhPDfMITpx0SYthXn0lzYaRq2utukT00heymvcrd">
-    </stripe-pricing-table>
+
+<div class="container2">
+      <script async
+  src="https://js.stripe.com/v3/buy-button.js">
+</script>
+
+<stripe-buy-button
+  buy-button-id="buy_btn_1QCPMcE9KmsmeowFu4W5Eyvu"
+  publishable-key="pk_live_51QC3nIE9KmsmeowF1GMxMmYgUDEH5zNK7YE9UX1gvBjQ5K9ZNfeHiGGG6yvhPDfMITpx0SYthXn0lzYaRq2utukT00heymvcrd"
+>
+</stripe-buy-button>
+<div style="margin-top: 10px;"></div>
+<script async
+  src="https://js.stripe.com/v3/buy-button.js">
+</script>
+
+<stripe-buy-button
+  buy-button-id="buy_btn_1QCPPHE9KmsmeowFdxpYtHES"
+  publishable-key="pk_live_51QC3nIE9KmsmeowF1GMxMmYgUDEH5zNK7YE9UX1gvBjQ5K9ZNfeHiGGG6yvhPDfMITpx0SYthXn0lzYaRq2utukT00heymvcrd"
+>
+</stripe-buy-button>
+</div>
 
       <!-- Footer -->
   <footer class="bg-dark text-white text-center py-4">
