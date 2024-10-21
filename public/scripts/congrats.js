@@ -1,3 +1,6 @@
+// Import Firebase config from 'firebase-config.js'
+import { auth, db } from './firebase-config.js';  // Ensure this points to your actual config file
+
 // Ensure the user is authenticated
 auth.onAuthStateChanged(async (user) => {
     if (user) {
