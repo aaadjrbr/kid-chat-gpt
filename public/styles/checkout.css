@@ -22,10 +22,7 @@ body {
 }
 
 .container2 {
-    margin-left: 8px;
-    margin-right: 8px;
     background-color: rgb(106, 13, 173);
-    padding: 20px;
     text-align: center;
     margin-bottom: 20px;
 }
