@@ -3,17 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Email Collection</title>
+    <title>Payment Checkout - Alfie AI</title>
+    <link rel="icon" href="https://emojiisland.com/cdn/shop/products/Dog_Emoji_large.png?v=1571606065" type="image/x-icon">
     <link rel="stylesheet" href="styles/checkout.css">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="container">
-        <p>Already a menter? Mange your Subscription: <a href="https://billing.stripe.com/p/login/3cs3dOaZsecP1JCbII" target="_blank">here</a></p>
+        <p>Already a member?<br/>Mange your Subscription: <a href="https://billing.stripe.com/p/login/3cs3dOaZsecP1JCbII" target="_blank">here</a></p>
+        <button class="go-back" onclick="goBack()">Go Back</button>
     </div>
     <script async src="https://js.stripe.com/v3/pricing-table.js"></script>
     <stripe-pricing-table pricing-table-id="prctbl_1QCL3DE9KmsmeowF7qkD1qgH"
     publishable-key="pk_live_51QC3nIE9KmsmeowF1GMxMmYgUDEH5zNK7YE9UX1gvBjQ5K9ZNfeHiGGG6yvhPDfMITpx0SYthXn0lzYaRq2utukT00heymvcrd">
     </stripe-pricing-table>
+
+      <!-- Footer -->
+  <footer class="bg-dark text-white text-center py-4">
+    <p>Powered by the future</p>
+    <img data-aos="fade-up" data-aos-delay="200" style="width: 240px; height: auto;"
+    src="https://firebasestorage.googleapis.com/v0/b/kids-chatgpt.appspot.com/o/static%2Fpowered-by-the-future.png?alt=media&token=c90e71c1-34b0-4668-a151-972eb85b2960">
+    <br/>
+    <div style="margin-top: 40px;"></div>
+    <p><a href="./privacy-policy.html">Privacy Policy & Terms of Use</a> | <a href="./cookie-policy.html">Cookie Policy</a></p>
+    <div style="margin-top: 20px;"></div>
+    <p>&copy; 2024 Alfie AI. All Rights Reserved.</p>
+  </footer>
 
     <script src="scripts/checkout.js"></script>
 </body>
