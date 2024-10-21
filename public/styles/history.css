@@ -59,7 +59,7 @@ li.user-message span {
 }
 
 #day-picker-container {
-    /*display: grid;*/
+    display: grid;
     grid-template-columns: repeat(7, 1fr); /* 7 columns for days of the week */
     gap: 5px;
     max-width: 80%;
@@ -98,14 +98,17 @@ li.user-message span {
 
 @media (max-width: 600px) {
     #day-picker-container {
-        grid-template-columns: repeat(4, 1fr); /* 4 columns for smaller screens */
-        width: 80%;
+        grid-template-columns: repeat(4, 1fr);
+        width: 100%;
+        display: grid;
         max-width: 100%;
+        gap: 0px;
     }
-
     .day-button {
         font-size: 1.2em; /* Smaller text for smaller screens */
         padding: 8px;
+        width: 55px;
+        height: 55px;
     }
 }
 

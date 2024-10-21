@@ -1,5 +1,5 @@
 import { db } from './firebase-config.js';
-import { collection, getDocs, query, where, orderBy } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
+import { collection, getDocs, query, where, orderBy, limit, startAfter } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
 
 const botName = "🐶 Alfie";
 let kidName = "User";
@@ -11,7 +11,11 @@ function getKidNameFromURL() {
 }
 
 // Fetch chat sessions for a specific day within the current month and cache them
-export async function displayChatHistoryByDay(parentId, kidId, year, month, day) {
+const SESSIONS_PER_PAGE = 5; // Number of chat sessions per page
+let lastVisible = null; // Store the last visible document for pagination
+
+// Fetch chat sessions for a specific day with pagination
+export async function displayChatHistoryByDay(parentId, kidId, year, month, day, page = 1) {
     kidName = getKidNameFromURL();  
 
     // Convert the selected day to a start and end timestamp
@@ -20,14 +24,20 @@ export async function displayChatHistoryByDay(parentId, kidId, year, month, day)
 
     const chatSessionsRef = collection(db, `parents/${parentId}/kids/${kidId}/chatSessions`);
     
-    // Query for chats that started between the start and end of the day
-    const q = query(
+    let q = query(
         chatSessionsRef,
         where("dateStarted", ">=", startOfDay),
         where("dateStarted", "<=", endOfDay),
-        orderBy("dateStarted", "desc")
+        orderBy("dateStarted", "desc"),
+        limit(SESSIONS_PER_PAGE + 1) // Fetch one extra session to check if more exist
     );
 
+    // If this is not the first page, start after the last visible document from the previous page
+    if (page > 1 && lastVisible) {
+        q = query(q, startAfter(lastVisible));
+    }
+
+    // Execute the query
     const chatSnapshot = await getDocs(q);
     const historyContainer = document.getElementById('history-container');
     historyContainer.innerHTML = ''; // Clear previous results
@@ -37,18 +47,26 @@ export async function displayChatHistoryByDay(parentId, kidId, year, month, day)
         return;
     }
 
-    // Store the sessions in cache (by day)
-    const chatSessions = chatSnapshot.docs.map(doc => ({
+    // Update lastVisible for pagination
+    if (chatSnapshot.docs.length > SESSIONS_PER_PAGE) {
+        lastVisible = chatSnapshot.docs[SESSIONS_PER_PAGE - 1]; // Set lastVisible for pagination
+    } else {
+        lastVisible = null; // No more sessions, disable next button
+    }
+
+    // Get only the first `SESSIONS_PER_PAGE` items
+    const chatSessions = chatSnapshot.docs.slice(0, SESSIONS_PER_PAGE).map(doc => ({
         id: doc.id,
         ...doc.data()
     }));
+
+    // Cache the data for future use
     const cacheKey = `${parentId}_${kidId}_${year}_${month}_${day}`;
     sessionStorage.setItem(cacheKey, JSON.stringify(chatSessions));
 
     // Display the fetched sessions
-    renderChatHistory(chatSessions, parentId, kidId, year, month, day);
+    renderChatHistory(chatSessions, parentId, kidId, year, month, day, page);
 }
-
 
 // Function to load chat messages for a specific chat session
 async function loadChatMessages(parentId, kidId, chatId, year, month, day) {
@@ -139,31 +157,23 @@ async function loadChatMessages(parentId, kidId, chatId, year, month, day) {
 }    
 
 // Function to render the chat history from cache or query
-const SESSIONS_PER_PAGE = 8; // Number of chat sessions per page
 let currentPage = 1; // Start from the first page
 
 // Function to render the chat history with pagination
-function renderChatHistory(chatSessions, parentId, kidId, year, month, day) {
-    const totalSessions = chatSessions.length;
-    const totalPages = Math.ceil(totalSessions / SESSIONS_PER_PAGE);
-    
-    // Limit the sessions to display based on the current page
-    const startIndex = (currentPage - 1) * SESSIONS_PER_PAGE;
-    const endIndex = Math.min(startIndex + SESSIONS_PER_PAGE, totalSessions);
-    const sessionsToDisplay = chatSessions.slice(startIndex, endIndex);
-
+function renderChatHistory(chatSessions, parentId, kidId, year, month, day, page) {
+    currentPage = page;
     const historyContainer = document.getElementById('history-container');
     historyContainer.innerHTML = ''; // Clear previous results
 
     const historyHeader = document.createElement('h3');
-    historyHeader.textContent = `💬 Chat history for ${month}/${day}/${year} (Page ${currentPage}/${totalPages})`;
+    historyHeader.textContent = `💬 Chat history for ${month}/${day}/${year} (Page ${currentPage})`;
     historyContainer.appendChild(historyHeader);
 
     const sessionsContainer = document.createElement('div');
     sessionsContainer.classList.add('sessions-container');
 
     const sessionsList = document.createElement('ul');
-    sessionsToDisplay.forEach(session => {
+    chatSessions.forEach(session => {
         const sessionItem = document.createElement('li');
         const sessionTime = new Date(session.dateStarted.seconds * 1000).toLocaleTimeString();
         sessionItem.textContent = `Chat started at ${sessionTime}`;
@@ -176,32 +186,34 @@ function renderChatHistory(chatSessions, parentId, kidId, year, month, day) {
     sessionsContainer.appendChild(sessionsList);
     historyContainer.appendChild(sessionsContainer);
 
-    // Add pagination buttons (if necessary)
+    // Add pagination buttons
     const paginationContainer = document.createElement('div');
     paginationContainer.classList.add('pagination-container');
 
+    // Display "Previous" button only if we're not on the first page
     if (currentPage > 1) {
         const prevButton = document.createElement('button');
         prevButton.textContent = '< Previous';
         prevButton.addEventListener('click', () => {
             currentPage--;
-            renderChatHistory(chatSessions, parentId, kidId, year, month, day); // Re-render the page with previous chats
+            displayChatHistoryByDay(parentId, kidId, year, month, day, currentPage); // Fetch previous page
         });
         paginationContainer.appendChild(prevButton);
     }
 
-    if (currentPage < totalPages) {
+    // Display "Next" button only if there are more sessions to load
+    if (lastVisible) {
         const nextButton = document.createElement('button');
         nextButton.textContent = 'Next >';
         nextButton.addEventListener('click', () => {
             currentPage++;
-            renderChatHistory(chatSessions, parentId, kidId, year, month, day); // Re-render the page with next chats
+            displayChatHistoryByDay(parentId, kidId, year, month, day, currentPage); // Fetch next page
         });
         paginationContainer.appendChild(nextButton);
     }
 
-    // Only show pagination if there is more than one page
-    if (totalPages > 1) {
+    // Only append pagination if we have at least one button
+    if (paginationContainer.children.length > 0) {
         historyContainer.appendChild(paginationContainer);
     }
 }
