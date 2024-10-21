@@ -436,9 +436,10 @@ button:hover {
 }
 
 .info-bottom a {
+    margin-left: 6px;
+    margin-right: 6px;
     text-decoration: none; /* Remove underline from links */
     color: #333; /* Set a default color */
-    margin: 0 10px; /* Add some horizontal spacing */
 }
 
 .info-bottom p {
@@ -449,9 +450,31 @@ button:hover {
     font-weight: bold; /* Make text bold */
 }
 
-.info-bottom a:hover p {
+.info-bottom p a:hover {
     color: #6a0dad; /* Change color on hover */
 }
+
+a.special-a:hover {
+    color: #333 !important; /* Change color on hover */
+}
+
+/* Shaking effect */
+@keyframes shake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-2px); }
+    50% { transform: translateX(3px); }
+    75% { transform: translateX(-4px); }
+    100% { transform: translateX(0); }
+  }
+  
+  a.special-a {
+    display: inline-block;
+    color: #6a0dad;
+    font-size: 1.3em;
+    animation: shake 1s ease infinite, shine 2s ease-in-out infinite;
+    text-decoration: none;
+  }
+  
 
 #pin-popup {
     position: fixed;
