@@ -1,12 +1,8 @@
-// Import Firebase config from your 'firebase-config.js'
-import { auth, db } from './firebase-config.js';  // Adjust path if needed
-
 // Ensure the user is authenticated
 auth.onAuthStateChanged(async (user) => {
     if (user) {
         const userId = user.uid;
         
-        // Display the UID in the console
         console.log(`User ID (UID): ${userId}`);
 
         // Extract session_id from the URL
@@ -15,7 +11,6 @@ auth.onAuthStateChanged(async (user) => {
         const functionUrl = "https://us-central1-kids-chatgpt.cloudfunctions.net/fetchSessionDetails";
 
         if (sessionId) {
-            // Call the Firebase Function to get session details
             try {
                 const response = await fetch(`${functionUrl}?session_id=${sessionId}`);
                 if (!response.ok) {
@@ -24,24 +19,39 @@ auth.onAuthStateChanged(async (user) => {
 
                 const sessionDetails = await response.json();
                 
-                // Make sure sessionDetails contains line_items
                 if (sessionDetails.line_items && sessionDetails.line_items[0]) {
                     const priceId = sessionDetails.line_items[0].price.id;
 
-                    // Update Firestore based on the subscription
-                    if (priceId === 'price_1QCKrVE9KmsmeowF1pJMrn6q') {
-                        await db.collection('userProfiles').doc(userId).update({
-                            isPremium: true,
-                            isGold: false
-                        });
-                    } else if (priceId === 'price_1QCKcUE9KmsmeowFdkoIStHU') {
-                        await db.collection('userProfiles').doc(userId).update({
+                    // Check if the user profile exists, if not, create it
+                    const userProfileRef = db.collection('userProfiles').doc(userId);
+                    const userProfile = await userProfileRef.get();
+
+                    if (!userProfile.exists) {
+                        console.log(`Creating user profile for user ${userId}`);
+                        await userProfileRef.set({
+                            email: user.email,  // Add additional fields as necessary
                             isPremium: false,
-                            isGold: true
+                            isGold: false,
+                            tokens: 0  // Default token value
                         });
                     }
 
-                    console.log(`Updated subscription status for user ${userId}`);
+                    // Update Firestore based on the subscription
+                    if (priceId === 'price_1QCKrVE9KmsmeowF1pJMrn6q') {
+                        await userProfileRef.update({
+                            isPremium: true,
+                            isGold: false,
+                            tokens: 30  // Set 30 tokens for Premium
+                        });
+                    } else if (priceId === 'price_1QCKcUE9KmsmeowFdkoIStHU') {
+                        await userProfileRef.update({
+                            isPremium: false,
+                            isGold: true,
+                            tokens: 20  // Set 20 tokens for Gold
+                        });
+                    }
+
+                    console.log(`Updated subscription status and tokens for user ${userId}`);
                 } else {
                     console.error('Session details do not contain line_items');
                 }
