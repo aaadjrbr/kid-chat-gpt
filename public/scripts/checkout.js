@@ -1,6 +1,6 @@
 import { db } from './firebase-config.js';
 import { getDoc, doc, setDoc, updateDoc } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js';
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js";
+import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js';
 
 // Get modal and content elements
 const modal = document.getElementById("emailModal");
@@ -51,6 +51,9 @@ async function updateEmail(uid, newEmail) {
     console.log(`Email updated successfully for user ${uid}: ${newEmail}`);
     closeModal(); // Close modal after successful update
     showMainContent(); // Show main content after email is updated
+    
+    // Refresh the page after email submission and modal close
+    location.reload();
   } catch (error) {
     console.error("Error updating email: ", error);
     errorMessage.textContent = "An error occurred while updating your email.";
