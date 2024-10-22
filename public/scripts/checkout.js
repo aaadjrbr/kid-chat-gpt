@@ -1,5 +1,5 @@
 import { db } from './firebase-config.js';
-import { getDoc, doc, updateDoc } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js';
+import { getDoc, doc, setDoc, updateDoc } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js';
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js";
 
 // Get modal and content elements
@@ -25,6 +25,22 @@ function showMainContent() {
   mainContent.style.opacity = "1";
 }
 
+// Function to create a new user profile if it doesn't exist
+async function createUserProfile(uid) {
+  try {
+    const userRef = doc(db, "userProfiles", uid);
+    await setDoc(userRef, {
+      email: null,  // Setting email as null initially, will ask the user to fill it
+    });
+    console.log(`New user profile created for ${uid}`);
+    openModal();  // Prompt for email after creating profile
+  } catch (error) {
+    console.error("Error creating user profile: ", error);
+    errorMessage.textContent = "An error occurred while creating your profile.";
+    errorMessage.style.display = "block";
+  }
+}
+
 // Function to update email
 async function updateEmail(uid, newEmail) {
   try {
@@ -42,7 +58,7 @@ async function updateEmail(uid, newEmail) {
   }
 }
 
-// Check if the user email exists
+// Check if the user email exists, and create a profile if needed
 async function checkUserEmail(uid) {
   try {
     const userRef = doc(db, "userProfiles", uid);
@@ -58,7 +74,8 @@ async function checkUserEmail(uid) {
         openModal(); // Open modal if no email exists
       }
     } else {
-      console.log(`No user profile found for user ${uid}`);
+      console.log(`No user profile found for user ${uid}, creating one...`);
+      await createUserProfile(uid);  // Create profile if it doesn't exist
     }
   } catch (error) {
     console.error("Error checking user email: ", error);
