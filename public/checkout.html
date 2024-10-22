@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Payment Checkout - Alfie AI</title>
+    <title>Pricing - Alfie AI</title>
     <link rel="icon" href="https://emojiisland.com/cdn/shop/products/Dog_Emoji_large.png?v=1571606065" type="image/x-icon">
     <link rel="stylesheet" href="styles/checkout.css">
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap" rel="stylesheet">
@@ -25,8 +25,9 @@
 
 <div id="main-content">
     <div class="container">
-        <p>Already a member?<br/>Mange your Subscription: <a href="https://billing.stripe.com/p/login/3cs3dOaZsecP1JCbII" target="_blank">here</a></p>
-        <p style="font-size: 0.9em !important; padding: 20px; background-color: yellow; border-radius: 25px;"><em>During the payment process, you may come across the names '<strong>Anamaria Evans</strong>' and/or '<strong>Alfie AI</strong>.' Please note that Anamaria is a member of our team.</em></p>
+      <h2>💳 Pricing</h2>
+        <p>Already a member?<br/>⚙️ Mange your subscription: <a href="https://billing.stripe.com/p/login/3cs3dOaZsecP1JCbII" target="_blank">here</a></p>
+
         <button class="go-back" onclick="window.location.href='./profiles.html'">Go Back</button>
     </div>
 
@@ -42,6 +43,9 @@
 >
 </stripe-buy-button>
 
+<div class="recommended">
+  <h2 class="highlight-rec">
+    Recommended</h2>
 <script async
   src="https://js.stripe.com/v3/buy-button.js">
 </script>
@@ -51,6 +55,7 @@
   publishable-key="pk_live_51QC3nIE9KmsmeowF1GMxMmYgUDEH5zNK7YE9UX1gvBjQ5K9ZNfeHiGGG6yvhPDfMITpx0SYthXn0lzYaRq2utukT00heymvcrd"
 >
 </stripe-buy-button>
+</div>
 </div>
 </div>
 
