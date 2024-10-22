@@ -183,3 +183,36 @@ async function loadUserBackground(userDocRef) {
         }
     }
 }
+
+// Resizer - Chat Box Container
+const resizer = document.getElementById('resizer');
+const chatContainer = document.getElementById('chat-container');
+
+// Add event listeners to start resizing when the user interacts with the resizer
+resizer.addEventListener('mousedown', initResize);
+resizer.addEventListener('touchstart', initResize, { passive: true });
+
+function initResize(e) {
+    // Listen for mouse or touch movements to resize the container
+    window.addEventListener('mousemove', resize);
+    window.addEventListener('touchmove', resize, { passive: true });
+
+    // Stop resizing when the user releases the mouse or touch
+    window.addEventListener('mouseup', stopResize);
+    window.addEventListener('touchend', stopResize);
+}
+
+function resize(e) {
+    // Calculate the new height based on the vertical mouse or touch position
+    const newHeight = e.clientY || e.touches[0].clientY;
+    // Apply the new height to the chat container
+    chatContainer.style.height = `${newHeight}px`;
+}
+
+function stopResize() {
+    // Remove event listeners to stop resizing
+    window.removeEventListener('mousemove', resize);
+    window.removeEventListener('touchmove', resize);
+    window.removeEventListener('mouseup', stopResize);
+    window.removeEventListener('touchend', stopResize);
+}

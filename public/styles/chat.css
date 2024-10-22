@@ -57,18 +57,36 @@ button, input {
 
 /* Chat Container Styling */
 #chat-container {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(240, 245, 255, 0.95)); /* Soft white to light bluish gradient */
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(240, 245, 255, 0.95));
     border-radius: 15px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15), 0 6px 20px rgba(100, 150, 255, 0.2); /* Softer shadow with a subtle blue glow */
-    max-width: 800px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15), 0 6px 20px rgba(100, 150, 255, 0.2);
     border: 3px solid #ebebebda;
     margin: 10px auto;
     width: 90%;
+    max-width: 1000px; /* Optional max width */
+    min-width: 300px; /* Prevent it from shrinking too much */
     display: flex;
     flex-direction: column;
-    height: 80vh; /* Fixed height for chat */
-    overflow: hidden; /* Prevents chat container from expanding */
-    transition: all 0.3s ease-in-out; /* Smooth transition for any future hover effects */
+    height: 80vh;
+    overflow: auto;
+    position: relative;
+}
+
+/* Resizer handle for vertical resizing */
+#resizer {
+    width: 100%; /* Full width across the bottom */
+    height: 10px; /* Height of the resizer handle */
+    background: #0d6dfd59; /* Light gray color for visibility */
+    position: absolute;
+   /*bottom: 0;  Positioned at the bottom of the chat container */
+    left: 0;
+    cursor: ns-resize; /* Vertical resize cursor */
+    z-index: 10; /* Make sure it's on top */
+}
+
+/* Hover effect for the resizer handle */
+#resizer:hover {
+    background: rgba(0, 0, 0, 0.4); /* Darker gray on hover for visibility */
 }
 
 /* Messages Container Styling */
