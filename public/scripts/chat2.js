@@ -20,7 +20,8 @@ function loadCachedBg(key, url) {
     }
 
     // Apply the background from the cache
-    document.getElementById('messages').style.backgroundImage = `url(${bgCache[key]})`;
+    const messagesElem = document.getElementById('messages');
+    messagesElem.style.backgroundImage = `url(${bgCache[key]})`;
 
     // Log cache usage
     if (key === 'customBg') {
@@ -28,6 +29,20 @@ function loadCachedBg(key, url) {
     } else if (key === 'defaultBg') {
         console.log("Using default background photo from cache.");
     }
+}
+
+// Function to force reflow and update the background dynamically
+function updateBackgroundImage(url) {
+    const messagesElem = document.getElementById('messages');
+    
+    // Temporarily remove the background
+    messagesElem.style.backgroundImage = 'none';
+    
+    // Apply the new background after a slight delay to force reflow
+    setTimeout(() => {
+        messagesElem.style.backgroundImage = `url(${url})`;
+        console.log("Background updated dynamically.");
+    }, 100);
 }
 
 // Assume these are fetched dynamically
@@ -130,8 +145,8 @@ onAuthStateChanged(auth, async (user) => {
 
                     console.log("Background image uploaded and saved!");
 
-                    // Refresh the page after background change
-                    window.location.reload();
+                    // Dynamically update the background without page refresh
+                    updateBackgroundImage(fileUrl);
                 }
             });
 
@@ -146,8 +161,8 @@ onAuthStateChanged(auth, async (user) => {
                 loadCachedBg('defaultBg', originalBgUrl);
                 console.log("Background image reset to original!");
 
-                // Refresh the page after resetting to original background
-                window.location.reload();
+                // Dynamically update the background without page refresh
+                updateBackgroundImage(originalBgUrl);
             });
         }
     }
@@ -161,8 +176,10 @@ async function loadUserBackground(userDocRef) {
         const chatBg = userData['chat-bg'];
         if (chatBg) {
             loadCachedBg('customBg', chatBg);
+            updateBackgroundImage(chatBg); // Apply immediately on load
         } else {
             loadCachedBg('defaultBg', originalBgUrl);
+            updateBackgroundImage(originalBgUrl); // Apply immediately on load
         }
     }
 }
