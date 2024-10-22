@@ -15,6 +15,46 @@ button, input {
     font-family: "Fredoka", sans-serif !important;
 }
 
+/* Container for the upload and delete buttons */
+#bg-controls {
+    text-align: center;
+    align-items: center;
+    display: none; /* Hidden by default, will be toggled with pencil button */
+}
+
+.p-bg {
+    margin-bottom: 6px;
+    margin-top: 2px;
+}
+
+/* Hide the file input field */
+#bg-upload {
+    display: none;
+}
+
+/* Style for the buttons with emojis */
+#upload-bg, #delete-bg {
+    font-size: 16px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+/* Add a hover effect to make the buttons more interactive */
+#upload-bg:hover, #delete-bg:hover {
+    transform: scale(1.2);
+}
+
+/* Pencil button toggle */
+#toggle-bg-controls {
+    font-size: 1em !important;
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-bottom: 5px
+}
+
 /* Chat Container Styling */
 #chat-container {
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(240, 245, 255, 0.95)); /* Soft white to light bluish gradient */
@@ -33,10 +73,15 @@ button, input {
 
 /* Messages Container Styling */
 #messages {
+    position: relative; /* Important for positioning the overlay */
     flex: 1;
     padding: 15px;
-    overflow-y: auto; /* Adds scrolling */
+    overflow-y: auto;
     box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.233);
+    /*background-image: url('your-image-path.jpg'); Replace with your image path */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
 /* Input Field Container */
@@ -96,7 +141,9 @@ input#user-input:hover {
 
 /* User Message */
 .user {
-    background: linear-gradient(135deg, #6a82fb, #fc5c7d); /* Blue gradient with a slight pinkish tint for a modern look */
+    z-index: 3;
+    position: relative;
+    background: linear-gradient(135deg, #34b8d1, #3616e5);
     padding: 12px;
     margin-bottom: 10px;
     color: white; /* Text color stands out on the gradient background */
@@ -104,7 +151,7 @@ input#user-input:hover {
     float: right;
     clear: both;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Adds a subtle shadow for a 3D effect */
-    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.233);
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.329);
     font-family: 'Roboto', sans-serif;
     max-width: 70%; /* Limits the width for a better, contained look */
     word-wrap: break-word; /* Ensures text wraps within the balloon */
@@ -112,8 +159,9 @@ input#user-input:hover {
 
 /* Bot Message */
 .bot {
+    z-index: 3;
+    position: relative;
     background: #0d6dfdec;
-    border: 3px solid #0d6dfd;
     padding: 16px;
     margin-bottom: 15px;
     color: white;
@@ -121,7 +169,7 @@ input#user-input:hover {
     float: left;
     clear: both;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.233);
+    box-shadow: inset 0 2px 5px rgb(0 0 0 / 69%);
     font-family: 'Roboto', sans-serif;
     max-width: 70%;
     word-wrap: break-word;
@@ -540,13 +588,13 @@ select.voice-select:focus {
 
 /* Token Bar */
 #token-bar {
-    width: 100%; /* Initially full, adjust width dynamically with JS */
+    width: 100%;
     background: #0d6dfdec;
-    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.233);
-    height: 25px;
-    border: 2px solid #fff;
-    border-radius: 15px; /* Rounded corners to match the container */
-    transition: width 0.4s ease; /* Smooth transition when the bar updates */
+    box-shadow: inset 0 2px 5px rgb(0 0 0 / 31%);
+    height: 230px;
+    /* border: 2px solid #fff; */
+    border-radius: 15px;
+    transition: width 0.4s ease;
 }
 
 /* User Badge Styling */
@@ -567,6 +615,8 @@ select.voice-select:focus {
     transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
     overflow: hidden;
     z-index: 0;
+    margin-bottom: 3px;
+    margin-top: -10px;
 }
 
 /* Add a subtle glowing effect and 3D hover animation */

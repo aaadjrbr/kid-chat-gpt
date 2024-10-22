@@ -38,6 +38,17 @@
         <div class="badge1">
             <!-- <div id="user-badge" class="badge free"></div> New badge element added here -->
             </div>
+    
+            <div id="pencil-toggle" style="text-align: center;">
+                <button id="toggle-bg-controls" style="font-size: 24px; background: none; border: none; cursor: pointer;">Edit chat background ✏️</button>
+            </div>
+            
+            <div id="bg-controls" style="display: none; text-align: center;">
+            <!--<p class="p-bg">Edit chat background:</p>-->
+                <input type="file" id="bg-upload" accept="image/*" />
+                <button id="upload-bg" style="font-size: 16px; background: none; border: none; cursor: pointer;">📷</button>
+                <button id="delete-bg" style="font-size: 16px; background: none; border: none; cursor: pointer;">❌</button>
+            </div>                                        
     </div>
 
     <div id="chat-container">
@@ -74,5 +85,6 @@
         Alfie AI can make mistakes. Check important info.</p>
     <br/><br/>
     <script src="scripts/chat.js" type="module"></script>
+    <script src="scripts/chat2.js" type="module"></script>
 </body>
 </html>
