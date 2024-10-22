@@ -9,12 +9,25 @@
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap" rel="stylesheet">
 </head>
 <body>
+
+<!-- Modal structure -->
+<div id="emailModal" class="modal">
+  <div class="modal-content">
+    <p id="modal-message"><strong>⚠️ Important:</strong> Please update your email to continue</p>
+    <p>📧 To proceed, we need your email. Please update your email address to continue. The email must be the same as the one you will provide in the payment form.</p>
+    <input type="email" id="emailInput" placeholder="Enter your email">
+    <button id="submitEmail">Submit</button>
+    <p id="error-message" class="error">An error occurred. Please try again.</p>
+    <br/>
+    <button class="go-back" onclick="window.location.href='./profiles.html'">Go Back</button>
+  </div>
+</div>
+
+<div id="main-content">
     <div class="container">
         <p>Already a member?<br/>Mange your Subscription: <a href="https://billing.stripe.com/p/login/3cs3dOaZsecP1JCbII" target="_blank">here</a></p>
+        <p style="font-size: 0.9em !important; padding: 20px; background-color: yellow; border-radius: 25px;"><em>During the payment process, you may come across the names '<strong>Anamaria Evans</strong>' and/or '<strong>Alfie AI</strong>.' Please note that Anamaria is a member of our team.</em></p>
         <button class="go-back" onclick="window.location.href='./profiles.html'">Go Back</button>
-
-        <h2 style="font-size: 1em; background-color: yellow; padding: 10px; border-radius: 25px;">⚠️ Important: Please ensure your profile is updated before completing your payment. <a href="./edit-profile.html">Edit Profile</a><br/><br/>
-          The information provided in your profile is essential for the payment process.</h2>  
     </div>
 
 <div class="container2">
@@ -52,7 +65,8 @@
     <div style="margin-top: 20px;"></div>
     <p>&copy; 2024 Alfie AI. All Rights Reserved.</p>
   </footer>
+</div>
 
-    <script src="scripts/checkout.js"></script>
+    <script type="module" src="scripts/checkout.js"></script>
 </body>
 </html>

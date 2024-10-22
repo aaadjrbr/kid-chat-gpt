@@ -27,6 +27,12 @@ body {
     margin-bottom: 20px;
 }
 
+#main-content {
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s, opacity 0.5s ease-in-out;
+  }
+
 h1 {
     margin-bottom: 15px;
     font-size: 24px;
@@ -60,8 +66,9 @@ label {
 input {
     padding: 10px;
     font-size: 16px;
+    width: 80%;
     border: 1px solid #ddd;
-    border-radius: 4px;
+    border-radius: 8px;
     margin-bottom: 20px;
 }
 
@@ -71,18 +78,23 @@ input:focus {
 }
 
 button {
-    font-family: "Fredoka", sans-serif;
-    padding: 12px;
-    font-size: 16px;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 4px;
     cursor: pointer;
+    font-family: "Fredoka", sans-serif;
+    font-weight: 600;
+    color:#ffffff;
+    background: #0d6dfdec;
+    border: 3px solid #0d6dfd;
+    padding: 8px;
+    font-size: 1.1em;
+    border-radius: 35px;
+    transition: background-color 0.3s;
 }
 
 button:hover {
-    background-color: #45a049;
+    background-image: linear-gradient(to right, #ffffff57, #ffffff6e);
+    border: 3px solid #0d6efd;
+    transform: scale(1.05);
+    transition: background-color 0.3s;
 }
 
 .go-back {
@@ -92,7 +104,7 @@ button:hover {
     border: none;
     border-radius: 50px;
     font-size: 1em;
-    color: #ffffff;
+    color: #000000;
     cursor: pointer;
     text-align: center;
     display: block;
@@ -101,7 +113,8 @@ button:hover {
 }
 
 .go-back:hover {
-    background-color: #ff2e63;
+    background-color: #ff2e63 !important;
+    border: none !important;
 }
 
 .error-message {
@@ -134,3 +147,54 @@ footer a {
 footer a:hover {
     color: rgba(120, 120, 235, 0.781);
 }
+
+    /* Modal styling */
+    .modal {
+        display: none;
+        position: fixed; 
+        z-index: 1; 
+        padding-top: 100px; 
+        left: 0;
+        top: 0;
+        width: 100%; 
+        height: 100%; 
+        overflow: auto; 
+        background-color: rgb(0,0,0); 
+        background-color: rgba(0, 0, 0, 0.705); 
+      }
+  
+      .modal-content {
+        border-radius: 25px;
+        margin: auto;
+        padding: 20px;
+        color: #000;
+        background-color: yellow;
+        border: 4px solid #ffc107;
+        border-radius: 25px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.233);
+        width: 60%;
+      }
+  
+      .close {
+        color: #ffffff;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+      }
+
+      input {
+        font-family: "Fredoka", sans-serif;
+      }
+  
+      .close:hover,
+      .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+      }
+  
+      .error {
+        color: red;
+        display: none;
+      }
