@@ -64,6 +64,11 @@ createAccountForm.addEventListener('submit', async (e) => {
     const newPassword = createAccountForm['new-account-password'].value;
     const confirmPassword = createAccountForm['confirm-account-password'].value;
     const termsCheckbox = document.getElementById('agreeTerms');
+    const createSuccessMessage = document.getElementById('create-success-message'); // New success message element
+
+    // Hide any previous messages
+    createErrorMessage.style.display = 'none';
+    createSuccessMessage.style.display = 'none';
 
     // Check if passwords match
     if (newPassword !== confirmPassword) {
@@ -87,12 +92,14 @@ createAccountForm.addEventListener('submit', async (e) => {
         // Send email verification
         await sendEmailVerification(user);
 
-        createErrorMessage.textContent = "Account created! Please check your email to verify your account before logging in.";
-        createErrorMessage.style.display = 'block';
+        createSuccessMessage.textContent = "Account created! Please check your email to verify your account before logging in.";
+        createSuccessMessage.style.display = 'block'; // Show success message
+        createErrorMessage.style.display = 'none'; // Hide error message
 
     } catch (error) {
         createErrorMessage.textContent = "Account creation failed. Please try again.";
         createErrorMessage.style.display = 'block';
+        createSuccessMessage.style.display = 'none'; // Hide success message
     }
 });
 
@@ -113,15 +120,19 @@ passwordResetForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const resetEmail = passwordResetForm['reset-email'].value;
 
+    // Hide any previous messages
+    resetErrorMessage.style.display = 'none';
+    resetSuccessMessage.style.display = 'none';
+
     try {
         await sendPasswordResetEmail(auth, resetEmail);
         resetSuccessMessage.textContent = "Password reset email sent. Please check your inbox.";
-        resetSuccessMessage.style.display = 'block';
-        resetErrorMessage.style.display = 'none';
+        resetSuccessMessage.style.display = 'block'; // Show success message
+        resetErrorMessage.style.display = 'none'; // Hide error message
     } catch (error) {
         resetErrorMessage.textContent = "Failed to send reset email. Please try again.";
         resetErrorMessage.style.display = 'block';
-        resetSuccessMessage.style.display = 'none';
+        resetSuccessMessage.style.display = 'none'; // Hide success message
     }
 });
 

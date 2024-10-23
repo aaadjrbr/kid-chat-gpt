@@ -127,7 +127,7 @@
             <img src="https://firebasestorage.googleapis.com/v0/b/kids-chatgpt.appspot.com/o/static%2Fgoogle-g.png?alt=media&token=d680ae54-ffab-4c98-9e92-7f6b21d83fe2" alt="Google G" style="width: 30px; height: 30px; margin-right: 10px;">
             <span>Login with Google</span>
         </button><br/>               
-        <p id="error-message" style="font-size: 1.1em; color: red; display: none;"></p>
+        <p id="error-message" class="alert-box alert-error" style="display: none;"></p>
         <a href="#" id="resend-verification-link" style="font-size: 1em !important; display: none;">🔄 Resend Verification Email</a>
         <br/><br/>
         <a href="#" id="forgot-password-link">Forgot Password?</a> <!-- Forgot Password Link -->
@@ -139,8 +139,8 @@
         <label for="email">Email</label>
         <input type="email" id="reset-email" placeholder="Enter your email" required>
         <button type="submit">Reset Password</button><br/><br/>
-        <p id="reset-error-message" style="font-size: 1.1em; color: red; display: none;"></p>
-        <p id="reset-success-message" style="font-size: 1.1em; color: green; display: none;"></p>
+        <p id="reset-error-message" class="alert-box alert-error" style="display: none;"></p>
+        <p id="reset-success-message" class="alert-box alert-success" style="display: none;"></p>
         <a href="#" id="i-remember">Nevermind</a>
     </form>
 
@@ -172,7 +172,8 @@
             <input type="checkbox" id="agreeTerms" name="agreeTerms" required style="margin-right: 10px;">
             <label for="agreeTerms" style="color: #fff; font-weight: 400; font-size: 1em;">I have read and agree to the <a href="./privacy-policy.html" target="_blank" style="color: #006eff;">Terms of Service</a>.</label>            
         </div>        
-        <p id="create-error-message" style="font-size: 1.1em; color: red; font-weight: bold; display: none;"></p>
+        <p id="create-error-message" class="alert-box alert-error" style="display: none;"></p>
+        <p id="create-success-message" class="alert-box alert-success" style="display: none;"></p>
     </form>
     <br/><br/>
   <!-- Footer -->
