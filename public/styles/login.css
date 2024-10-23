@@ -260,8 +260,7 @@ ul {
 /* Password Container */
 .password-container {
     position: relative;
-    width: 90%;
-    margin: 10px auto;
+    margin-bottom: 10px;
 }
 
 /* Password Field */
