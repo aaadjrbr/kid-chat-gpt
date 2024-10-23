@@ -1,5 +1,5 @@
 import { auth } from './firebase-config.js';
-import { GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, sendEmailVerification } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js";
+import { GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, sendEmailVerification } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js';
 
 // Elements
 const loginForm = document.getElementById('login-form');
@@ -12,6 +12,7 @@ const errorMessage = document.getElementById('error-message');
 const createErrorMessage = document.getElementById('create-error-message');
 const resetErrorMessage = document.getElementById('reset-error-message');
 const resetSuccessMessage = document.getElementById('reset-success-message');
+const createSuccessMessage = document.getElementById('create-success-message');
 const resendVerificationLink = document.getElementById('resend-verification-link');
 
 // Function to retry an operation
@@ -27,6 +28,45 @@ async function retryOperation(operation, retries = 3) {
         }
     }
     throw lastError;
+}
+
+// Function to handle countdown timer for resending the email (for each independent button)
+function startCountdown(buttonElement, messageElement, initialSeconds) {
+    let seconds = initialSeconds;
+    buttonElement.textContent = `Resend Verification Email (${seconds}s)`;
+    buttonElement.disabled = true;  // Disable the button
+    buttonElement.style.backgroundColor = "#ccc";  // Gray out button
+
+    // Display countdown in the error message in a nice way
+    messageElement.textContent = `Please wait ${seconds} seconds and try again.`;
+
+    const interval = setInterval(() => {
+        seconds--;
+        buttonElement.textContent = `Resend Verification Email (${seconds}s)`;
+        messageElement.textContent = `Please wait ${seconds} seconds and try again.`;
+        
+        if (seconds <= 0) {
+            clearInterval(interval);
+            buttonElement.textContent = 'Resend Verification Email';
+            buttonElement.disabled = false;  // Re-enable the button
+            buttonElement.style.backgroundColor = "";  // Reset color
+            messageElement.textContent = '';  // Clear the message
+        }
+    }, 1000);  // Update every second
+}
+
+// Function to display error messages nicely
+function displayErrorMessage(element, message) {
+    element.textContent = message;
+    element.style.display = 'block';
+    element.style.color = 'red';
+}
+
+// Function to display success messages nicely
+function displaySuccessMessage(element, message) {
+    element.textContent = message;
+    element.style.display = 'block';
+    element.style.color = 'green';
 }
 
 // Toggle visibility of Create Account form
@@ -47,13 +87,11 @@ loginForm.addEventListener('submit', async (e) => {
         if (user.emailVerified) {
             window.location.href = 'profiles.html';  // Proceed if email is verified
         } else {
-            errorMessage.textContent = "Please verify your email before logging in.";
-            errorMessage.style.display = 'block';
+            displayErrorMessage(errorMessage, "Please verify your email before logging in.");
             resendVerificationLink.style.display = 'block';  // Show the resend link
         }
     } catch (error) {
-        errorMessage.textContent = `Login failed: ${error.message}`;
-        errorMessage.style.display = 'block';
+        displayErrorMessage(errorMessage, `Login failed: ${error.message}`);
         resendVerificationLink.style.display = 'none';  // Hide the resend link in case of other errors
         console.error("Login error:", error);
     }
@@ -67,9 +105,8 @@ document.getElementById('google-login-btn').addEventListener('click', async () =
         const result = await signInWithPopup(auth, googleProvider);
         window.location.href = 'profiles.html';  // Redirect after login
     } catch (error) {
+        displayErrorMessage(errorMessage, `Google sign-in failed: ${error.message}`);
         console.error("Google sign-in failed:", error);
-        errorMessage.textContent = `Google sign-in failed: ${error.message}`;
-        errorMessage.style.display = 'block';
     }
 });
 
@@ -80,7 +117,6 @@ createAccountForm.addEventListener('submit', async (e) => {
     const newPassword = createAccountForm['new-account-password'].value;
     const confirmPassword = createAccountForm['confirm-account-password'].value;
     const termsCheckbox = document.getElementById('agreeTerms');
-    const createSuccessMessage = document.getElementById('create-success-message'); // New success message element
 
     // Hide any previous messages
     createErrorMessage.style.display = 'none';
@@ -88,15 +124,13 @@ createAccountForm.addEventListener('submit', async (e) => {
 
     // Check if passwords match
     if (newPassword !== confirmPassword) {
-        createErrorMessage.textContent = "Passwords do not match.";
-        createErrorMessage.style.display = 'block';
+        displayErrorMessage(createErrorMessage, "Passwords do not match.");
         return;
     }
 
     // Check if the terms checkbox is checked
     if (!termsCheckbox.checked) {
-        createErrorMessage.textContent = "You must agree to the Terms of Service.";
-        createErrorMessage.style.display = 'block';
+        displayErrorMessage(createErrorMessage, "You must agree to the Terms of Service.");
         return;
     }
 
@@ -108,14 +142,32 @@ createAccountForm.addEventListener('submit', async (e) => {
         // Send email verification (with retries)
         await retryOperation(() => sendEmailVerification(user));
 
-        createSuccessMessage.textContent = "Account created! Please check your email to verify your account before logging in.";
+        createSuccessMessage.innerHTML = `
+            Account created! Please check your email to verify your account before logging in.
+            <br><a href="#" id="resend-verification">Resend Verification Email</a>
+        `;
         createSuccessMessage.style.display = 'block'; // Show success message
-        createErrorMessage.style.display = 'none'; // Hide error message
+
+        const resendButton = document.getElementById('resend-verification');
+        resendButton.addEventListener('click', async (e) => {
+            e.preventDefault();
+            if (!resendButton.disabled) { // Ensure button can't be clicked during the countdown
+                try {
+                    await sendEmailVerification(user);
+                    displaySuccessMessage(createSuccessMessage, "Verification email sent. Please check your inbox.");
+                    startCountdown(resendButton, createErrorMessage, 60);  // Start 30-second countdown
+                } catch (error) {
+                    if (error.code === 'auth/too-many-requests') {
+                        startCountdown(resendButton, createErrorMessage, 60);  // Start countdown on too-many-requests error
+                    } else {
+                        displayErrorMessage(createErrorMessage, `Failed to resend verification email: ${error.message}`);
+                    }
+                }
+            }
+        });
 
     } catch (error) {
-        createErrorMessage.textContent = `Account creation failed: ${error.message}`;
-        createErrorMessage.style.display = 'block';
-        createSuccessMessage.style.display = 'none'; // Hide success message
+        displayErrorMessage(createErrorMessage, `Account creation failed: ${error.message}`);
         console.error("Account creation error:", error);
     }
 });
@@ -144,30 +196,30 @@ passwordResetForm.addEventListener('submit', async (e) => {
     try {
         // Send password reset email (with retries)
         await retryOperation(() => sendPasswordResetEmail(auth, resetEmail));
-        resetSuccessMessage.textContent = "Password reset email sent. Please check your inbox.";
-        resetSuccessMessage.style.display = 'block'; // Show success message
-        resetErrorMessage.style.display = 'none'; // Hide error message
+        displaySuccessMessage(resetSuccessMessage, "Password reset email sent. Please check your inbox.");
     } catch (error) {
-        resetErrorMessage.textContent = `Failed to send reset email: ${error.message}`;
-        resetErrorMessage.style.display = 'block';
-        resetSuccessMessage.style.display = 'none'; // Hide success message
+        displayErrorMessage(resetErrorMessage, `Failed to send reset email: ${error.message}`);
         console.error("Password reset error:", error);
     }
 });
 
-// Handle Resend Verification Email
+// Handle Resend Verification Email on Login
 resendVerificationLink.addEventListener('click', async (e) => {
     e.preventDefault();
     
     const user = auth.currentUser;
-    
-    if (user && !user.emailVerified) {
+
+    if (!resendVerificationLink.disabled && user && !user.emailVerified) { // Ensure button isn't clickable during countdown
         try {
-            await retryOperation(() => sendEmailVerification(user));
-            alert("Verification email sent. Please check your inbox.");
+            await sendEmailVerification(user);
+            displaySuccessMessage(errorMessage, "Verification email sent. Please check your inbox.");
+            startCountdown(resendVerificationLink, errorMessage, 60);  // Start 30-second countdown
         } catch (error) {
-            alert(`Failed to send verification email: ${error.message}`);
-            console.error("Resend verification email error:", error);
+            if (error.code === 'auth/too-many-requests') {
+                startCountdown(resendVerificationLink, errorMessage, 60);  // Start countdown on too-many-requests error
+            } else {
+                displayErrorMessage(errorMessage, `Failed to resend verification email: ${error.message}`);
+            }
         }
     }
 });
