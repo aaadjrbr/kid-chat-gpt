@@ -468,6 +468,7 @@ img {
 /* Hover effect for buttons */
 #send-btn:hover {
     background: linear-gradient(to right, #ffffff57, #ffffff6e);
+    box-shadow: inset 0 3px 8px #0d6dfdec;
     border: 3px solid #0d6efd;
     color: #0d6efd;
     border-radius: 8px;
