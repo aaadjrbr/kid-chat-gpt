@@ -212,7 +212,7 @@ button:hover {
 /* Responsive Styles */
 @media (max-width: 600px) {
     .toggle-password {
-        right: 0px !important;
+        right: 5px !important;
     }
 
     form, #create-account-form {
