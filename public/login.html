@@ -122,13 +122,13 @@
             <input type="password" id="password" placeholder="Password" required>
             <span class="toggle-password" id="toggle-password">👀</span>
         </div>
+        <p id="error-message" class="alert-box alert-error" style="display: none;"></p>
+        <a href="#" id="resend-verification-link" style="font-size: 1em !important; display: none;">🔄 Resend Verification Email</a>
         <button type="submit" style="width: 100%;">Login ✨</button><br/><br/>
         <button id="google-login-btn">
             <img src="https://firebasestorage.googleapis.com/v0/b/kids-chatgpt.appspot.com/o/static%2Fgoogle-g.png?alt=media&token=d680ae54-ffab-4c98-9e92-7f6b21d83fe2" alt="Google G" style="width: 30px; height: 30px; margin-right: 10px;">
             <span>Login with Google</span>
         </button><br/>               
-        <p id="error-message" class="alert-box alert-error" style="display: none;"></p>
-        <a href="#" id="resend-verification-link" style="font-size: 1em !important; display: none;">🔄 Resend Verification Email</a>
         <br/><br/>
         <a href="#" id="forgot-password-link">Forgot Password?</a> <!-- Forgot Password Link -->
     </form>
@@ -138,9 +138,9 @@
         <h2>Oops! Forgot my password</h2>
         <label for="email">Email</label>
         <input type="email" id="reset-email" placeholder="Enter your email" required>
-        <button type="submit">Reset Password</button><br/><br/>
         <p id="reset-error-message" class="alert-box alert-error" style="display: none;"></p>
         <p id="reset-success-message" class="alert-box alert-success" style="display: none;"></p>
+        <button type="submit">Reset Password</button><br/><br/>
         <a href="#" id="i-remember">Nevermind</a>
     </form>
 
@@ -164,9 +164,9 @@
             <input type="password" id="confirm-account-password" placeholder="Confirm Password" required>
             <span class="toggle-password" id="toggle-confirm-account-password">👀</span>
         </div>
-        <button type="submit">Create Account 🚀</button>
         <p id="create-error-message" class="alert-box alert-error" style="display: none;"></p>
         <p id="create-success-message" class="alert-box alert-success" style="display: none;"></p>
+        <button type="submit">Create Account 🚀</button>
         <p style="font-size: 0.9em; color: #fff;">
             <em>*By creating an account, you acknowledge and agree to our <a href="./privacy-policy.html">Privacy Policy</a>.</em>
         </p>

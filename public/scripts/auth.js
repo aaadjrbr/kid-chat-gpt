@@ -14,6 +14,21 @@ const resetErrorMessage = document.getElementById('reset-error-message');
 const resetSuccessMessage = document.getElementById('reset-success-message');
 const resendVerificationLink = document.getElementById('resend-verification-link');
 
+// Function to retry an operation
+async function retryOperation(operation, retries = 3) {
+    let lastError;
+    for (let i = 0; i < retries; i++) {
+        try {
+            await operation();
+            return;
+        } catch (error) {
+            lastError = error;
+            console.error(`Attempt ${i + 1} failed:`, error);
+        }
+    }
+    throw lastError;
+}
+
 // Toggle visibility of Create Account form
 toggleCreateAccountButton.addEventListener('click', () => {
     createAccountForm.style.display = createAccountForm.style.display === 'none' ? 'block' : 'none';
@@ -37,9 +52,10 @@ loginForm.addEventListener('submit', async (e) => {
             resendVerificationLink.style.display = 'block';  // Show the resend link
         }
     } catch (error) {
-        errorMessage.textContent = "Login failed. Please check your credentials.";
+        errorMessage.textContent = `Login failed: ${error.message}`;
         errorMessage.style.display = 'block';
         resendVerificationLink.style.display = 'none';  // Hide the resend link in case of other errors
+        console.error("Login error:", error);
     }
 });
 
@@ -52,7 +68,7 @@ document.getElementById('google-login-btn').addEventListener('click', async () =
         window.location.href = 'profiles.html';  // Redirect after login
     } catch (error) {
         console.error("Google sign-in failed:", error);
-        errorMessage.textContent = "Google sign-in failed. Please try again.";
+        errorMessage.textContent = `Google sign-in failed: ${error.message}`;
         errorMessage.style.display = 'block';
     }
 });
@@ -89,17 +105,18 @@ createAccountForm.addEventListener('submit', async (e) => {
         const userCredential = await createUserWithEmailAndPassword(auth, newEmail, newPassword);
         const user = userCredential.user;
 
-        // Send email verification
-        await sendEmailVerification(user);
+        // Send email verification (with retries)
+        await retryOperation(() => sendEmailVerification(user));
 
         createSuccessMessage.textContent = "Account created! Please check your email to verify your account before logging in.";
         createSuccessMessage.style.display = 'block'; // Show success message
         createErrorMessage.style.display = 'none'; // Hide error message
 
     } catch (error) {
-        createErrorMessage.textContent = "Account creation failed. Please try again.";
+        createErrorMessage.textContent = `Account creation failed: ${error.message}`;
         createErrorMessage.style.display = 'block';
         createSuccessMessage.style.display = 'none'; // Hide success message
+        console.error("Account creation error:", error);
     }
 });
 
@@ -125,14 +142,16 @@ passwordResetForm.addEventListener('submit', async (e) => {
     resetSuccessMessage.style.display = 'none';
 
     try {
-        await sendPasswordResetEmail(auth, resetEmail);
+        // Send password reset email (with retries)
+        await retryOperation(() => sendPasswordResetEmail(auth, resetEmail));
         resetSuccessMessage.textContent = "Password reset email sent. Please check your inbox.";
         resetSuccessMessage.style.display = 'block'; // Show success message
         resetErrorMessage.style.display = 'none'; // Hide error message
     } catch (error) {
-        resetErrorMessage.textContent = "Failed to send reset email. Please try again.";
+        resetErrorMessage.textContent = `Failed to send reset email: ${error.message}`;
         resetErrorMessage.style.display = 'block';
         resetSuccessMessage.style.display = 'none'; // Hide success message
+        console.error("Password reset error:", error);
     }
 });
 
@@ -144,10 +163,11 @@ resendVerificationLink.addEventListener('click', async (e) => {
     
     if (user && !user.emailVerified) {
         try {
-            await sendEmailVerification(user);
+            await retryOperation(() => sendEmailVerification(user));
             alert("Verification email sent. Please check your inbox.");
         } catch (error) {
-            alert("Failed to send verification email. Please try again.");
+            alert(`Failed to send verification email: ${error.message}`);
+            console.error("Resend verification email error:", error);
         }
     }
 });
