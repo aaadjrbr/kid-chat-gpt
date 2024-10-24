@@ -251,7 +251,7 @@ li {
     padding: 15px;
     margin-bottom: 8px;
     border-radius: 25px;
-    color: #ffffff;
+    color: #000;
     cursor: pointer;
     transition: background-color 0.3s;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
@@ -267,7 +267,7 @@ div.sessions-container ul li:hover {
 li:hover {
     background: #ffffff3b;
     border: 3px solid #4a4de7 !important;
-    color: #000;
+    color: #000000;
 }
 
 /* User message styling */
