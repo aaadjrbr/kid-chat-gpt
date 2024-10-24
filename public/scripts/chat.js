@@ -855,7 +855,7 @@ function updateTokenBar() {
     } else if (tokenPercentage < 20) {
         tokenBar.style.backgroundColor = 'orange';
     } else {
-        tokenBar.style.backgroundColor = '#6a82fb'; // Default color when above 20%
+        tokenBar.style.backgroundColor = ''; // Default color when above 20%
         document.getElementById("input-container").style.display = "block"; // Show input container when tokens are available
     }
 }
