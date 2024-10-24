@@ -27,6 +27,10 @@ h3 {
     text-align: center;
 }
 
+h3#current-month-title {
+    color: #fff;
+}
+
 .bot-name {
     font-family: "Fredoka", sans-serif;
     font-weight: 600 !important;
@@ -68,9 +72,9 @@ li.user-message span {
 
 /* Styling for individual day buttons in the calendar */
 .day-button {
-    background: #0d6dfdec;
-    border: 3px solid #0d6dfd;
-    color: white;
+    background: #ffa726;
+    border: 3px solid #ffa826b0;
+    color: rgb(43, 43, 43);
     padding: 12px;
     width: 60px;
     height: 60px;
@@ -86,7 +90,7 @@ li.user-message span {
 }
 
 .day-button:hover {
-    border: 3px solid #0d6dfd !important;
+    border: 3px solid #ffa826 !important;
     background-image: linear-gradient(to right, #ffffff57, #ffffff6e);
     transition: all 0.2s ease;
 }
@@ -141,8 +145,8 @@ li.user-message span {
     width: 90%;
     margin: 10px auto; /* Centers the container horizontally */
     border-radius: 20px;
-    background-color: #ffc107ee;
-    border: 4px solid #ffc107;
+    background: linear-gradient(135deg, #6a0dad, #4a4de7);
+    border: 4px solid #4a4de7;
     padding: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.233);
@@ -164,7 +168,7 @@ li.user-message span {
 /* Chat history container styling */
 #history-container {
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.733), rgba(240, 245, 255, 0.705));
-    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.233) !important;
+    box-shadow: inset 2px 5px 10px 3px rgb(0 0 0 / 18%) !important;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.041); /* Subtle shadow for depth */
     background-color: #fff;
     width: 80%;
@@ -242,8 +246,8 @@ div.sessions-container ul li {
 }
 
 li {
-    background: #198754;
-    border: 3px solid #198754;
+    background: #ffa726;
+    border: 3px solid #ffa826b0;
     padding: 15px;
     margin-bottom: 8px;
     border-radius: 25px;
@@ -255,14 +259,14 @@ li {
 }
 
 div.sessions-container ul li:hover {
-    background: #198754c7;
-    border: 3px solid #198754;
+    background: #ffa726;
+    border: 3px solid #ffa826b0;
     transition: all 0.2s ease;
 }
 
 li:hover {
     background: #ffffff3b;
-    border: 3px solid #198754 !important;
+    border: 3px solid #4a4de7 !important;
     color: #000;
 }
 
