@@ -160,13 +160,13 @@ async function loadChatMessages(parentId, kidId, chatId, year, month, day) {
 let currentPage = 1; // Start from the first page
 
 // Function to render the chat history with pagination
-function renderChatHistory(chatSessions, parentId, kidId, year, month, day, page) {
-    currentPage = page;
+function renderChatHistory(chatSessions, parentId, kidId, year, month, day, page = 1) {
+    currentPage = page || 1; // Ensure page is a valid number, fallback to 1
     const historyContainer = document.getElementById('history-container');
     historyContainer.innerHTML = ''; // Clear previous results
 
     const historyHeader = document.createElement('h3');
-    historyHeader.textContent = `💬 Chat history for ${month}/${day}/${year} (Page ${currentPage})`;
+    historyHeader.textContent = `💬 Chat history for ${month}/${day}/${year} (Page ${currentPage || 1})`;
     historyContainer.appendChild(historyHeader);
 
     const sessionsContainer = document.createElement('div');
