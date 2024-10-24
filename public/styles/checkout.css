@@ -12,7 +12,7 @@ body {
 }
 
 .container {
-    background-color: white;
+    background-color: #ffffffe8;
     padding: 20px;
     border-radius: 25px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.308);
@@ -148,11 +148,12 @@ button:hover {
 .go-back {
     margin-top: 20px;
     padding: 12px 25px;
-    background-color: #08d9d6;
+    background-color: rgb(106, 13, 173);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.075);
     border: none;
     border-radius: 50px;
     font-size: 1em;
-    color: #000000;
+    color: #ffffff;
     cursor: pointer;
     text-align: center;
     display: block;
