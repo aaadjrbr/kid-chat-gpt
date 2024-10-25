@@ -3,6 +3,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase
 import { getAuth, sendEmailVerification, sendPasswordResetEmail, signInWithPopup, applyActionCode, verifyPasswordResetCode, confirmPasswordReset } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js";
 import { getFirestore } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
 import { getStorage } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-storage.js"; // Import Firebase Storage
+import { getFunctions } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-functions.js"; // Import Functions
 
 // Firebase config
 const firebaseConfig = {
@@ -20,6 +21,7 @@ const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
 export const storage = getStorage(app); // Export storage reference
+export const functions = getFunctions(app); // Export Functions
 
 // Export auth functions for use in other parts of your app
 export { sendEmailVerification, sendPasswordResetEmail, signInWithPopup, applyActionCode, verifyPasswordResetCode, confirmPasswordReset };
