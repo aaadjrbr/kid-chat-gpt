@@ -33,6 +33,17 @@ async function loadUserBackground(parentId, kidId) {
     }
 }
 
+// Toggle visibility of background controls
+document.getElementById('toggle-bg-controls').addEventListener('click', () => {
+    const bgControls = document.getElementById('bg-controls');
+    bgControls.style.display = bgControls.style.display === 'none' ? 'block' : 'none';
+});
+
+// Trigger the file upload dialog
+document.getElementById('upload-bg').addEventListener('click', () => {
+    document.getElementById('bg-upload').click();
+});
+
 // Cache and apply the background
 function loadCachedBg(kidId, url) {
     const cacheKey = `customBg_${kidId}`;
@@ -151,18 +162,6 @@ async function deleteImageFromStorage(imageUrl) {
         console.log("Image deleted successfully from Firebase Storage.");
     } catch (error) {
         console.error("Error deleting image from Firebase Storage:", error);
-    }
-}
-
-// Function to load the existing background from Firestore and cache it
-async function loadUserBackground(parentId, kidId) {
-    const userDocRef = doc(db, `/parents/${parentId}/kids/${kidId}`);
-    const docSnap = await getDoc(userDocRef);
-    if (docSnap.exists()) {
-        const userData = docSnap.data();
-        const chatBg = userData['chat-bg'] || originalBgUrl;
-        loadCachedBg(kidId, chatBg);
-        updateBackgroundImage(kidId, chatBg);
     }
 }
 
