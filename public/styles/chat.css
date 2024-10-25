@@ -176,7 +176,7 @@ input#user-input:hover {
 
 @media (max-width: 768px) {
     .mic-button {
-        margin-right: 2px !important;
+        margin-right: -4px !important;
         right: 2px !important;
     }
 
