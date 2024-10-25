@@ -1092,15 +1092,28 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Function to speak the given text using default US English voice
+let isPlaying = false; // Add this at the top to track audio playback
+
 async function speakText(text) {
+    if (isPlaying) return; // Prevent playback if audio is currently playing
+    
     const generateSpeech = httpsCallable(functions, 'generateSpeech');
     try {
         const cleanedText = removeEmojis(text); // Remove emojis before sending to the API
         const response = await generateSpeech({ text: cleanedText });
         const audio = new Audio(response.data); // Play the returned audio URL
+        
+        isPlaying = true; // Set the flag to indicate audio is playing
         audio.play();
+
+        // Reset the flag when playback ends
+        audio.onended = () => {
+            isPlaying = false; // Allow playback again once the audio has finished
+        };
+
     } catch (error) {
         console.error("Error in Text-to-Speech:", error);
+        isPlaying = false; // Reset the flag if there's an error
     }
 }
 
