@@ -1,7 +1,7 @@
 import { db } from './firebase-config.js'; // Your Firestore instance
 import { collection, getDocs, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-storage.js";
+import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-storage.js";
 
 // Initialize Firebase Storage, Firestore, and Auth
 const storage = getStorage(); // Initialize storage instance
@@ -22,26 +22,14 @@ function loadCachedBg(key, url) {
     // Apply the background from the cache
     const messagesElem = document.getElementById('messages');
     messagesElem.style.backgroundImage = `url(${bgCache[key]})`;
-
-    // Log cache usage
-    if (key === 'customBg') {
-        console.log("Using user's background photo from cache.");
-    } else if (key === 'defaultBg') {
-        console.log("Using default background photo from cache.");
-    }
 }
 
 // Function to force reflow and update the background dynamically
 function updateBackgroundImage(url) {
     const messagesElem = document.getElementById('messages');
-    
-    // Temporarily remove the background
     messagesElem.style.backgroundImage = 'none';
-    
-    // Apply the new background after a slight delay to force reflow
     setTimeout(() => {
         messagesElem.style.backgroundImage = `url(${url})`;
-        console.log("Background updated dynamically.");
     }, 100);
 }
 
@@ -69,12 +57,11 @@ async function compressImage(file) {
                 const canvas = document.createElement('canvas');
                 const ctx = canvas.getContext('2d');
 
-                const maxWidth = 800; // Set your max width
-                const maxHeight = 600; // Set your max height
+                const maxWidth = 800;
+                const maxHeight = 600;
                 let width = img.width;
                 let height = img.height;
 
-                // Calculate new dimensions
                 if (width > height) {
                     if (width > maxWidth) {
                         height *= maxWidth / width;
@@ -89,13 +76,11 @@ async function compressImage(file) {
 
                 canvas.width = width;
                 canvas.height = height;
-
                 ctx.drawImage(img, 0, 0, width, height);
 
-                // Convert the canvas back to a blob
                 canvas.toBlob((blob) => {
                     resolve(blob);
-                }, 'image/jpeg', 0.7); // Adjust quality as needed
+                }, 'image/jpeg', 0.7);
             };
 
             img.onerror = (err) => reject(err);
@@ -108,65 +93,78 @@ async function compressImage(file) {
 // Firebase authentication state change
 onAuthStateChanged(auth, async (user) => {
     if (user) {
-        parentId = user.uid; // Get the parentId from auth (assuming parentId is user UID)
+        parentId = user.uid;
 
-        // Fetch the kidId from Firestore, or generate dynamically
+        // Fetch the kidId from Firestore
         const kidsRef = collection(db, `/parents/${parentId}/kids`);
         const snapshot = await getDocs(kidsRef);
         if (!snapshot.empty) {
-            kidId = snapshot.docs[0].id; // Assuming you take the first kid's ID dynamically
+            kidId = snapshot.docs[0].id;
         }
 
         if (parentId && kidId) {
             const userDocRef = doc(db, `/parents/${parentId}/kids/${kidId}`);
-
-            // Load the existing background if any
             loadUserBackground(userDocRef);
 
-            // Trigger the hidden file input when the camera emoji is clicked
             document.getElementById('upload-bg').addEventListener('click', () => {
                 document.getElementById('bg-upload').click();
             });
 
-            // Handle background image upload
             document.getElementById('bg-upload').addEventListener('change', async (event) => {
                 const file = event.target.files[0];
                 if (file) {
-                    const compressedFile = await compressImage(file); // Compress the image
+                    const compressedFile = await compressImage(file);
 
                     const fileRef = ref(storage, `chat-backgrounds/${parentId}/${kidId}/${file.name}`);
                     await uploadBytes(fileRef, compressedFile);
                     const fileUrl = await getDownloadURL(fileRef);
 
-                    // Save the background URL in Firestore
                     await updateDoc(userDocRef, {
                         'chat-bg': fileUrl
                     });
 
-                    console.log("Background image uploaded and saved!");
-
-                    // Dynamically update the background without page refresh
                     updateBackgroundImage(fileUrl);
                 }
             });
 
-            // Handle deleting the background (reset to original)
             document.getElementById('delete-bg').addEventListener('click', async () => {
-                // Update Firestore to remove the custom background
-                await updateDoc(userDocRef, {
-                    'chat-bg': originalBgUrl
-                });
+                try {
+                    const docSnap = await getDoc(userDocRef);
+                    if (docSnap.exists()) {
+                        const userData = docSnap.data();
+                        const currentBgUrl = userData['chat-bg'];
 
-                // Cache and reset to original background
-                loadCachedBg('defaultBg', originalBgUrl);
-                console.log("Background image reset to original!");
+                        if (currentBgUrl && currentBgUrl !== originalBgUrl) {
+                            await deleteImageFromStorage(currentBgUrl);
+                        }
+                    }
 
-                // Dynamically update the background without page refresh
-                updateBackgroundImage(originalBgUrl);
+                    await updateDoc(userDocRef, {
+                        'chat-bg': originalBgUrl
+                    });
+
+                    loadCachedBg('defaultBg', originalBgUrl);
+                    updateBackgroundImage(originalBgUrl);
+                } catch (error) {
+                    console.error("Error deleting background:", error);
+                }
             });
         }
     }
 });
+
+// Function to delete image from Firebase Storage
+async function deleteImageFromStorage(imageUrl) {
+    try {
+        const filePath = imageUrl.split('o/')[1].split('?')[0];
+        const fileRef = ref(storage, decodeURIComponent(filePath));
+
+        await deleteObject(fileRef);
+        console.log("Image deleted successfully from Firebase Storage.");
+    } catch (error) {
+        console.error("Error deleting image from Firebase Storage:", error);
+    }
+}
 
 // Function to load the existing background from Firestore and cache it
 async function loadUserBackground(userDocRef) {
@@ -176,10 +174,10 @@ async function loadUserBackground(userDocRef) {
         const chatBg = userData['chat-bg'];
         if (chatBg) {
             loadCachedBg('customBg', chatBg);
-            updateBackgroundImage(chatBg); // Apply immediately on load
+            updateBackgroundImage(chatBg);
         } else {
             loadCachedBg('defaultBg', originalBgUrl);
-            updateBackgroundImage(originalBgUrl); // Apply immediately on load
+            updateBackgroundImage(originalBgUrl);
         }
     }
 }
@@ -188,29 +186,23 @@ async function loadUserBackground(userDocRef) {
 const resizer = document.getElementById('resizer');
 const chatContainer = document.getElementById('chat-container');
 
-// Add event listeners to start resizing when the user interacts with the resizer
 resizer.addEventListener('mousedown', initResize);
 resizer.addEventListener('touchstart', initResize, { passive: true });
 
 function initResize(e) {
-    // Listen for mouse or touch movements to resize the container
     window.addEventListener('mousemove', resize);
     window.addEventListener('touchmove', resize, { passive: true });
 
-    // Stop resizing when the user releases the mouse or touch
     window.addEventListener('mouseup', stopResize);
     window.addEventListener('touchend', stopResize);
 }
 
 function resize(e) {
-    // Calculate the new height based on the vertical mouse or touch position
     const newHeight = e.clientY || e.touches[0].clientY;
-    // Apply the new height to the chat container
     chatContainer.style.height = `${newHeight}px`;
 }
 
 function stopResize() {
-    // Remove event listeners to stop resizing
     window.removeEventListener('mousemove', resize);
     window.removeEventListener('touchmove', resize);
     window.removeEventListener('mouseup', stopResize);

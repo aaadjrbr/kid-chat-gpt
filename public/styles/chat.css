@@ -62,7 +62,7 @@ button, input {
     box-shadow: 12px 9px 16px 3px rgba(0, 0, 0, 0.15), 0 6px 20px rgba(100, 150, 255, 0.2);
     border: 3px solid #6a11cb6b;
     margin: 10px auto;
-    width: 90%;
+    width: 95%;
     max-width: 1000px; /* Optional max width */
     min-width: 300px; /* Prevent it from shrinking too much */
     display: flex;
@@ -104,28 +104,84 @@ button, input {
 
 /* Input Field Container */
 #input-container {
-    font-family: 'Roboto', sans-serif;
-    display: flex !important;
-    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    padding: 8px;
     gap: 10px;
     box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.233);
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(240, 245, 255, 0.95)); /* Soft white to light bluish gradient */
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(240, 245, 255, 0.95));
     border-top: 1px solid #ccc;
     border-radius: 0 0 15px 15px;
+}
+
+textarea#user-input {
+    width: 100%;
+    padding-right: 20px;
+    border: 1px solid #ccc;
+    resize: none; /* Disable manual resize */
+    overflow-y: hidden; /* Hide scrollbar initially */
+    font-family: "Fredoka", sans-serif;
+    font-size: 1em;
+    line-height: 1.5;
+    box-sizing: border-box;
+    max-height: 150px; /* Set maximum height for the textarea */
+    min-height: 50px; /* Set a minimum height for initial appearance */
+}
+
+textarea#user-input:focus {
+    outline: none;
+}
+
+.input-actions {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.textarea-container {
+    position: relative;
+    flex: 1;
+    margin-right: 5px; /* Space between textarea and buttons */
+}
+
+textarea#user-input.auto-grow {
+    height: auto;
+    min-height: 50px; /* Set a minimum height for the textarea */
+    max-height: 300px; /* Optional: Set a maximum height if needed */
+    overflow-y: auto; /* Scroll only if the max height is reached */
 }
 
 input#user-input:hover {
     background: #c7edf642;
 }
 
-/* Chat Input Field Styling */
-#user-input {
-    font-family: 'Roboto', sans-serif;
-    flex: 1;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    font-size: 16px;
+#send-btn, #image-upload-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Mic button inside the textarea container */
+.mic-button {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+
+.mic-button {
+    margin-right: 18px;
+}
+
+@media (max-width: 768px) {
+    .mic-button {
+        margin-right: 2px;
+    }
+}
+
+.material-icons {
+    font-size: 24px;
 }
 
 /* Send Button Styling */
@@ -740,7 +796,6 @@ textarea {
     border-radius: 8px;
     border: 1px solid #ccc;
     resize: none;
-    margin-top: 10px;
 }
 
 button.add-comment-btn {

@@ -14,24 +14,22 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/themes/prism-tomorrow.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/prism.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.25.0/components/prism-html.min.js"></script>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=volume_up" />
 
     <meta name="description" content="Alfie AI for Kids provides a safe, educational AI chatbot experience for children aged 5-12, enhancing learning and growth with parental controls." />
     <meta name="keywords" content="AI for kids, safe AI learning, parental controls, educational AI, chatbots for children, technology in education" />
     <link rel="canonical" href="https://www.alfieaiforkids.fun/" />
     <meta property="og:title" content="Alfie AI for Kids - Safe AI Learning for Children" />
-  
     <meta property="og:description" content="Enhance your child's learning experience with Alfie AI, a safe, educational AI chatbot designed for kids aged 5-12 with parental controls." />
     <meta property="og:image" content="https://firebasestorage.googleapis.com/v0/b/kids-chatgpt.appspot.com/o/logo-alfie.webp?alt=media&token=92d7d084-ce10-486d-b00d-30c0b2642456" />
     <meta property="og:url" content="https://www.alfieaiforkids.fun/" />
     <meta property="og:type" content="website" />
-  
+
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Alfie AI for Kids - Safe AI Learning for Children" />
     <meta name="twitter:description" content="A safe and educational chatbot experience for children aged 5-12, with parental control features to ensure peace of mind." />
     <meta name="twitter:image" content="https://firebasestorage.googleapis.com/v0/b/kids-chatgpt.appspot.com/o/logo-alfie.webp?alt=media&token=92d7d084-ce10-486d-b00d-30c0b2642456" />
-  
+
     <meta name="robots" content="index, follow" />
 
     <style>
@@ -45,33 +43,35 @@
     }
     </style>
 </head>
+
 <!-- Google tag (gtag.js) --> 
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-WYMRF4LKM1"></script>
-<script> window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-WYMRF4LKM1');
+<script>
+    window.dataLayer = window.dataLayer || []; 
+    function gtag() {dataLayer.push(arguments);} 
+    gtag('js', new Date()); 
+    gtag('config', 'G-WYMRF4LKM1');
 </script>
 
 <body>
-
     <div class="hello-container">
         <div id="kid-name-display"><span id="kid-name"></span><span class="cursor">|</span></div>
         <div id="token-container">
             <div id="token-bar"></div>
         </div>
-        <div class="badge1">
-            <!-- <div id="user-badge" class="badge free"></div> New badge element added here -->
-            </div>
-    
-            <div id="pencil-toggle" style="text-align: center;">
-                <button id="toggle-bg-controls" style="font-size: 24px; background: none; border: none; cursor: pointer;">
-                    Chat background ✏️</button>
-            </div>
-            
-            <div id="bg-controls" style="display: none; text-align: center;">
-            <!--<p class="p-bg">Edit chat background:</p>-->
-                <input type="file" id="bg-upload" accept="image/*" />
-                <button id="upload-bg" style="font-size: 16px; background: none; border: none; cursor: pointer;">📷</button>
-                <button id="delete-bg" style="font-size: 16px; background: none; border: none; cursor: pointer;">❌</button>
-            </div>                                        
+        <div class="badge1"></div>
+
+        <div id="pencil-toggle" style="text-align: center;">
+            <button id="toggle-bg-controls" style="font-size: 24px; background: none; border: none; cursor: pointer;">
+                Chat background ✏️
+            </button>
+        </div>
+
+        <div id="bg-controls" style="display: none; text-align: center;">
+            <input type="file" id="bg-upload" accept="image/*" />
+            <button id="upload-bg" style="font-size: 16px; background: none; border: none; cursor: pointer;">📷</button>
+            <button id="delete-bg" style="font-size: 16px; background: none; border: none; cursor: pointer;">❌</button>
+        </div>                                        
     </div>
 
     <div id="chat-container">
@@ -80,37 +80,77 @@
         </a>
         <div id="messages"></div>
         <div id="input-container">
-            <div id="thinking"><image class="image-thinking" src="./thinking.gif"></div>
-                <div class="input-wrapper">
-                    <input type="text" id="user-input" placeholder="How can I help?">
+            <div id="thinking">
+                <img class="image-thinking" src="./thinking.gif">
+            </div>
+            <div class="input-wrapper">
+                <!-- Textarea -->
+                <div class="textarea-container">
+                    <textarea id="user-input" placeholder="How can I help?" rows="1"></textarea>
+                    <!-- Mic Button Inside the Textarea -->
                     <button id="mic-btn" class="mic-button">
                         <span class="material-icons">mic</span>
                     </button>
                 </div>
-            <!-- Make sure it only displays for paid users -->
-            <div id="gold-premium-users" style="display: none;">
-                <img id="image-preview" style="display:none; max-width: 100px; border-radius: 8px;" />
-                <button id="remove-image-btn" style="display: none;">❌</button>
-                <!-- Add a file input for uploading images -->
-                <input type="file" id="image-upload" accept="image/*" style="display: none;">
-                <label for="image-upload" id="image-upload-btn">
-                <span class="material-icons">image</span>
-                </label>
-            </div >
-                <button id="send-btn">Send</button>
-                <div id="mic-waves" class="wave-container"></div>                
-        </div>
-    </div>                           
+        
+                <div class="input-actions">
+                    <!-- Only show for Gold/Premium users -->
+                    <div id="gold-premium-users" style="display: none;">
+                        <!-- Image Upload Button -->
+                        <label for="image-upload" id="image-upload-btn">
+                            <span class="material-icons">image</span>
+                        </label>
+                        <input type="file" id="image-upload" accept="image/*" style="display: none;">
+                        <!-- Image preview -->
+                        <img id="image-preview" style="display:none; max-width: 100px; border-radius: 8px;" />
+                        <button id="remove-image-btn" style="display: none;">❌</button>
+                    </div>
+                    <!-- Send Button -->
+                    <button id="send-btn" class="send-button">Send</button>
+                </div>
+            </div>
+            <!-- Add the mic-waves element here for the microphone animation -->
+            <div id="mic-waves" class="wave-container" style="display:none;">
+                <!-- You can add styles or animations inside this container for the wave effect -->
+            </div>
+        </div>                         
     </div>
+
     <!-- Resizer handle for horizontal resizing -->
-     <p style="text-align: center; color: #696767; font-size: 0.8em; margin-bottom: 8px;">
-        Drag the bar to make the chat box bigger or smaller. 👇</p>
+    <p style="text-align: center; color: #696767; font-size: 0.8em; margin-bottom: 8px;">
+        Drag the bar to make the chat box bigger or smaller. 👇
+    </p>
     <div id="resizer"></div>
     <br/>
     <img src="https://firebasestorage.googleapis.com/v0/b/kids-chatgpt.appspot.com/o/logo-alfie.webp?alt=media&token=92d7d084-ce10-486d-b00d-30c0b2642456" style="width: 120px; height: auto; text-align: center; display: flex; margin: auto;"> 
     <p style="text-align: center; color: #696767; font-size: 0.8em; margin-bottom: 8px;">
-        Alfie AI can make mistakes. Check important info.</p>
+        Alfie AI can make mistakes. Check important info.
+    </p>
     <br/>
+
+    <!-- Old behavior for textarea -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const textarea = document.getElementById('user-input');
+            
+            textarea.addEventListener('input', function() {
+                // Reset the height so it can shrink if necessary
+                this.style.height = 'auto';
+
+                // Calculate the scroll height (content height) and apply it
+                let scrollHeight = this.scrollHeight;
+
+                // Only grow the textarea up to the max height (150px in this case)
+                if (scrollHeight <= 150) {
+                    this.style.height = `${scrollHeight}px`;
+                } else {
+                    this.style.height = '150px'; // Set to max height once limit is reached
+                    this.style.overflowY = 'auto'; // Enable scrolling after max height
+                }
+            });
+        });
+    </script>
+
     <script src="scripts/chat.js" type="module"></script>
     <script src="scripts/chat2.js" type="module"></script>
 </body>
