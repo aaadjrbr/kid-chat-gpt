@@ -1068,8 +1068,6 @@ const populateVoiceList = () => {
             }
             voiceSelect.appendChild(option);
         });
-    } else {
-        console.error('Element #voiceSelect not found in the DOM.');
     }
 };
 
@@ -1094,58 +1092,17 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Function to speak the given text using default US English voice
-const speakText = (text) => {
-    // Check if speech synthesis is already speaking, cancel if so
-    if (speechSynthesis.speaking) {
-        speechSynthesis.cancel(); // Cancel any ongoing speech
+async function speakText(text) {
+    const generateSpeech = httpsCallable(functions, 'generateSpeech');
+    try {
+        const cleanedText = removeEmojis(text); // Remove emojis before sending to the API
+        const response = await generateSpeech({ text: cleanedText });
+        const audio = new Audio(response.data); // Play the returned audio URL
+        audio.play();
+    } catch (error) {
+        console.error("Error in Text-to-Speech:", error);
     }
-
-    const synth = window.speechSynthesis;
-    const utterance = new SpeechSynthesisUtterance(removeEmojis(text)); // Removing emojis before speaking
-
-    // Get the list of voices
-    let voices = synth.getVoices();
-
-    // Chrome sometimes loads voices asynchronously, so check and load voices again if not found
-    if (voices.length === 0) {
-        synth.onvoiceschanged = () => {
-            voices = synth.getVoices();
-            chooseVoice(voices, utterance);
-        };
-    } else {
-        chooseVoice(voices, utterance);
-    }
-
-    // Set language to US English
-    utterance.lang = 'en-US';
-
-    // Adjust the speech rate (make it slower for kids)
-    utterance.rate = 0.85; // Slower rate, adjust as necessary
-
-    // Speak the text only when user clicks the speaker
-    synth.speak(utterance);
-};
-
-const chooseVoice = (voices, utterance) => {
-    const preferredVoices = ['Google US English', 'Samantha', 'Karen', 'Google UK English Female'];
-
-    let selectedVoice = null;
-    for (const preferredVoice of preferredVoices) {
-        selectedVoice = voices.find(voice => voice.name === preferredVoice);
-        if (selectedVoice) break;
-    }
-
-    if (!selectedVoice) {
-        selectedVoice = voices.find(voice => voice.lang === 'en-US');
-    }
-
-    if (selectedVoice) {
-        utterance.voice = selectedVoice;
-        console.log(`Using voice: ${selectedVoice.name}`);
-    } else {
-        console.warn('No suitable voice found, using default browser voice.');
-    }
-};
+}
 
 // Function to remove emojis from the text
 function removeEmojis(text) {
@@ -1153,10 +1110,8 @@ function removeEmojis(text) {
         console.warn('Non-string passed to removeEmojis:', text);
         text = String(text); // Convert to string if necessary
     }
-
     return text.replace(/([\u2700-\u27BF]|[\uE000-\uF8FF]|\uFE00-\uFE0F|[\uD83C-\uDBFF\uDC00-\uDFFF])/g, '');
 }
-
 
 // Ensure voices are populated on page load
 document.addEventListener('DOMContentLoaded', () => {
