@@ -116,7 +116,7 @@ button, input {
 
 textarea#user-input {
     width: 100%;
-    padding-right: 20px;
+    padding-right: 45px;
     border: 1px solid #ccc;
     resize: none; /* Disable manual resize */
     overflow-y: hidden; /* Hide scrollbar initially */
@@ -176,7 +176,11 @@ input#user-input:hover {
 
 @media (max-width: 768px) {
     .mic-button {
-        margin-right: 2px;
+        margin-right: 2px !important;
+    }
+
+    textarea#user-input {
+        padding-right: 35px;
     }
 }
 
