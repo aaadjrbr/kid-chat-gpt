@@ -116,7 +116,7 @@ button, input {
 
 textarea#user-input {
     width: 100%;
-    padding-right: 45px;
+    padding-right: 75px;
     border: 1px solid #ccc;
     resize: none; /* Disable manual resize */
     overflow-y: hidden; /* Hide scrollbar initially */
@@ -177,10 +177,11 @@ input#user-input:hover {
 @media (max-width: 768px) {
     .mic-button {
         margin-right: 2px !important;
+        right: 2px !important;
     }
 
     textarea#user-input {
-        padding-right: 35px;
+        padding-right: 40px;
     }
 }
 
@@ -479,7 +480,6 @@ button#toggle-bg-controls {
 /* Style the microphone button */
 .mic-button {
     position: absolute;
-    right: -1px;
     background: none !important;
     border: none;
     cursor: pointer;
