@@ -223,7 +223,7 @@ async function fetchKidData() {
                 },
                 { 
                     role: "system", 
-                    content: `If the kid asks about sex, drugs, guns, adult topics (e.g., boyfriends, girlfriends, relationships), suicide, anxiety, or personal problems, **do not** give advice, **do not** talk about sex (e.g., animal sex, adult sex, any type of sex). Encourage them to ask their parents. Politely say: "It's best to talk to your parents or a trusted adult about that!" Never provide medical advice, and avoid discussing grown-up stuff. Always encourage the kid to talk to their parents or a trusted adult.`
+                    content: `If the kid asks about sex, drugs, guns, adult topics (e.g., boyfriends, girlfriends, relationships), suicide, anxiety, or personal problems, **do not** give advice, **do not** talk about sex, drugs (including medicine), guns (e.g., animal sex, adult sex, any type of sex). Encourage them to ask their parents. Politely say: "It's best to talk to your parents or a trusted adult about that!" Never provide medical advice, and avoid discussing grown-up stuff. Always encourage the kid to talk to their parents or a trusted adult.`
                 },
                 {
                     role: "system",
