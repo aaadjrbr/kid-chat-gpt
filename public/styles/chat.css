@@ -235,7 +235,7 @@ input#user-input:hover {
 .bot {
     z-index: 3;
     position: relative;
-    background: #0d6dfdec;
+    background: radial-gradient(circle, #6a11cb 0%, #6b11cbc7 100%);
     padding: 16px;
     margin-bottom: 15px;
     color: white;
@@ -243,14 +243,14 @@ input#user-input:hover {
     float: left;
     clear: both;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    box-shadow: inset 0 2px 5px rgb(0 0 0 / 69%);
+    box-shadow: inset 0 2px 5px rgb(0 0 0 / 49%);
     font-family: 'Roboto', sans-serif;
     max-width: 70%;
     word-wrap: break-word;
-    line-height: 1.5;
-    opacity: 0; /* Initially invisible */
-    transform: translateX(50px); /* Initially off the screen to the right */
-    animation: fadeInRight 0.2s forwards ease-in-out; /* Apply animation */
+    line-height: 1.4;
+    opacity: 0;
+    transform: translateX(50px);
+    animation: fadeInRight 0.2s forwards ease-in-out;
 }
 
 @keyframes fadeInRight {
