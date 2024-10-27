@@ -184,7 +184,6 @@ function displayTokenRefillCountdown(timeLeft) {
     refillTimerDiv.style.display = "block";
 }
 
-
 // Display badge based on user type
 function updateUserBadge(isGold, isPremium) {
     const badgeElement = document.getElementById('user-badge');
@@ -214,6 +213,9 @@ export async function getMathTutorExplanation() {
     await deductToken();
     outputContainer.innerHTML = "⏳ Loading explanation...";
 
+    // Scroll to outputContainer
+    outputContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
     // Send message to session memory
     sessionMessages.push({ role: "user", content: mathPrompt });
 
@@ -228,6 +230,71 @@ export async function getMathTutorExplanation() {
     } catch (error) {
         outputContainer.innerHTML = `Error: ${error.message}`;
     }
+}
+
+function saveAsPDF() {
+    // Clone the output container content without the "Save as PDF" button
+    const outputContent = document.getElementById('outputContainer').cloneNode(true);
+
+    // Remove the "Save as PDF" button if it exists in the cloned content
+    const saveButton = outputContent.querySelector('.action-button.secondary');
+    if (saveButton) {
+        saveButton.remove();
+    }
+
+    // Add the header with a logo
+    const header = document.createElement('div');
+    header.innerHTML = `
+        <div style="text-align: center; margin-bottom: 20px;">
+            <img src="../../images/alfie-header.jpeg" style="width: 120px; height: auto;" crossorigin="anonymous">
+        </div>
+    `;
+
+    // Prepend the header to the cloned output content
+    outputContent.insertBefore(header, outputContent.firstChild);
+
+    // Add the footer with the logo, disclaimer text, website link, and page numbering placeholder
+    const footer = document.createElement('div');
+    footer.innerHTML = `
+        <div style="text-align: center; margin-top: 20px;">
+            <img src="../../images/alfie-footer.jpeg" style="width: 120px; height: auto;" crossorigin="anonymous">
+            <p style="color: #696767; font-size: 0.8em; margin-top: 8px;">
+                This math explanation was generated using AI through Alfie AI Kids. It's important to remember that Alfie AI can make mistakes. Please check important information with your teacher.
+            </p>
+            <p style="color: #696767; font-size: 0.8em;">
+                <a href="https://alfieaikids.fun/" target="_blank" style="color: #696767; text-decoration: none;">https://alfieaikids.fun/</a>
+            </p>
+        </div>
+    `;
+
+    // Append the footer to the cloned output content
+    outputContent.appendChild(footer);
+
+    // Configure html2pdf options
+    const options = {
+        margin: 1,
+        filename: 'Alfie_Math_Explanation.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' },
+        pagebreak: { mode: ['css', 'legacy'] } // Ensure page breaks work properly
+    };
+
+    // Generate and save the PDF with page numbers
+    setTimeout(() => {
+        html2pdf().from(outputContent).set(options).toPdf().get('pdf').then((pdf) => {
+            const totalPages = pdf.internal.getNumberOfPages();
+            
+            for (let i = 1; i <= totalPages; i++) {
+                pdf.setPage(i);
+                pdf.setFontSize(10);
+                pdf.text(`Page ${i} of ${totalPages}`, pdf.internal.pageSize.width - 50, pdf.internal.pageSize.height - 10); // Adjusted positioning
+            }
+            
+            // Save the PDF after adding page numbers
+            pdf.save('AlfieAIKids_MathTutor_Explanation.pdf');
+        });
+    }, 500); // 500ms delay to allow images to load
 }
 
 // Display explanation with formatting for MathJax rendering
@@ -250,6 +317,15 @@ function displayExplanation(explanation) {
             : line;
         outputContainer.appendChild(lineElement);
     });
+
+    // Re-add the "Save as PDF" button to outputContainer
+    const saveButton = document.createElement('button');
+    saveButton.className = 'action-button secondary';
+    saveButton.textContent = 'Save as PDF 📄';
+    saveButton.onclick = saveAsPDF;
+
+    outputContainer.appendChild(saveButton);
+
     MathJax.typesetPromise([outputContainer]).catch((err) => {
         outputContainer.innerHTML += "<div class='error'>There was an issue rendering math symbols. Please try again.</div>";
     });
@@ -300,3 +376,4 @@ onAuthStateChanged(auth, async (user) => {
 window.getMathTutorExplanation = getMathTutorExplanation;
 window.requestSimplerExplanation = requestSimplerExplanation;
 window.askFollowUpQuestion = askFollowUpQuestion;
+window.saveAsPDF = saveAsPDF;

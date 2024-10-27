@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
 
     <meta name="description" content="Alfie AI for Kids provides a safe, educational AI chatbot experience for children aged 5-12, enhancing learning and growth with parental controls." />
     <meta name="keywords" content="AI for kids, safe AI learning, parental controls, educational AI, chatbots for children, technology in education" />
@@ -30,6 +31,16 @@
 
     <meta name="robots" content="index, follow" />
 </head>
+<!-- Google tag (gtag.js) --> 
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-WYMRF4LKM1"></script>
+<script>
+    window.dataLayer = window.dataLayer || []; 
+    function gtag() {dataLayer.push(arguments);} 
+    gtag('js', new Date()); 
+    gtag('config', 'G-WYMRF4LKM1');
+</script>
+
+
 <body>
     <!-- Header with Back Button and Logo -->
     <div class="header">
@@ -57,7 +68,9 @@
         </div>
         <br/>      
         <p style="color: #7b2cbf; text-align: center; font-family: 'Roboto', Arial; font-weight: 500;">
-            ⚠️ You can use other symbols from your keyboard, like " <span style="color: red;">()</span> " for grouping.<br/> Remember: " <span style="color: red;">/</span>" means divide, and " <span style="color: red;">*</span> " means multiply!</p>
+            ⚠️ You can use other symbols from your keyboard, like " <span style="color: red;">( )</span> " for grouping.<br/> 
+            Remember: " <span style="color: red;">/</span> " means divide, " <span style="color: red;">*</span> " means multiply, and " <span style="color: red;">^</span> " is for powers!
+        </p>        
         <input type="text" id="mathPrompt" placeholder="Enter a math problem...">
         <div class="math-keyboard">
             <button onclick="addToInput('1')">1</button>
@@ -89,9 +102,15 @@
     </div>
 
     <!-- Output Container -->
-    <div id="outputContainer"></div>
+    <div id="outputContainer">
+        <!-- Explanation content will be dynamically inserted here -->
+    </div>    
 
-    <p style="color: #333; text-align: center; font-size: 0.9em;">Alfie AI can make mistakes. Check important info.</p>
+    <br/><br/>
+    <img src="https://firebasestorage.googleapis.com/v0/b/kids-chatgpt.appspot.com/o/logo-alfie.webp?alt=media&token=92d7d084-ce10-486d-b00d-30c0b2642456" style="width: 120px; height: auto; text-align: center; display: flex; margin: auto;"> 
+    <p style="text-align: center; color: #696767; font-size: 0.8em; margin-bottom: 8px;">
+        Alfie AI can make mistakes. Check important info.
+    </p>
 
     <script type="module">
         import { getMathTutorExplanation, requestSimplerExplanation, askFollowUpQuestion } from './script.js';
