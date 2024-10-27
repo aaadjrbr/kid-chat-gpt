@@ -51,9 +51,28 @@ async function fetchUserTokens() {
 
     if (userProfileSnapshot.exists()) {
         const userData = userProfileSnapshot.data();
-        isPremium = userData.isPremium || false;
-        isGold = userData.isGold || false;
+        let updateNeeded = false;  // Track if we need to update the profile
 
+        // Check for isPremium and isGold; default to false if missing
+        isPremium = userData.isPremium ?? false;
+        isGold = userData.isGold ?? false;
+
+        // If isPremium or isGold fields are missing, add them with a default value of false
+        if (userData.isPremium === undefined) {
+            isPremium = false;
+            updateNeeded = true;
+        }
+        if (userData.isGold === undefined) {
+            isGold = false;
+            updateNeeded = true;
+        }
+
+        // Update Firestore if any fields were missing
+        if (updateNeeded) {
+            await updateDoc(userProfileRef, { isPremium, isGold });
+        }
+
+        // Fetch the token value
         if (userData.tokens > 0) {
             userTokens = userData.tokens;
         } else {
