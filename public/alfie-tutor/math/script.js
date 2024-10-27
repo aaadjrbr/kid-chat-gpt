@@ -216,11 +216,14 @@ export async function getMathTutorExplanation() {
     // Scroll to outputContainer
     outputContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
+    // Modify math prompt to handle square root symbol
+    const processedPrompt = mathPrompt.replace(/√(\d+)/g, 'Math.sqrt($1)'); 
+
     // Send message to session memory
-    sessionMessages.push({ role: "user", content: mathPrompt });
+    sessionMessages.push({ role: "user", content: processedPrompt });
 
     try {
-        const response = await getMathTutorResponse({ mathPrompt, messages: sessionMessages });
+        const response = await getMathTutorResponse({ mathPrompt: processedPrompt, messages: sessionMessages });
         if (response.data && response.data.message) {
             sessionMessages.push({ role: "assistant", content: response.data.message });
             displayExplanation(response.data.message);
