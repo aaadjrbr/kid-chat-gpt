@@ -1,0 +1,323 @@
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=M+PLUS+Rounded+1c:wght@400;500;700;800;900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+
+/* General Styling */
+body {
+    font-family: 'Comic Neue', 'Roboto', sans-serif;
+    /* background: linear-gradient(to bottom right, #7b2cbf, #9d4edd, #5a189a); */
+    background-color: #e3e3e9;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0;
+    padding: 20px;
+    color: #fff;
+}
+
+button, input, label {
+    font-family: 'Roboto', sans-serif;
+}
+
+/* Header and Logo */
+.header {
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+    max-width: 600px;
+}
+
+.logo {
+    margin-top: 15px;
+    width: 160px;
+    height: auto;
+}
+
+h1 {
+    font-family: 'Roboto', sans-serif;
+    color: #7b2cbf;
+    font-size: 1.4em;
+}
+
+/* Back Button */
+.back-button {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 1em;
+    color: #fff;
+    background: linear-gradient(to right, #6a0dad, #b23aee);
+    border: none;
+    border-radius: 8px;
+    padding: 8px 10px;
+    cursor: pointer;
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease;
+}
+
+.back-button:hover {
+    transform: scale(1.05);
+}
+
+/* Math Input Container */
+.math-input-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+#mathPrompt {
+    width: 80%;
+    max-width: 300px;
+    padding: 12px;
+    margin-bottom: 15px;
+    font-size: 1.2em;
+    border: none;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Math Keyboard Styling */
+.math-keyboard {
+    display: grid;
+    grid-template-columns: repeat(4, 60px);
+    gap: 7px;
+}
+
+.math-keyboard button {
+    width: 60px;
+    height: 60px;
+    font-size: 1.4em;
+    background: linear-gradient(to bottom right, #7b2cbf, #b5179e);
+    color: #fff;
+    border: 2px solid #ffffff86;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.233);
+    transition: transform 0.2s ease;
+}
+
+.math-keyboard button:hover {
+    transform: scale(1.1);
+}
+
+/* Action Buttons */
+.action-button {
+    padding: 14px 28px;
+    font-size: 1em;
+    color: #fff;
+    background: linear-gradient(to right, #480ca8, #560bad);
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.233);
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin: 15px 0;
+}
+
+.action-button.secondary {
+    background: linear-gradient(to right, #b5179e, #ff77a9);
+}
+
+.action-button:hover {
+    transform: scale(1.05);
+}
+
+/* Follow-Up Question Input */
+.follow-up-input {
+    width: 80%;
+    max-width: 300px;
+    padding: 10px;
+    font-size: 1em;
+    border: none;
+    border-radius: 8px;
+    margin: 5px 0 10px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Output Container Styling */
+#outputContainer {
+    margin-top: 20px;
+    padding: 20px;
+    width: 90%;
+    max-width: 600px;
+    background-color: #fff; /* White background for paper look */
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* Softer shadow */
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.233);
+    font-size: 1em;
+    color: #333;
+    font-family: "Open Sans", sans-serif;
+    line-height: 1.6;
+}
+
+/* Individual Step Styling */
+.step {
+    margin-bottom: 30px;
+    font-size: 1em;
+    line-height: 1.4;
+    border-left: 5px solid #7b2cbf78;
+    padding-left: 10px;
+    color: #7b2cbf;
+    font-weight: 600;
+    background: #e7e7e769;
+    /* padding: 10px; */
+}
+
+/* Header Styling for Steps */
+.step-header {
+    font-size: 1.2em;
+    color: #333; /* Darker, more readable color */
+    font-weight: 500;
+    margin-bottom: 6px;
+    line-height: 1.7;
+}
+
+/* Emphasis Styling */
+.emphasis {
+    font-weight: 700;
+    color: #ffffff;
+    /* background-color: #f9f9f9; */
+    padding: 3px;
+    border-radius: 8px;
+    background: linear-gradient(to bottom right, #7b2cbf, #b5179e);
+    margin-right: 3px;
+    font-size: 0.9em;
+}
+
+/* Important Notes or Additional Tips */
+.step .important-note {
+    background-color: #fafafa;
+    padding: 10px;
+    border-radius: 4px;
+    border-left: 4px solid #b0bec5; /* Neutral color for notes */
+    font-weight: bold;
+    color: #333;
+    margin: 10px 0;
+}
+
+/* Error Styling */
+.error {
+    color: #d9534f;
+    font-weight: bold;
+    margin-top: 10px;
+    text-align: center;
+}
+
+#token-bar-container {
+    width: 100%;
+    background-color: #b8b6b6;
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 10px 0;
+    position: relative;
+}
+
+#token-bar {
+    height: 20px;
+    background: linear-gradient(to bottom right, #7b2cbf, #b5179e);
+    width: 0%; /* This will be set dynamically */
+    transition: width 0.3s;
+}
+
+#token-count {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    color: white;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+/* User Badge Styling */
+.badge {
+    cursor: pointer;
+    width: 90px;
+    text-align: center;
+    padding: 10px 15px;
+    border-radius: 25px;
+    border: 2px solid #ffffff;
+    font-weight: bold;
+    font-size: 1em;
+    margin: 15px auto;
+    display: block;
+    color: #fff;
+    position: relative;
+    background: linear-gradient(135deg, #222, #444); /* Base gradient for depth */
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    overflow: hidden;
+    z-index: 0;
+    margin-bottom: 3px;
+    margin-top: -10px;
+}
+
+/* Add a subtle glowing effect and 3D hover animation */
+.badge:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.308);
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.233);
+    border: 2px solid #fff;
+}
+
+/* Add a shiny overlay on hover */
+.badge::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: rgba(255, 255, 255, 0.2);
+    opacity: 0.2;
+    transform: rotate(45deg);
+    pointer-events: none;
+    transition: opacity 0.3s;
+}
+.badge:hover::before {
+    opacity: 0.4;
+}
+
+/* Free Badge Style */
+.badge.free {
+    background: linear-gradient(135deg, #0d6dfd, #003c8b); /* Blue gradient */
+}
+
+/* Premium Badge Style */
+.badge.premium {
+    background: linear-gradient(135deg, #198754, #0f5937); /* Green gradient */
+    color: #fff;
+}
+
+/* Gold Member Badge Style */
+.badge.gold {
+    background: linear-gradient(135deg, #ffba00, #ff9f00); /* Bright gold */
+    box-shadow: 0 0 15px rgba(255, 195, 0, 0.8), 0 8px 15px rgba(255, 195, 0, 0.6) inset;
+}
+
+/* Special Shiny Animation for Gold Badge */
+.badge.gold::after {
+    content: "";
+    position: absolute;
+    top: -50px;
+    left: -50px;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0) 60%);
+    transform: rotate(-45deg);
+    animation: shine 3s infinite linear;
+    pointer-events: none;
+}
+
+/* Shiny effect animation */
+@keyframes shine {
+    0% {
+        transform: rotate(-45deg) translate(-200%, -200%);
+    }
+    100% {
+        transform: rotate(-45deg) translate(200%, 200%);
+    }
+}

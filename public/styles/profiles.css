@@ -11,6 +11,23 @@ body {
     color: #000000;
 }
 
+.centered-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+}
+
+.logo {
+    width: 180px;
+    height: auto;
+    transition: transform 0.3s ease; /* Smooth hover transition */
+}
+
+.logo:hover {
+    transform: scale(1.1); /* Scale image up on hover */
+}
+
 button, input {
     font-family: "Open Sans", sans-serif;
     font-weight: 500;
