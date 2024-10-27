@@ -53,7 +53,9 @@
         <div id="refill-timer" style="display: none; font-size: 1.2em; color: #ff0000; text-align: center; margin-top: 10px;">
             <!-- This will be updated by JavaScript to show the countdown timer -->
         </div>
-        <br/>        
+        <br/>      
+        <p style="color: #7b2cbf; text-align: center; font-family: 'Roboto', Arial; font-weight: 500;">
+            ⚠️ You can use other symbols from your keyboard, like " <span style="color: red;">()</span> " for grouping.<br/> Remember: " <span style="color: red;">/</span>" means divide, and " <span style="color: red;">*</span> " means multiply!</p>
         <input type="text" id="mathPrompt" placeholder="Enter a math problem...">
         <div class="math-keyboard">
             <button onclick="addToInput('1')">1</button>
@@ -81,7 +83,7 @@
         <button id="simplerExplanationButton" class="action-button secondary">Make it simpler 🔄</button>
         <br/>
         <input type="text" id="followUpQuestion" placeholder="Ask a question about the problem" class="follow-up-input">
-        <button id="askQuestionButton" class="action-button">Ask Question 🚀</button>
+        <button id="askQuestionButton" class="action-button" style="margin-top: 3px;">Send 🚀</button>
     </div>
 
     <!-- Output Container -->
