@@ -340,7 +340,7 @@ export async function requestSimplerExplanation() {
         document.getElementById('outputContainer').innerHTML = "🌟 Out of tokens! Wait for refill 😊";
         return;
     }
-    sessionMessages.push({ role: "user", content: "Could you explain it more simply in steps?" });
+    sessionMessages.push({ role: "user", content: "Could you explain it more simply in steps? Yet keeping the steps of how to achieve the result without simply telliing me the answer. The 'why' and 'how' I get to the result is important." });
     await deductToken();
     await getMathTutorExplanation();
 }
