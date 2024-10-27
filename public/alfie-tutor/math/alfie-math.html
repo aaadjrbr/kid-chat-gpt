@@ -42,18 +42,18 @@
 
 
 <body>
+    <button onclick="window.history.back()" class="back-button">
+        <span class="material-icons">arrow_back</span> Back
+    </button>
     <!-- Header with Back Button and Logo -->
     <div class="header">
-        <button onclick="window.history.back()" class="back-button">
-            <span class="material-icons">arrow_back</span> Back
-        </button>
         <br/>
         <!-- Token Bar Display -->
         <div id="token-bar-container">
             <div id="token-bar"></div>
             <span id="token-count">0 Tokens</span>
         </div>
-        <h1 style="margin-bottom: -10px;">🎓🍎 Your tutor:</h1>
+        <h1 style="margin-bottom: -10px;">🎓🍎 Your Math Tutor:</h1>
         <img src="https://firebasestorage.googleapis.com/v0/b/kids-chatgpt.appspot.com/o/logo-alfie.webp?alt=media&token=92d7d084-ce10-486d-b00d-30c0b2642456" alt="Math Tutor Logo" class="logo">
         <br/><br/>
         <div id="user-badge-container">
@@ -94,13 +94,14 @@
 
     <!-- Explanation and Follow-Up Actions -->
     <button id="getExplanationButton" class="action-button">Get Explanation 💡✨</button>
+    <br/>
     <div class="follow-up-container">
-        <button id="simplerExplanationButton" class="action-button secondary">Make it simpler 🔄</button>
-        <br/>
+        <p style="color: #333; margin-bottom: 5px; text-align: center;">Still not sure? Ask me for more details!</p>
         <input type="text" id="followUpQuestion" placeholder="Ask a question about the problem" class="follow-up-input">
-        <button id="askQuestionButton" class="action-button" style="margin-top: 3px;">Send 🚀</button>
+        <button id="askQuestionButton" class="action-button" style="margin-top: 3px; font-size: 1em; padding: 10px;">Send 🚀</button>
     </div>
 
+    <button id="simplerExplanationButton" class="action-button secondary">Make it simpler 🔄</button>
     <!-- Output Container -->
     <div id="outputContainer">
         <!-- Explanation content will be dynamically inserted here -->
