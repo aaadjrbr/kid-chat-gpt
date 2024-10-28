@@ -778,53 +778,58 @@ async function checkTokenRefillTime() {
 // Function to handle when tokens reach zero
 let refillTime = null; // Declared globally for the countdown
 
-async function startTokenRefillTimer() {
-    const userProfileRef = doc(db, `userProfiles/${parentId}`);
-    const userProfileSnapshot = await getDoc(userProfileRef);
-    const userProfile = userProfileSnapshot.data();
+// Why startTokenRefillTimer Isn’t Used
+// The startTokenRefillTimer function would actively count down by checking every second.
+// In contrast, checkTokenRefillTime only needs to verify once per user interaction if the token refill time has passed.
+// This approach is more efficient because it avoids constantly running a timer, instead using Firestore as the single source for timestamp-based refills.
 
-    const goldTokenLimit = 20;
-    const premiumTokenLimit = 30;
-    const freeTokenLimit = 5;
-
-    if (!userProfile.tokensDepletedTimestamp) {
-        await updateDoc(userProfileRef, {
-            tokensDepletedTimestamp: serverTimestamp() // Store depletion time using Firebase server time
-        });
-        console.log('Tokens depleted, timestamp saved');
-        
-        refillTime = Date.now() + 60 * 60 * 1000; // 1 hour for refills for all users
-    } else {
-        const tokensDepletedTimestamp = userProfile.tokensDepletedTimestamp.toMillis(); // Convert to milliseconds
-        refillTime = tokensDepletedTimestamp + 60 * 60 * 1000; // Refill tokens after 1 hour
-    }
-
-    const countdownInterval = setInterval(() => {
-        const timeLeft = refillTime - Date.now();
-        if (timeLeft <= 0) {
-            // Refill tokens based on user type
-            if (isGold) {
-                userTokens = goldTokenLimit; // Gold members get 20 tokens
-            } else if (isPremium) {
-                userTokens = premiumTokenLimit;
-            } else {
-                userTokens = freeTokenLimit;
-            }
-
-            clearInterval(countdownInterval);
-            refillTime = null;
-            updateTokenBar(); // Update the front-end bar
-
-            // Reset tokens and timestamp in Firebase
-            updateDoc(userProfileRef, { tokens: userTokens, tokensDepletedTimestamp: null });
-            console.log("Tokens refilled.");
-        } else {
-            const minutesLeft = Math.floor(timeLeft / 60000);
-            const secondsLeft = Math.floor((timeLeft % 60000) / 1000);
-            console.log(`Tokens will refill in ${minutesLeft} minutes and ${secondsLeft} seconds`);
-        }
-    }, 1000); // Update the countdown every second
-}
+//async function startTokenRefillTimer() {
+//    const userProfileRef = doc(db, `userProfiles/${parentId}`);
+//    const userProfileSnapshot = await getDoc(userProfileRef);
+//    const userProfile = userProfileSnapshot.data();
+//
+//    const goldTokenLimit = 20;
+//    const premiumTokenLimit = 30;
+//    const freeTokenLimit = 5;
+//
+//    if (!userProfile.tokensDepletedTimestamp) {
+//        await updateDoc(userProfileRef, {
+//            tokensDepletedTimestamp: serverTimestamp() // Store depletion time using Firebase server time
+//       });
+//        console.log('Tokens depleted, timestamp saved');
+//        
+//        refillTime = Date.now() + 60 * 60 * 1000; // 1 hour for refills for all users
+//    } else {
+//        const tokensDepletedTimestamp = userProfile.tokensDepletedTimestamp.toMillis(); // Convert to milliseconds
+//        refillTime = tokensDepletedTimestamp + 60 * 60 * 1000; // Refill tokens after 1 hour
+//    }
+//
+//    const countdownInterval = setInterval(() => {
+//        const timeLeft = refillTime - Date.now();
+//        if (timeLeft <= 0) {
+//            // Refill tokens based on user type
+//            if (isGold) {
+//                userTokens = goldTokenLimit; // Gold members get 20 tokens
+//            } else if (isPremium) {
+//                userTokens = premiumTokenLimit;
+//            } else {
+//                userTokens = freeTokenLimit;
+//            }
+//
+//            clearInterval(countdownInterval);
+//            refillTime = null;
+//            updateTokenBar(); // Update the front-end bar
+//
+//            // Reset tokens and timestamp in Firebase
+//            updateDoc(userProfileRef, { tokens: userTokens, tokensDepletedTimestamp: null });
+//            console.log("Tokens refilled.");
+//        } else {
+//            const minutesLeft = Math.floor(timeLeft / 60000);
+//            const secondsLeft = Math.floor((timeLeft % 60000) / 1000);
+//            console.log(`Tokens will refill in ${minutesLeft} minutes and ${secondsLeft} seconds`);
+//        }
+//    }, 1000); // Update the countdown every second
+//}
 
 // Function to display the fixed refill time
 function getNextResetTime() {
