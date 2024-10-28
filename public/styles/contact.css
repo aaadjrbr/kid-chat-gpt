@@ -1,0 +1,122 @@
+/* Import Google Font */
+@import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=M+PLUS+Rounded+1c:wght@400;500;700;800;900&display=swap');
+
+
+/* main.css */
+body {
+    font-family: 'Roboto', sans-serif;
+    text-align: center;
+    background-color: #e3e3e9; /* Light greyish background for a cleaner look */
+    margin: 0;
+    padding: 0;
+}
+
+input, button {
+    font-family: 'Roboto', sans-serif; 
+}
+
+h1 {
+    margin-top: 50px;
+    color: #6a11cb;
+    font-family: "Fredoka", sans-serif;
+    font-weight: 700;
+    font-size: 2.2em;
+}
+
+h2, p {
+    font-family: "Fredoka", sans-serif;
+}
+
+.contact-info p {
+    font-size: 1.2em;
+}
+
+.contact-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+.contact-info {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+h2 a {
+    font-size: 1.1em;
+    margin: 0 10px;
+    color: #ff7f07;
+    transition: color 0.3s ease;
+    text-decoration: none;
+}
+
+h2 a:hover {
+    color: #11afcb;
+}
+
+a {
+    font-size: 0.9em;
+    margin: 0 10px;
+    color: #11afcb;
+    transition: color 0.3s ease; 
+}
+
+a:hover {
+    color: #ffc107;
+}
+
+.social-icons a {
+    font-size: 1.8em;
+    margin: 0 10px;
+    color: #6a11cb;
+    transition: color 0.3s ease;
+}
+
+.social-icons a:hover {
+    color: #ffc107;
+}
+
+/* Google Form button styling */
+.google-form-link button {
+    cursor: pointer;
+    font-family: "Fredoka", sans-serif;
+    font-weight: 600;
+    color: #ffffff;
+    background: #0d6dfd;
+    border: 3px solid #0d6dfd;
+    padding: 15px;
+    font-size: 1.1em;
+    border-radius: 35px;
+    transition: background-color 0.3s;
+}
+
+.google-form-link button:hover {
+    background-image: linear-gradient(to right, #ffffff57, #ffffff6e);
+    border: 3px solid #0d6efd;
+    transform: scale(1.05);
+    transition: background-color 0.3s;
+}
+
+/* Footer Styles */
+footer {
+    background-color: #212529;
+    padding: 15px;
+    color: #ffffff;
+}
+
+footer p {
+    font-family: "Fredoka", sans-serif;
+    font-size: 0.9em;
+}
+
+/* Responsive Styles */
+@media (max-width: 600px) {
+    .contact-container {
+        width: 80%;
+    }
+}
