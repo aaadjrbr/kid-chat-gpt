@@ -28,8 +28,10 @@ button, input, label {
 .logo {
     margin: 15px auto; /* Centers horizontally */
     display: block; /* Ensures the logo behaves as a block element */
-    width: 160px;
+    width: 180px;
     height: auto;
+    margin-bottom: -20px;
+    margin-top: -10px;
 }
 
 h1 {
