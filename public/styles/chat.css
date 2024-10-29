@@ -229,6 +229,22 @@ input#user-input:hover {
     font-family: 'Roboto', sans-serif;
     max-width: 70%; /* Limits the width for a better, contained look */
     word-wrap: break-word; /* Ensures text wraps within the balloon */
+    margin-top: 10px;
+}
+
+/* Pseudo-element for the user's profile image */
+.user::before {
+    content: "";
+    position: absolute;
+    top: -17px;
+    right: -9px;
+    width: 30px;
+    height: 30px;
+    background-size: cover;
+    background-position: center;
+    background-image: var(--user-image-url);
+    border-radius: 50%;
+    box-shadow: 0 0 8px rgba(107, 17, 203, 0.4), 0 0 12px rgba(107, 17, 203, 0.3);
 }
 
 /* Bot Message */

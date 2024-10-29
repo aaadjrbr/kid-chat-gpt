@@ -579,6 +579,59 @@ function hideTypingIndicator() {
     }, 300); // Matches the fade-out duration (0.3s)
 }
 
+async function setUserImageFromDatabase(kidId) {
+    onAuthStateChanged(auth, async (user) => {
+        if (user) {
+            const parentId = user.uid;
+
+            if (!parentId || !kidId) {
+                console.error("Missing parentId or kidId");
+                return;
+            }
+
+            try {
+                // Fetch the kid's document from Firestore using dynamic IDs
+                const kidDocRef = doc(db, `parents/${parentId}/kids/${kidId}`);
+                const kidDoc = await getDoc(kidDocRef);
+
+                if (kidDoc.exists()) {
+                    const imageFileName = kidDoc.data().image;
+                    const imageUrl = `url('/public/images/${imageFileName}')`;
+
+                    // Set up a Mutation Observer to wait for the .user element
+                    const observer = new MutationObserver((mutations, obs) => {
+                        const userElement = document.querySelector('.user');
+                        if (userElement) {
+                            // Set the background image using the retrieved filename
+                            userElement.style.setProperty('--user-image-url', imageUrl);
+                            obs.disconnect(); // Stop observing once .user is found and styled
+                        }
+                    });
+
+                    // Observe changes in the DOM to detect the addition of .user
+                    observer.observe(document.body, {
+                        childList: true,
+                        subtree: true
+                    });
+                } else {
+                    console.log("Kid document not found.");
+                }
+            } catch (error) {
+                console.error("Error fetching user image:", error);
+            }
+        } else {
+            console.error("User is not authenticated.");
+        }
+    });
+}
+
+// Extract kidId from URL and call the function
+document.addEventListener("DOMContentLoaded", () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const kidId = urlParams.get('kidId');
+    setUserImageFromDatabase(kidId);
+});
+
 // Modified sendMessage function to handle token deductions and image sending
 async function sendMessage() {
     const message = userInput.value.trim(); // Get user input text
