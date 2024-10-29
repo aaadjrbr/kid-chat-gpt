@@ -229,7 +229,7 @@ input#user-input:hover {
     font-family: 'Roboto', sans-serif;
     max-width: 70%; /* Limits the width for a better, contained look */
     word-wrap: break-word; /* Ensures text wraps within the balloon */
-    margin-top: 10px;
+    margin-top: 15px;
     margin-right: 5px;
     animation: fadeIn 0.3s forwards ease-in-out;
 }
@@ -238,7 +238,7 @@ input#user-input:hover {
 .user::before {
     content: "";
     position: absolute;
-    top: -17px;
+    top: -19px;
     right: -13px;
     width: 30px;
     height: 30px;
