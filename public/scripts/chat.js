@@ -590,7 +590,6 @@ async function setUserImageFromDatabase(kidId) {
             }
 
             try {
-                // Fetch the kid's document from Firestore using dynamic IDs
                 const kidDocRef = doc(db, `parents/${parentId}/kids/${kidId}`);
                 const kidDoc = await getDoc(kidDocRef);
 
@@ -598,21 +597,8 @@ async function setUserImageFromDatabase(kidId) {
                     const imageFileName = kidDoc.data().image;
                     const imageUrl = `url('/public/images/${imageFileName}')`;
 
-                    // Set up a Mutation Observer to wait for the .user element
-                    const observer = new MutationObserver((mutations, obs) => {
-                        const userElement = document.querySelector('.user');
-                        if (userElement) {
-                            // Set the background image using the retrieved filename
-                            userElement.style.setProperty('--user-image-url', imageUrl);
-                            obs.disconnect(); // Stop observing once .user is found and styled
-                        }
-                    });
-
-                    // Observe changes in the DOM to detect the addition of .user
-                    observer.observe(document.body, {
-                        childList: true,
-                        subtree: true
-                    });
+                    // Set CSS variable on the document's root for global access
+                    document.documentElement.style.setProperty('--user-image-url', imageUrl);
                 } else {
                     console.log("Kid document not found.");
                 }
@@ -625,7 +611,7 @@ async function setUserImageFromDatabase(kidId) {
     });
 }
 
-// Extract kidId from URL and call the function
+// Call this function once to set the image globally
 document.addEventListener("DOMContentLoaded", () => {
     const urlParams = new URLSearchParams(window.location.search);
     const kidId = urlParams.get('kidId');
