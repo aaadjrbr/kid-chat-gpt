@@ -246,6 +246,7 @@ input#user-input:hover {
     background-position: center;
     background-image: var(--user-image-url);
     border-radius: 50%;
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.329);
     box-shadow: 0 0 8px rgba(107, 17, 203, 0.4), 0 0 12px rgba(107, 17, 203, 0.3);
     animation: fadeIn 0.3s forwards ease-in-out;
 }
@@ -287,6 +288,7 @@ input#user-input:hover {
     color: white;
     border-radius: 50%;
     margin-left: 5px;
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.329);
     box-shadow: 0 0 8px rgba(107, 17, 203, 0.4), 0 0 12px rgba(107, 17, 203, 0.3);
     animation: fadeInRight 0.2s forwards ease-in-out;
 }
