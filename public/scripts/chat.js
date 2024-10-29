@@ -595,7 +595,7 @@ async function setUserImageFromDatabase(kidId) {
 
                 if (kidDoc.exists()) {
                     const imageFileName = kidDoc.data().image;
-                    const imageUrl = `url('/public/images/${imageFileName}')`;
+                    const imageUrl = `url('/images/${imageFileName}')`;
 
                     // Set CSS variable on the document's root for global access
                     document.documentElement.style.setProperty('--user-image-url', imageUrl);
