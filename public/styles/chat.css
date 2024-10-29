@@ -219,7 +219,7 @@ input#user-input:hover {
     position: relative;
     background: linear-gradient(135deg, #34b8d1, #3616e5);
     padding: 12px;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
     color: white; /* Text color stands out on the gradient background */
     border-radius: 20px 20px 0 20px; /* Smooth, rounded edges */
     float: right;
@@ -336,8 +336,8 @@ input#user-input:hover {
 
 .dot {
     display: inline-block;
-    width: 10px;
-    height: 10px;
+    width: 8px;
+    height: 8px;
     margin: 0 3px;
     background-color: #6b11cb;
     border-radius: 50%;
