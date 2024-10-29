@@ -256,9 +256,18 @@ input#user-input:hover {
 .bot::before {
     content: "🐶";
     position: absolute;
-    bottom: -10px;
-    right: -10px;
-    font-size: 24px;
+    top: -21px;
+    left: -10px;
+    font-size: 22px;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle, #26ffff, #aecb11);
+    color: white;
+    border-radius: 50%;
+    box-shadow: 0 0 8px rgba(107, 17, 203, 0.4), 0 0 12px rgba(107, 17, 203, 0.3);
 }
 
 @keyframes fadeInRight {
@@ -309,6 +318,50 @@ input#user-input:hover {
 .bot-message-content {
     margin-bottom: 10px;
 }
+
+.fade-in {
+    display: block;
+    animation: fadeIn 0.3s forwards ease-in-out;
+}
+
+.fade-out {
+    animation: fadeOut 0.3s forwards ease-in-out;
+}
+
+.typing-indicator {
+    display: none;
+    background: linear-gradient(135deg, rgba(174, 174, 174, 0.4), rgba(200, 215, 225, 0.6));
+    padding-left: 15px;
+}
+
+.dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    margin: 0 3px;
+    background-color: #6b11cb;
+    border-radius: 50%;
+    animation: blink 1.2s infinite both;
+    box-shadow: 0 0 8px rgba(107, 17, 203, 0.8), 0 0 12px rgba(107, 17, 203, 0.5);
+}
+
+.dot:nth-child(2) {
+    background-color: #e91e63;
+    box-shadow: 0 0 8px rgba(233, 30, 99, 0.8), 0 0 12px rgba(233, 30, 99, 0.5);
+    animation-delay: 0.2s;
+}
+
+.dot:nth-child(3) {
+    background-color: #4caf50;
+    box-shadow: 0 0 8px rgba(76, 175, 80, 0.8), 0 0 12px rgba(76, 175, 80, 0.5);
+    animation-delay: 0.4s;
+}
+
+@keyframes blink {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.4); opacity: 0.8; }
+}
+
 
 /* Style for bold text */
 b {

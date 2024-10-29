@@ -561,6 +561,24 @@ function clearImagePreview() {
     userInput.disabled = false; // Re-enable the input field again
 }
 
+function showTypingIndicator() {
+    const typingIndicator = document.getElementById('typing-indicator');
+    typingIndicator.classList.remove('fade-out');
+    typingIndicator.classList.add('fade-in');
+    typingIndicator.style.display = 'block';
+}
+
+function hideTypingIndicator() {
+    const typingIndicator = document.getElementById('typing-indicator');
+    typingIndicator.classList.remove('fade-in');
+    typingIndicator.classList.add('fade-out');
+
+    // Delay setting display: none until after fade-out finishes
+    setTimeout(() => {
+        typingIndicator.style.display = 'none';
+    }, 300); // Matches the fade-out duration (0.3s)
+}
+
 // Modified sendMessage function to handle token deductions and image sending
 async function sendMessage() {
     const message = userInput.value.trim(); // Get user input text
@@ -668,8 +686,11 @@ async function sendMessage() {
             // Display typing indicator for bot response
             //displayTypingMessage("Thinking...", 'bot');
 
+            showTypingIndicator(); // Show typing indicator while bot processes
+
             // Fetch bot response
             const response = await getChatResponse();
+            hideTypingIndicator(); // Hide typing indicator when response is ready
             let botResponse = typeof response === 'object' && response.message ? response.message : response;
 
             // Ensure that the response is always a string
