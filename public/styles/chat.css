@@ -275,8 +275,8 @@ input#user-input:hover {
 .bot::before {
     content: "🐶";
     position: absolute;
-    top: -21px;
-    left: -10px;
+    top: -23px;
+    left: -13px;
     font-size: 22px;
     width: 35px;
     height: 35px;
@@ -351,8 +351,10 @@ input#user-input:hover {
 
 .typing-indicator {
     display: none;
-    background: linear-gradient(135deg, rgba(174, 174, 174, 0.4), rgba(200, 215, 225, 0.6));
-    padding-left: 15px;
+    /* background: linear-gradient(135deg, rgba(174, 174, 174, 0.4), rgba(200, 215, 225, 0.6)); */
+    padding-left: 10px;
+    margin-bottom: 7px;
+    margin-top: -5px;
 }
 
 .dot {
