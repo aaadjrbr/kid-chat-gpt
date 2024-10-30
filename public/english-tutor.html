@@ -20,11 +20,13 @@
                 <span id="input-mic-icon" class="material-icons" onclick="startSpeechRecognition()">mic</span>
             </div>            
             <button onclick="callEnglishTutor()">Get answer</button><br/><br/>
+        <div class="desktop-only">
             <span id="listening-message" class="listening">Listening…</span>
             <br/>
             <button id="record-button" onclick="startRecording()">🎤 Record</button>
             <button id="stop-button" onclick="stopRecording()" disabled>⏹️ Stop</button>
             <br/>
+        </div>
             <div id="english-output" class="output"></div>
 
             <!-- Play buttons for each type of feedback -->

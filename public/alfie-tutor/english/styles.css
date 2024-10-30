@@ -231,3 +231,10 @@ button:hover {
     0%, 100% { box-shadow: 0 0 8px rgba(255, 107, 129, 0.6); }
     50% { box-shadow: 0 0 12px rgba(255, 107, 129, 1); }
 }
+
+/* Hides content on screens smaller than 1024px (phones and tablets) */
+@media only screen and (max-width: 1024px) {
+    .desktop-only {
+        display: none;
+    }
+}
