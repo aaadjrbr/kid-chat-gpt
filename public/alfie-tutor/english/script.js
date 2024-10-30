@@ -101,9 +101,17 @@ function stopRecording() {
     isProcessing = true; // Set processing flag
 
     mediaRecorder.onstop = async () => {
-        const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
-        const audioBase64 = await convertBlobToBase64(audioBlob);
+        let audioBlob;
+        
+        // Check MIME type compatibility based on available chunks
+        if (audioChunks.length > 0 && audioChunks[0].type === "audio/webm") {
+            audioBlob = new Blob(audioChunks, { type: "audio/webm" });
+        } else {
+            // Fallback to a general audio format if `audio/webm` is unavailable
+            audioBlob = new Blob(audioChunks, { type: "audio/mp4" });
+        }
 
+        const audioBase64 = await convertBlobToBase64(audioBlob);
         const wordInput = document.getElementById("word-input").value;
         const whisperTranscription = httpsCallable(functions, 'generatePronunciationPractice');
 
