@@ -78,17 +78,22 @@ function startRecording() {
     showCountdown(() => {
         audioChunks = [];
         navigator.mediaDevices.getUserMedia({ audio: true })
-            .then(stream => {
-                mediaRecorder = new MediaRecorder(stream);
-                mediaRecorder.start();
-                mediaRecorder.ondataavailable = event => audioChunks.push(event.data);
-            })
-            .catch(error => {
-                console.error("Error accessing microphone:", error);
-                alert("Microphone access is required for recording.");
-                resetButtons();
-            });
+        .then(stream => {
+            mediaRecorder = new MediaRecorder(stream, { mimeType: getMimeType() });
+            mediaRecorder.start();
+            mediaRecorder.ondataavailable = event => audioChunks.push(event.data);
+        })
+        .catch(error => {
+            console.error("Error accessing microphone:", error);
+            alert("Microphone access is required for recording.");
+            resetButtons();
+        });
     });
+}
+
+function getMimeType() {
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    return isIOS ? "audio/mp4" : "audio/webm";
 }
 
 // Function to stop recording and send audio to Whisper with feedback messages
