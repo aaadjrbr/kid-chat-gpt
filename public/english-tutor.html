@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alfie - English Tutor</title>
+    <link rel="stylesheet" href="alfie-tutor/english/styles.css">
+    <!-- Google Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h1>Alfie - Interactive English Tutor</h1>
+
+        <!-- English Tutor Section -->
+        <div class="tutor-section">
+            <h2>Ask Your English Tutor</h2>
+            <div class="input-wrapper">
+                <input id="word-input" type="text" placeholder="Enter a word or phrase...">
+                <span id="input-mic-icon" class="material-icons" onclick="startSpeechRecognition()">mic</span>
+            </div>            
+            <button onclick="callEnglishTutor()">Get answer</button><br/><br/>
+            <span id="listening-message" class="listening">Listening…</span>
+            <br/>
+            <button id="record-button" onclick="startRecording()">🎤 Record</button>
+            <button id="stop-button" onclick="stopRecording()" disabled>⏹️ Stop</button>
+            <br/>
+            <div id="english-output" class="output"></div>
+
+            <!-- Play buttons for each type of feedback -->
+            <button id="play-tutor-feedback" class="hidden" onclick="playTutorFeedback()">
+                <span class="material-icons">volume_up</span> Listen to Tutor Feedback
+            </button>
+            <button id="play-pronunciation-feedback" class="hidden" onclick="playPronunciationFeedback()">
+                <span class="material-icons">volume_up</span> Listen to Your Pronunciation Feedback
+            </button>
+        </div>
+    </div>
+
+    <script type="module" src="scripts/firebase-config.js"></script>
+    <script type="module" src="alfie-tutor/english/script.js"></script>
+</body>
+</html>

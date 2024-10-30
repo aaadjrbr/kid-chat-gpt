@@ -1,0 +1,233 @@
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;700&display=swap');
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Baloo 2', cursive, sans-serif;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #a29bfe, #6c5ce7, #a29bfe);
+    background-size: 400% 400%;
+    animation: gradientBgMove 15s ease infinite;
+}
+
+/* Gradient animation for background */
+@keyframes gradientBgMove {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+.container {
+    max-width: 90%;
+    width: 100%;
+    padding: 20px;
+    background-color: #f8f7ff;
+    border-radius: 12px;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    color: #4e4c5e;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+h1 {
+    color: #6c5ce7;
+    font-size: 1.8em;
+    font-weight: 700;
+}
+
+.tutor-section {
+    margin-top: 20px;
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    font-size: 1.1em;
+    border-radius: 8px;
+    border: 2px solid #dfe6e9;
+    background-color: #ffffff;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+input:focus {
+    border-color: #6c5ce7;
+}
+
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+}
+
+/* Cool button style */
+button {
+    margin-top: 12px;
+    padding: 12px 25px;
+    font-size: 1em;
+    font-weight: 600;
+    color: #fff;
+    background: linear-gradient(45deg, #6c5ce7, #a29bfe);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 8px rgba(108, 92, 231, 0.3);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+button:hover {
+    background: linear-gradient(45deg, #a29bfe, #6c5ce7);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(108, 92, 231, 0.5);
+}
+
+.output {
+    margin-top: 20px;
+    font-size: 1em;
+    color: #333;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15), 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #fef6ff;
+    border: 2px dashed #dfe6e9;
+    width: 90%;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: left;
+    background-image: repeating-linear-gradient(
+        to bottom,
+        #fef6ff,
+        #fef6ff 28px,
+        #f3e7fd 29px,
+        #f3e7fd 30px
+    );
+    position: relative;
+}
+
+/* Folded corner effect */
+.output::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 20px;
+    height: 20px;
+    background-color: #f0f0f0;
+    clip-path: polygon(0 0, 100% 0, 0 100%);
+}
+
+/* Optional: Add 'lined paper' effect */
+.output::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 5px;
+    width: 2px;
+    background-color: #d3d3d3;
+}
+
+.hidden {
+    display: none;
+}
+
+/* Listening animation */
+.listening {
+    display: none;
+    color: #6c5ce7;
+    font-size: 1em;
+    margin-top: 10px;
+    font-weight: bold;
+    text-align: center;
+    animation: pulse 1s infinite ease-in-out;
+}
+
+/* Add a pulsing effect */
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        color: #007bff;
+        text-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    }
+    50% {
+        transform: scale(1.1);
+        color: #0056b3;
+        text-shadow: 0 0 8px rgba(0, 86, 179, 0.7);
+    }
+    100% {
+        transform: scale(1);
+        color: #007bff;
+        text-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    }
+}
+
+.material-icons {
+    vertical-align: middle;
+    font-size: 1.2em;
+    margin-right: 5px;
+}
+
+/* Style for audio play button specifically */
+#play-audio {
+    background-color: #28a745;
+    margin-top: 15px;
+}
+
+#play-audio:hover {
+    background-color: #218838;
+}
+
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+#word-input {
+    width: 100%;
+    padding-right: 40px; /* Space for the mic icon */
+}
+
+#input-mic-icon {
+    position: absolute;
+    right: 12px;
+    color: #888;
+    cursor: pointer;
+    font-size: 1.4em;
+    transition: color 0.3s;
+}
+
+#input-mic-icon:hover {
+    color: #ff4d4d;
+}
+
+/* Recording input style */
+#word-input.recording {
+    background: linear-gradient(135deg, #ff6b81, #f093fb, #ff6b81);
+    background-size: 200% 200%;
+    border: 2px solid #ff6b81;
+    animation: gradientMove 2s ease infinite, glowPulse 1.5s ease-in-out infinite;
+    color: #fff;
+}
+
+@keyframes gradientMove {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+@keyframes glowPulse {
+    0%, 100% { box-shadow: 0 0 8px rgba(255, 107, 129, 0.6); }
+    50% { box-shadow: 0 0 12px rgba(255, 107, 129, 1); }
+}
