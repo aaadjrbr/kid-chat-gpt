@@ -12,16 +12,22 @@ async function callEnglishTutor() {
     const wordInput = document.getElementById("word-input").value;
     const englishOutput = document.getElementById("english-output");
     const playTutorFeedbackButton = document.getElementById("play-tutor-feedback");
-    
+    const playPronunciationFeedbackButton = document.getElementById("play-pronunciation-feedback");
+
+    // Reset the output and buttons visibility
     englishOutput.textContent = "⏳ Loading...";
     playTutorFeedbackButton.classList.add("hidden");
+    playPronunciationFeedbackButton.classList.add("hidden");
+    pronunciationFeedbackAudioUrl = ''; // Clear any previous pronunciation audio
 
     const getEnglishTutorResponse = httpsCallable(functions, 'getEnglishTutorResponse');
     try {
         const response = await getEnglishTutorResponse({ wordPrompt: wordInput });
         
+        // Update output with response message
         englishOutput.textContent = response.data.message;
 
+        // Select function and audio source based on grammar/pronunciation feedback
         const generateSpeechFunction = response.data.isGrammarFeedback 
             ? httpsCallable(functions, 'generateSlowSpeech') 
             : httpsCallable(functions, 'generatePronunciationFeedback');
@@ -29,13 +35,16 @@ async function callEnglishTutor() {
         const audioResponse = await generateSpeechFunction({ text: response.data.plainTextSyllables });
         tutorFeedbackAudioUrl = audioResponse.data;
 
+        // Show only the appropriate feedback button
         playTutorFeedbackButton.classList.remove("hidden");
+
     } catch (error) {
         console.error("Error calling English Tutor:", error);
         englishOutput.textContent = "Error: Could not fetch syllable breakdown.";
     }
 }
 
+// Speech recognition setup
 let recognition;
 if ('webkitSpeechRecognition' in window) {
     recognition = new webkitSpeechRecognition();
@@ -151,7 +160,9 @@ function stopRecording() {
             const pronunciationAudioResponse = await generatePronunciationFeedback({ text: wordInput });
             pronunciationFeedbackAudioUrl = pronunciationAudioResponse.data;
 
-            document.getElementById("play-pronunciation-feedback").classList.remove("hidden");
+            document.getElementById("play-pronunciation-feedback").classList.remove("hidden"); // Show pronunciation feedback play button
+            document.getElementById("play-tutor-feedback").classList.add("hidden"); // Hide tutor feedback button
+
         } catch (error) {
             console.error("Error transcribing audio:", error);
             document.getElementById("english-output").textContent = "Error: Could not transcribe audio.";
