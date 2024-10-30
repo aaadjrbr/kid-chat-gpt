@@ -7,6 +7,7 @@ let tutorFeedbackAudioUrl = '';
 let pronunciationFeedbackAudioUrl = '';
 let isPlaying = false; // Flag to check if audio is playing
 let isProcessing = false; // Flag to check if processing is in progress
+let mediaStream; // Define a global variable for the stream
 
 // Function to call the English Tutor for syllable breakdown and pronunciation
 async function callEnglishTutor() {
@@ -62,7 +63,7 @@ function showCountdown(callback) {
 
 // Function to start recording with countdown and visual feedback
 function startRecording() {
-    if (isProcessing) return; // Prevent actions if processing
+    if (isProcessing) return;
 
     const wordInput = document.getElementById("word-input").value;
     if (!wordInput) {
@@ -78,16 +79,17 @@ function startRecording() {
     showCountdown(() => {
         audioChunks = [];
         navigator.mediaDevices.getUserMedia({ audio: true })
-        .then(stream => {
-            mediaRecorder = new MediaRecorder(stream, { mimeType: getMimeType() });
-            mediaRecorder.start();
-            mediaRecorder.ondataavailable = event => audioChunks.push(event.data);
-        })
-        .catch(error => {
-            console.error("Error accessing microphone:", error);
-            alert("Microphone access is required for recording.");
-            resetButtons();
-        });
+            .then(stream => {
+                mediaStream = stream; // Store the stream
+                mediaRecorder = new MediaRecorder(stream, { mimeType: getMimeType() });
+                mediaRecorder.start();
+                mediaRecorder.ondataavailable = event => audioChunks.push(event.data);
+            })
+            .catch(error => {
+                console.error("Error accessing microphone:", error);
+                alert("Microphone access is required for recording.");
+                resetButtons();
+            });
     });
 }
 
@@ -96,25 +98,22 @@ function getMimeType() {
     return isIOS ? "audio/mp4" : "audio/webm";
 }
 
-// Function to stop recording and send audio to Whisper with feedback messages
+// Function to stop recording and release microphone
 function stopRecording() {
-    if (!mediaRecorder) return; // If no recording in progress, exit
+    if (!mediaRecorder) return;
 
     mediaRecorder.stop();
     resetButtons();
     document.getElementById("english-output").textContent = "🎤 Checking speech...";
-    isProcessing = true; // Set processing flag
+    isProcessing = true;
 
     mediaRecorder.onstop = async () => {
-        let audioBlob;
-        
-        // Check MIME type compatibility based on available chunks
-        if (audioChunks.length > 0 && audioChunks[0].type === "audio/webm") {
-            audioBlob = new Blob(audioChunks, { type: "audio/webm" });
-        } else {
-            // Fallback to a general audio format if `audio/webm` is unavailable
-            audioBlob = new Blob(audioChunks, { type: "audio/mp4" });
-        }
+        // Stop all tracks to release the microphone
+        mediaStream.getTracks().forEach(track => track.stop());
+
+        let audioBlob = audioChunks.length > 0 && audioChunks[0].type === "audio/webm"
+            ? new Blob(audioChunks, { type: "audio/webm" })
+            : new Blob(audioChunks, { type: "audio/mp4" });
 
         const audioBase64 = await convertBlobToBase64(audioBlob);
         const wordInput = document.getElementById("word-input").value;
@@ -134,7 +133,7 @@ function stopRecording() {
             console.error("Error transcribing audio:", error);
             document.getElementById("english-output").textContent = "Error: Could not transcribe audio.";
         } finally {
-            isProcessing = false; // End processing state
+            isProcessing = false;
         }
     };
 }
