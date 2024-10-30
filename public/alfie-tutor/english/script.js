@@ -172,10 +172,24 @@ function startSpeechRecognition() {
 
     if (recognition && !isRecognitionActive) { // Check if not already active
         recognition.start();
+        isRecognitionActive = true; // Set active state
         wordInput.classList.add("recording");
 
         recognition.onresult = (event) => {
             wordInput.value = event.results[0][0].transcript; // Set recognized text in input
+            recognition.stop(); // Stop after capturing the result
+        };
+
+        recognition.onend = () => {
+            isRecognitionActive = false; // Reset active state
+            wordInput.classList.remove("recording"); // Clear UI indication
+            console.log("Speech recognition ended and microphone released.");
+        };
+
+        recognition.onerror = (event) => {
+            console.error("Speech recognition error:", event.error);
+            isRecognitionActive = false; // Reset active state on error
+            wordInput.classList.remove("recording"); // Clear UI indication
         };
     } else if (!recognition) {
         alert("Speech recognition is not supported in this browser.");
