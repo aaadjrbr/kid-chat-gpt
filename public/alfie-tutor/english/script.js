@@ -138,18 +138,46 @@ function stopRecording() {
     };
 }
 
+// Initialize SpeechRecognition (make sure this is available in supported browsers only)
+let recognition;
+let isRecognitionActive = false; // Track if recognition is active
+
+if ('webkitSpeechRecognition' in window) {
+    recognition = new webkitSpeechRecognition();
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    recognition.lang = 'en-US';
+    
+    recognition.onstart = () => {
+        isRecognitionActive = true;
+    };
+
+    recognition.onend = () => {
+        isRecognitionActive = false;
+        const wordInput = document.getElementById("word-input");
+        wordInput.classList.remove("recording");
+        console.log("Speech recognition ended");
+    };
+
+    recognition.onerror = (event) => {
+        console.error("Speech recognition error:", event.error);
+        isRecognitionActive = false; // Reset on error
+    };
+} else {
+    console.warn("Speech recognition is not supported in this browser.");
+}
+
 function startSpeechRecognition() {
     const wordInput = document.getElementById("word-input");
 
-    if (recognition) {
+    if (recognition && !isRecognitionActive) { // Check if not already active
         recognition.start();
         wordInput.classList.add("recording");
 
-        recognition.onend = function() {
-            wordInput.classList.remove("recording");
-            console.log("Speech recognition ended");
+        recognition.onresult = (event) => {
+            wordInput.value = event.results[0][0].transcript; // Set recognized text in input
         };
-    } else {
+    } else if (!recognition) {
         alert("Speech recognition is not supported in this browser.");
     }
 }
