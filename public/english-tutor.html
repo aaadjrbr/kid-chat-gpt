@@ -3,30 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alfie - English Tutor</title>
+    <title>Alfie AI - Your English Tutor</title>
+    <link rel="icon" href="https://emojiisland.com/cdn/shop/products/Dog_Emoji_large.png?v=1571606065" type="image/x-icon">
     <link rel="stylesheet" href="alfie-tutor/english/styles.css">
     <!-- Google Material Icons -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <meta name="description" content="Alfie AI for Kids provides a safe, educational AI chatbot experience for children aged 5-12, enhancing learning and growth with parental controls." />
+    <meta name="keywords" content="AI for kids, safe AI learning, parental controls, educational AI, chatbots for children, technology in education" />
+    <link rel="canonical" href="https://www.alfieaiforkids.fun/" />
+    <meta property="og:title" content="Alfie AI for Kids - Safe AI Learning for Children" />
+    <meta property="og:description" content="Enhance your child's learning experience with Alfie AI, a safe, educational AI chatbot designed for kids aged 5-12 with parental controls." />
+    <meta property="og:image" content="https://firebasestorage.googleapis.com/v0/b/kids-chatgpt.appspot.com/o/logo-alfie.webp?alt=media&token=92d7d084-ce10-486d-b00d-30c0b2642456" />
+    <meta property="og:url" content="https://www.alfieaiforkids.fun/" />
+    <meta property="og:type" content="website" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Alfie AI for Kids - Safe AI Learning for Children" />
+    <meta name="twitter:description" content="A safe and educational chatbot experience for children aged 5-12, with parental control features to ensure peace of mind." />
+    <meta name="twitter:image" content="https://firebasestorage.googleapis.com/v0/b/kids-chatgpt.appspot.com/o/logo-alfie.webp?alt=media&token=92d7d084-ce10-486d-b00d-30c0b2642456" />
+
+    <meta name="robots" content="index, follow" />
 </head>
+<!-- Google tag (gtag.js) --> 
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-WYMRF4LKM1"></script>
+<script>
+    window.dataLayer = window.dataLayer || []; 
+    function gtag() {dataLayer.push(arguments);} 
+    gtag('js', new Date()); 
+    gtag('config', 'G-WYMRF4LKM1');
+</script>
+
 <body>
     <div class="container">
-        <h1>Alfie - Interactive English Tutor</h1>
+        <button style="font-size: 0.9em !important; padding: 10px !important;" onclick="window.history.back()" class="back-button">
+            <span class="material-icons">arrow_back</span> Back
+        </button>
+        <br/><br/>
+        <h1>Alfie AI - Your English Tutor</h1>
+
+        <!-- Toggle Instructions Button -->
+        <button id="toggle-instructions" onclick="toggleInstructions()">📘 Show Instructions</button>
+        
+        <!-- Instructions Section with Toggle -->
+        <div id="instructions" class="instructions hidden">
+            <p>👋 Welcome to Alfie, your English Tutor! Here’s how it works:</p>
+            <ul>
+                <li>💬 <strong>Ask a Question:</strong> Type any word or phrase to get grammar or pronunciation feedback!</li>
+                <li>🔠 <strong>Grammar Suggestions:</strong> For grammar questions, Alfie will offer simple corrections and explanations.</li>
+                <li>🔊 <strong>Pronunciation Guide:</strong> For single words, Alfie provides a pronunciation breakdown. (Pronunciation recording available on computers 🖥️ only.)</li>
+                <li>🎤 <strong>Record & Check:</strong> Tap "Record" and say the word to check your pronunciation. Then press "Stop" to get feedback. (Computer only 🖥️).</li>
+                <li>🎧 <strong>Listen to Feedback:</strong> Use the speaker buttons to listen to Alfie’s feedback.</li>
+            </ul>
+        </div>
 
         <!-- English Tutor Section -->
         <div class="tutor-section">
             <h2>Ask Your English Tutor</h2>
+            <p style="color: #727171;">
+                <em>Examples:</em><br/><span style="font-weight: bold;">Grammar:</span> What is the verb 'to be'?<br/>
+            <span style="font-weight: bold;">Pronunciation:</span> Strawberry</p>
             <div class="input-wrapper">
                 <input id="word-input" type="text" placeholder="Enter a word or phrase...">
                 <span id="input-mic-icon" class="material-icons" onclick="startSpeechRecognition()">mic</span>
             </div>            
-            <button onclick="callEnglishTutor()">Get answer</button><br/><br/>
-        <div class="desktop-only">
-            <span id="listening-message" class="listening">Listening…</span>
-            <br/>
-            <button id="record-button" onclick="startRecording()">🎤 Record</button>
-            <button id="stop-button" onclick="stopRecording()" disabled>⏹️ Stop</button>
-            <br/>
-        </div>
+            <button onclick="callEnglishTutor()">Get answer ✨</button><br/><br/>
+
+            <!-- Pronunciation Section (Desktop Only) -->
+            <div class="desktop-only">
+                <span id="listening-message" class="listening">Listening…</span>
+                <br/>
+                <button id="record-button" onclick="startRecording()">🎤 Record</button>
+                <button id="stop-button" onclick="stopRecording()" disabled>⏹️ Stop</button>
+                <br/>
+            </div>
+
             <div id="english-output" class="output"></div>
 
             <!-- Play buttons for each type of feedback -->
@@ -37,9 +88,28 @@
                 <span class="material-icons">volume_up</span> Listen to Your Pronunciation Feedback
             </button>
         </div>
+
+        <br/><br/>
+        <img src="https://firebasestorage.googleapis.com/v0/b/kids-chatgpt.appspot.com/o/logo-alfie.webp?alt=media&token=92d7d084-ce10-486d-b00d-30c0b2642456" style="width: 120px; height: auto; text-align: center; display: flex; margin: auto;"> 
+        <p style="text-align: center; color: #696767; font-size: 0.8em; margin-bottom: 8px;">
+            Alfie AI can make mistakes. Check important info.
+        </p>
     </div>
 
     <script type="module" src="scripts/firebase-config.js"></script>
     <script type="module" src="alfie-tutor/english/script.js"></script>
+    <script>
+        function toggleInstructions() {
+            const instructions = document.getElementById("instructions");
+            const button = document.getElementById("toggle-instructions");
+            if (instructions.classList.contains("hidden")) {
+                instructions.classList.remove("hidden");
+                button.textContent = "📕 Hide Instructions";
+            } else {
+                instructions.classList.add("hidden");
+                button.textContent = "📘 Show Instructions";
+            }
+        }
+    </script>
 </body>
 </html>
