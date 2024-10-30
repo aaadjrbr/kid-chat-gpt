@@ -6,6 +6,7 @@ let audioChunks = [];
 let tutorFeedbackAudioUrl = '';
 let pronunciationFeedbackAudioUrl = '';
 let isPlaying = false; // Flag to check if audio is playing
+let isProcessing = false; // Flag to check if processing is in progress
 
 // Function to call the English Tutor for syllable breakdown and pronunciation
 async function callEnglishTutor() {
@@ -14,20 +15,18 @@ async function callEnglishTutor() {
     const playTutorFeedbackButton = document.getElementById("play-tutor-feedback");
     const playPronunciationFeedbackButton = document.getElementById("play-pronunciation-feedback");
 
-    // Reset the output and buttons visibility
+    // Reset the output and button visibility
     englishOutput.textContent = "⏳ Loading...";
     playTutorFeedbackButton.classList.add("hidden");
     playPronunciationFeedbackButton.classList.add("hidden");
     pronunciationFeedbackAudioUrl = ''; // Clear any previous pronunciation audio
+    isProcessing = true; // Indicate processing
 
     const getEnglishTutorResponse = httpsCallable(functions, 'getEnglishTutorResponse');
     try {
         const response = await getEnglishTutorResponse({ wordPrompt: wordInput });
         
-        // Update output with response message
         englishOutput.textContent = response.data.message;
-
-        // Select function and audio source based on grammar/pronunciation feedback
         const generateSpeechFunction = response.data.isGrammarFeedback 
             ? httpsCallable(functions, 'generateSlowSpeech') 
             : httpsCallable(functions, 'generatePronunciationFeedback');
@@ -35,33 +34,95 @@ async function callEnglishTutor() {
         const audioResponse = await generateSpeechFunction({ text: response.data.plainTextSyllables });
         tutorFeedbackAudioUrl = audioResponse.data;
 
-        // Show only the appropriate feedback button
         playTutorFeedbackButton.classList.remove("hidden");
-
     } catch (error) {
         console.error("Error calling English Tutor:", error);
         englishOutput.textContent = "Error: Could not fetch syllable breakdown.";
+    } finally {
+        isProcessing = false; // End processing state
     }
 }
 
-// Speech recognition setup
-let recognition;
-if ('webkitSpeechRecognition' in window) {
-    recognition = new webkitSpeechRecognition();
-    recognition.continuous = false;
-    recognition.interimResults = false;
-    recognition.lang = 'en-US';
+// Countdown function for recording
+function showCountdown(callback) {
+    const englishOutput = document.getElementById("english-output");
+    englishOutput.textContent = "Recording in: 3";
+    let countdown = 2;
 
-    recognition.onresult = function(event) {
-        document.getElementById("word-input").value = event.results[0][0].transcript;
-    };
+    const interval = setInterval(() => {
+        englishOutput.textContent = `Recording in: ${countdown}`;
+        countdown -= 1;
+        if (countdown < 0) {
+            clearInterval(interval);
+            englishOutput.textContent = "Listening...";
+            callback(); // Start recording after countdown
+        }
+    }, 1000);
+}
 
-    recognition.onerror = function(event) {
-        console.error("Speech recognition error:", event.error);
-    };
+// Function to start recording with countdown and visual feedback
+function startRecording() {
+    if (isProcessing) return; // Prevent actions if processing
 
-    recognition.onend = function() {
-        console.log("Speech recognition ended");
+    const wordInput = document.getElementById("word-input").value;
+    if (!wordInput) {
+        document.getElementById("english-output").textContent = "Please enter a word to analyze before recording.";
+        return;
+    }
+
+    document.getElementById("play-tutor-feedback").classList.add("hidden");
+    document.getElementById("play-pronunciation-feedback").classList.add("hidden");
+    document.getElementById("record-button").disabled = true;
+    document.getElementById("stop-button").disabled = false;
+
+    showCountdown(() => {
+        audioChunks = [];
+        navigator.mediaDevices.getUserMedia({ audio: true })
+            .then(stream => {
+                mediaRecorder = new MediaRecorder(stream);
+                mediaRecorder.start();
+                mediaRecorder.ondataavailable = event => audioChunks.push(event.data);
+            })
+            .catch(error => {
+                console.error("Error accessing microphone:", error);
+                alert("Microphone access is required for recording.");
+                resetButtons();
+            });
+    });
+}
+
+// Function to stop recording and send audio to Whisper with feedback messages
+function stopRecording() {
+    if (!mediaRecorder) return; // If no recording in progress, exit
+
+    mediaRecorder.stop();
+    resetButtons();
+    document.getElementById("english-output").textContent = "🎤 Checking speech...";
+    isProcessing = true; // Set processing flag
+
+    mediaRecorder.onstop = async () => {
+        const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
+        const audioBase64 = await convertBlobToBase64(audioBlob);
+
+        const wordInput = document.getElementById("word-input").value;
+        const whisperTranscription = httpsCallable(functions, 'generatePronunciationPractice');
+
+        try {
+            const response = await whisperTranscription({ word: wordInput, userAudioBase64: audioBase64 });
+            document.getElementById("english-output").textContent = response.data.feedback;
+
+            const generatePronunciationFeedback = httpsCallable(functions, 'generatePronunciationFeedback');
+            const pronunciationAudioResponse = await generatePronunciationFeedback({ text: wordInput });
+            pronunciationFeedbackAudioUrl = pronunciationAudioResponse.data;
+
+            document.getElementById("play-pronunciation-feedback").classList.remove("hidden");
+            document.getElementById("play-tutor-feedback").classList.add("hidden");
+        } catch (error) {
+            console.error("Error transcribing audio:", error);
+            document.getElementById("english-output").textContent = "Error: Could not transcribe audio.";
+        } finally {
+            isProcessing = false; // End processing state
+        }
     };
 }
 
@@ -81,7 +142,7 @@ function startSpeechRecognition() {
     }
 }
 
-// Function to play the English Tutor feedback audio with flag check
+// Function to play the English Tutor feedback audio with a flag to prevent overlapping playback
 function playTutorFeedback() {
     if (tutorFeedbackAudioUrl && !isPlaying) {
         isPlaying = true; // Set flag to indicate audio is playing
@@ -109,68 +170,7 @@ function playPronunciationFeedback() {
     }
 }
 
-// Function to start recording
-function startRecording() {
-    const wordInput = document.getElementById("word-input").value;
-    const listeningMessage = document.getElementById("listening-message");
-
-    if (!wordInput) {
-        document.getElementById("english-output").textContent = "Please enter a word to analyze before recording.";
-        return;
-    }
-
-    audioChunks = [];
-    listeningMessage.style.display = "inline";
-    document.getElementById("record-button").disabled = true;
-    document.getElementById("stop-button").disabled = false;
-
-    navigator.mediaDevices.getUserMedia({ audio: true })
-        .then(stream => {
-            mediaRecorder = new MediaRecorder(stream);
-            mediaRecorder.start();
-
-            mediaRecorder.ondataavailable = event => {
-                audioChunks.push(event.data);
-            };
-        })
-        .catch(error => {
-            console.error("Error accessing microphone:", error);
-            alert("Microphone access is required for recording.");
-            resetButtons();
-        });
-}
-
-// Function to stop recording and send audio to Whisper
-function stopRecording() {
-    mediaRecorder.stop();
-    resetButtons();
-
-    mediaRecorder.onstop = async () => {
-        const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
-        const audioBase64 = await convertBlobToBase64(audioBlob);
-
-        const wordInput = document.getElementById("word-input").value;
-        const whisperTranscription = httpsCallable(functions, 'generatePronunciationPractice');
-
-        try {
-            const response = await whisperTranscription({ word: wordInput, userAudioBase64: audioBase64 });
-            document.getElementById("english-output").textContent = response.data.feedback;
-
-            const generatePronunciationFeedback = httpsCallable(functions, 'generatePronunciationFeedback');
-            const pronunciationAudioResponse = await generatePronunciationFeedback({ text: wordInput });
-            pronunciationFeedbackAudioUrl = pronunciationAudioResponse.data;
-
-            document.getElementById("play-pronunciation-feedback").classList.remove("hidden"); // Show pronunciation feedback play button
-            document.getElementById("play-tutor-feedback").classList.add("hidden"); // Hide tutor feedback button
-
-        } catch (error) {
-            console.error("Error transcribing audio:", error);
-            document.getElementById("english-output").textContent = "Error: Could not transcribe audio.";
-        }
-    };
-}
-
-// Helper function to reset button states and hide "Listening…" message
+// Helper function to reset button states
 function resetButtons() {
     document.getElementById("record-button").disabled = false;
     document.getElementById("stop-button").disabled = true;
@@ -187,7 +187,7 @@ function convertBlobToBase64(blob) {
     });
 }
 
-// Make the functions accessible globally
+// Make functions accessible globally
 window.callEnglishTutor = callEnglishTutor;
 window.startRecording = startRecording;
 window.stopRecording = stopRecording;
