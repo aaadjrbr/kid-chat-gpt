@@ -452,35 +452,64 @@ function startSpeechRecognition() {
     }
 }
 
-// Function to play the English Tutor feedback audio with a flag to prevent overlapping playback
+let pronunciationAudio = null; // Store the pronunciation audio object
+let tutorAudio = null; // Store the tutor feedback audio object
+
+// Function to play the tutor feedback audio with a pause/stop option
 async function playTutorFeedback() {
     if (tutorFeedbackText && !isPlaying) {
         isPlaying = true;
         const generateSpeechFunction = httpsCallable(functions, 'generateSlowSpeech');
         try {
             const audioResponse = await generateSpeechFunction({ text: tutorFeedbackText });
-            const audio = new Audio(audioResponse.data);
-            audio.play();
-            audio.onended = () => { isPlaying = false; };
+            tutorAudio = new Audio(audioResponse.data);
+            tutorAudio.play();
+            tutorAudio.onended = () => { 
+                isPlaying = false;
+                document.getElementById("pause-tutor-feedback").classList.add("hidden");
+            };
+            document.getElementById("pause-tutor-feedback").classList.remove("hidden");
         } catch (error) {
             console.error("Error generating tutor feedback audio:", error);
         }
     }
 }
 
-// Function to play the pronunciation feedback audio with flag check
+// Function to play the pronunciation feedback audio with a pause/stop option
 async function playPronunciationFeedback() {
     if (pronunciationFeedbackText && !isPlaying) {
         isPlaying = true;
         const generatePronunciationFeedback = httpsCallable(functions, 'generatePronunciationFeedback');
         try {
             const audioResponse = await generatePronunciationFeedback({ text: pronunciationFeedbackText });
-            const audio = new Audio(audioResponse.data);
-            audio.play();
-            audio.onended = () => { isPlaying = false; };
+            pronunciationAudio = new Audio(audioResponse.data);
+            pronunciationAudio.play();
+            pronunciationAudio.onended = () => { 
+                isPlaying = false;
+                document.getElementById("pause-pronunciation-feedback").classList.add("hidden");
+            };
+            document.getElementById("pause-pronunciation-feedback").classList.remove("hidden");
         } catch (error) {
             console.error("Error generating pronunciation feedback audio:", error);
         }
+    }
+}
+
+// Function to pause or stop the pronunciation feedback
+function pausePronunciationFeedback() {
+    if (pronunciationAudio && !pronunciationAudio.paused) {
+        pronunciationAudio.pause();
+        isPlaying = false;
+        document.getElementById("pause-pronunciation-feedback").classList.add("hidden");
+    }
+}
+
+// Function to pause or stop the tutor feedback
+function pauseTutorFeedback() {
+    if (tutorAudio && !tutorAudio.paused) {
+        tutorAudio.pause();
+        isPlaying = false;
+        document.getElementById("pause-tutor-feedback").classList.add("hidden");
     }
 }
 
@@ -520,3 +549,5 @@ window.stopRecording = stopRecording;
 window.playTutorFeedback = playTutorFeedback;
 window.playPronunciationFeedback = playPronunciationFeedback;
 window.startSpeechRecognition = startSpeechRecognition;
+window.pausePronunciationFeedback = pausePronunciationFeedback;
+window.pauseTutorFeedback = pauseTutorFeedback;

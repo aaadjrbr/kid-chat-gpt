@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="alfie-tutor/english/styles.css">
     <!-- Google Material Icons -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&icon_names=no_sound" />
 
     <meta name="description" content="Alfie AI for Kids provides a safe, educational AI chatbot experience for children aged 5-12, enhancing learning and growth with parental controls." />
     <meta name="keywords" content="AI for kids, safe AI learning, parental controls, educational AI, chatbots for children, technology in education" />
@@ -106,8 +107,16 @@
             <button id="play-tutor-feedback" class="hidden" onclick="playTutorFeedback()">
                 <span class="material-icons">volume_up</span> Listen
             </button>
+            <br/>
+            <button id="pause-tutor-feedback" onclick="pauseTutorFeedback()" class="hidden">
+                <span class="material-symbols-outlined">no_sound</span>
+            </button>
+
             <button id="play-pronunciation-feedback" class="hidden" onclick="playPronunciationFeedback()">
                 <span class="material-icons">volume_up</span> Listen
+            </button>
+            <br/>
+            <button id="pause-pronunciation-feedback" onclick="pausePronunciationFeedback()" class="hidden"><span class="material-symbols-outlined">no_sound</span>
             </button>
         </div>
 
