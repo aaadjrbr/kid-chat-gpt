@@ -42,6 +42,11 @@ body {
     color: white;
     filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.9));
   }
+
+  .chair {
+    color: rgb(202, 4, 241);
+    filter: drop-shadow(0 0 12px rgba(147, 1, 245, 0.9));
+  }
   
   /* Floating Randomly Across Screen */
   @keyframes float {
@@ -49,12 +54,12 @@ body {
     25% { transform: translate(20vw, -20vh) rotate(15deg); }
     50% { transform: translate(-30vw, 30vh) rotate(-10deg); }
     75% { transform: translate(40vw, -10vh) rotate(20deg); }
-    100% { transform: translate(0vw, 0vh) rotate(0deg); }
+    95% { transform: translate(0vw, 0vh) rotate(0deg); }
   }
   
   /* Glow Animation */
   @keyframes glow {
-    0%, 100% { opacity: 0.8; transform: scale(1); }
+    0%, 90% { opacity: 0.8; transform: scale(1); }
     50% { opacity: 1; transform: scale(1.1); }
   }
   
