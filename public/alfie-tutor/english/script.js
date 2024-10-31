@@ -287,7 +287,7 @@ async function callEnglishTutor() {
             tutorFeedbackText = response.data.plainTextSyllables;
             playTutorFeedbackButton.classList.remove("hidden");  // Show only the Tutor Feedback button
         } else {
-            pronunciationFeedbackText = wordInput;
+            pronunciationFeedbackText = response.data.message; // <-- Change here to set pronunciation to answer
             playPronunciationFeedbackButton.classList.remove("hidden");  // Show only the Pronunciation Feedback button
         }
     } catch (error) {
