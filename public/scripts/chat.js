@@ -108,15 +108,30 @@ async function fetchUserProfile() {
             isPremium = userProfileCache.isPremium === true;
             isGold = userProfileCache.isGold === true;
 
-            // If the tokens field doesn't exist, create it and assign default values based on status
+            // Check and set default for tokens, isPremium, and isGold if any are missing
+            let updateFields = {}; // Object to hold fields that need updating in Firestore
+
             if (userProfileCache.tokens === undefined) {
                 userTokens = isGold ? 20 : (isPremium ? 30 : 5);
-
-                // Update Firestore with the default token count if missing
-                await updateDoc(userProfileRef, { tokens: userTokens });
+                updateFields.tokens = userTokens; // Add tokens field if missing
                 console.log("Tokens field was missing, set to:", userTokens);
             } else {
                 userTokens = userProfileCache.tokens; // Use the existing tokens value
+            }
+
+            if (userProfileCache.isPremium === undefined) {
+                isPremium = false;
+                updateFields.isPremium = isPremium; // Add isPremium field if missing
+            }
+
+            if (userProfileCache.isGold === undefined) {
+                isGold = false;
+                updateFields.isGold = isGold; // Add isGold field if missing
+            }
+
+            // Update Firestore with any missing fields
+            if (Object.keys(updateFields).length > 0) {
+                await updateDoc(userProfileRef, updateFields);
             }
 
             // After setting isPremium and isGold values

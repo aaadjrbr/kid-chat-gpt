@@ -53,50 +53,59 @@ async function fetchUserTokens() {
         const userData = userProfileSnapshot.data();
         let updateNeeded = false;  // Track if we need to update the profile
 
-        // Check for isPremium and isGold; default to false if missing
-        isPremium = userData.isPremium ?? false;
-        isGold = userData.isGold ?? false;
+        // Check and set defaults for each field if missing
+        if (userData.tokens === undefined) {
+            userTokens = TOKEN_LIMITS.free; // Default to 5 tokens for free users
+            updateNeeded = true;
+        } else {
+            userTokens = userData.tokens;
+        }
 
-        // If isPremium or isGold fields are missing, add them with a default value of false
         if (userData.isPremium === undefined) {
             isPremium = false;
             updateNeeded = true;
+        } else {
+            isPremium = userData.isPremium;
         }
+
         if (userData.isGold === undefined) {
             isGold = false;
             updateNeeded = true;
+        } else {
+            isGold = userData.isGold;
         }
 
         // Update Firestore if any fields were missing
         if (updateNeeded) {
-            await updateDoc(userProfileRef, { isPremium, isGold });
+            await updateDoc(userProfileRef, {
+                tokens: userTokens,
+                isPremium: isPremium,
+                isGold: isGold
+            });
         }
 
-        // Fetch the token value
-        if (userData.tokens > 0) {
-            userTokens = userData.tokens;
-        } else {
-            userTokens = 0;
-            // Use existing timestamp to calculate remaining time
-            if (userData.tokensDepletedTimestamp) {
-                const elapsedTime = Date.now() - userData.tokensDepletedTimestamp.toMillis();
-                const refillInterval = 60 * 60 * 1000; // 1-hour interval
+        // Handle token depletion and refill if necessary
+        if (userTokens <= 0 && userData.tokensDepletedTimestamp) {
+            const elapsedTime = Date.now() - userData.tokensDepletedTimestamp.toMillis();
+            const refillInterval = 60 * 60 * 1000; // 1-hour interval
 
-                if (elapsedTime >= refillInterval) {
-                    await refillTokens(userProfileRef);
-                } else {
-                    displayTokenRefillCountdown(refillInterval - elapsedTime);
-                }
+            if (elapsedTime >= refillInterval) {
+                await refillTokens(userProfileRef);
+            } else {
+                displayTokenRefillCountdown(refillInterval - elapsedTime);
             }
         }
-
-        updateTokenBar();
-        updateUserBadge(isGold, isPremium);
     } else {
-        // If no profile exists, create one with default tokens
+        // If no profile exists, create one with default tokens and permissions
         await setDoc(userProfileRef, { tokens: TOKEN_LIMITS.free, isGold: false, isPremium: false });
         userTokens = TOKEN_LIMITS.free;
+        isPremium = false;
+        isGold = false;
     }
+
+    // Update UI elements for token bar and badge display
+    updateTokenBar();
+    updateUserBadge(isGold, isPremium);
 }
 
 // Deduct tokens and update in Firestore

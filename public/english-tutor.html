@@ -40,8 +40,21 @@
             <span class="material-icons">arrow_back</span> Back
         </button>
         <br/><br/>
-        <h1>Alfie AI - Your English Tutor</h1>
-
+        <h1>Your English Tutor</h1>
+    <div class="header">
+        <br/>
+        <!-- Token Bar Display -->
+        <div id="token-bar-container">
+            <div id="token-bar"></div>
+            <span id="token-count">0 Tokens</span>
+        </div>
+        <img src="https://firebasestorage.googleapis.com/v0/b/kids-chatgpt.appspot.com/o/static%2Fenglish-math.webp?alt=media&token=37dec3eb-be56-47a6-9c53-b78f95c3254b" alt="English Tutor Logo" class="logo">
+        <br/><br/>
+        <div id="user-badge-container">
+            <span id="user-badge" class="badge">Loading...</span>
+        </div>  
+    </div>
+    <br/>
         <!-- Toggle Instructions Button -->
         <button id="toggle-instructions" onclick="toggleInstructions()">📘 Show Instructions</button>
         
@@ -62,11 +75,20 @@
             <h2>Ask Your English Tutor</h2>
             <p style="color: #727171;">
                 <em>Examples:</em><br/><span style="font-weight: bold;">Grammar:</span> What is the verb 'to be'?<br/>
-            <span style="font-weight: bold;">Pronunciation:</span> Strawberry</p>
+            <span style="font-weight: bold;">Pronunciation:</span> Pronunciation of strawberry</p>
             <div class="input-wrapper">
-                <input id="word-input" type="text" placeholder="Enter a word or phrase...">
+                <textarea id="word-input" placeholder="Ask away..." rows="1"></textarea>
                 <span id="input-mic-icon" class="material-icons" onclick="startSpeechRecognition()">mic</span>
             </div>            
+            <div class="phrase-bubbles">
+                <span class="phrase-bubble" onclick="setPhrase('What is the verb to be?')">What is the verb 'to be'?</span>
+                <span class="phrase-bubble" onclick="setPhrase('How do you pronounce strawberry?')">How do you pronounce "strawberry"?</span>
+                <span class="phrase-bubble" onclick="setPhrase('What is a noun?')">What is a noun?</span>
+                <span class="phrase-bubble" onclick="setPhrase('When to use had had?')">When to use had had?</span>
+            </div>
+            <div id="refill-timer" style="display: none; font-size: 1.2em; color: #ff0000; text-align: center; margin-top: 10px;">
+                <!-- This will be updated by JavaScript to show the countdown timer -->
+            </div>      
             <button onclick="callEnglishTutor()">Get answer ✨</button><br/><br/>
 
             <!-- Pronunciation Section (Desktop Only) -->
@@ -82,10 +104,10 @@
 
             <!-- Play buttons for each type of feedback -->
             <button id="play-tutor-feedback" class="hidden" onclick="playTutorFeedback()">
-                <span class="material-icons">volume_up</span> Listen to Tutor Feedback
+                <span class="material-icons">volume_up</span> Listen
             </button>
             <button id="play-pronunciation-feedback" class="hidden" onclick="playPronunciationFeedback()">
-                <span class="material-icons">volume_up</span> Listen to Your Pronunciation Feedback
+                <span class="material-icons">volume_up</span> Listen
             </button>
         </div>
 
@@ -110,6 +132,24 @@
                 button.textContent = "📘 Show Instructions";
             }
         }
+
+        //Bubbles
+        function setPhrase(phrase) {
+            document.getElementById('word-input').value = phrase;
+        }
+
+        //Input content
+        const textarea = document.getElementById('word-input');
+
+            textarea.addEventListener('input', function () {
+        // Reset height to shrink on backspace or when clearing text
+            this.style.height = 'auto';
+
+        // Set height based on scrollHeight to auto-grow vertically
+        const maxHeight = 150; // Max height before scrollbar appears
+            this.style.height = `${Math.min(this.scrollHeight, maxHeight)}px`;
+            this.style.overflowY = this.scrollHeight > maxHeight ? 'scroll' : 'hidden';
+        });
     </script>
 </body>
 </html>

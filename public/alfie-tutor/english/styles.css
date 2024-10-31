@@ -23,6 +23,23 @@ body {
     50% { background-position: 100% 50%; }
 }
 
+.header {
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+    max-width: 85%;
+    margin: auto;
+}
+
+.logo {
+    margin: 15px auto; /* Centers horizontally */
+    display: block; /* Ensures the logo behaves as a block element */
+    width: 180px;
+    height: auto;
+    margin-bottom: -15px;
+    margin-top: 10px;
+}
+
 .container {
     max-width: 90%;
     width: 100%;
@@ -197,12 +214,24 @@ button:hover {
 
 #word-input {
     width: 100%;
-    padding-right: 40px; /* Space for the mic icon */
+    padding: 12px;
+    font-size: 1.1em;
+    border-radius: 8px;
+    border: 2px solid #dfe6e9;
+    background-color: #ffffff;
+    resize: none; /* Disable manual resizing by the user */
+    overflow-y: hidden; /* Hidden until max height is reached */
+    transition: border-color 0.3s ease;
+    padding-right: 60px;
+}
+
+#word-input:focus {
+    border-color: #6c5ce7;
 }
 
 #input-mic-icon {
     position: absolute;
-    right: 12px;
+    right: 25px;
     color: #888;
     cursor: pointer;
     font-size: 1.4em;
@@ -272,4 +301,138 @@ button:hover {
 
 .instructions ul li {
     margin-bottom: 8px; /* Optional: space between items */
+}
+
+.phrase-bubbles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.phrase-bubble {
+    background-color: #6c5ce731;
+    border-radius: 20px;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.phrase-bubble:hover {
+    background-color: #e0e0e0;
+}
+
+#token-bar-container {
+    width: 60%;
+    background-color: #b8b6b6;
+    border-radius: 8px;
+    overflow: hidden;
+    margin: auto;
+    position: relative;
+}
+
+#token-bar {
+    height: 20px;
+    background: linear-gradient(to bottom right, #7b2cbf, #b5179e);
+    width: 0%; /* This will be set dynamically */
+    transition: width 0.3s;
+}
+
+#token-count {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    color: white;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+/* User Badge Styling */
+.badge {
+    cursor: pointer;
+    width: 140px;
+    text-align: center;
+    padding: 10px 15px;
+    border-radius: 25px;
+    border: 2px solid #ffffff;
+    font-weight: bold;
+    font-size: 1em;
+    margin: 15px auto;
+    display: block;
+    color: #fff;
+    position: relative;
+    background: linear-gradient(135deg, #222, #444); /* Base gradient for depth */
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    overflow: hidden;
+    z-index: 0;
+    margin-bottom: 3px;
+    margin-top: -25px;
+}
+
+/* Add a subtle glowing effect and 3D hover animation */
+.badge:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.308);
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.233);
+    border: 2px solid #fff;
+}
+
+/* Add a shiny overlay on hover */
+.badge::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: rgba(255, 255, 255, 0.2);
+    opacity: 0.2;
+    transform: rotate(45deg);
+    pointer-events: none;
+    transition: opacity 0.3s;
+}
+.badge:hover::before {
+    opacity: 0.4;
+}
+
+/* Free Badge Style */
+.badge.free {
+    background: linear-gradient(135deg, #0d6dfd, #003c8b); /* Blue gradient */
+}
+
+/* Premium Badge Style */
+.badge.premium {
+    background: linear-gradient(135deg, #198754, #0f5937); /* Green gradient */
+    color: #fff;
+}
+
+/* Gold Member Badge Style */
+.badge.gold {
+    background: linear-gradient(135deg, #ffba00, #ff9f00); /* Bright gold */
+    box-shadow: 0 0 15px rgba(255, 195, 0, 0.8), 0 8px 15px rgba(255, 195, 0, 0.6) inset;
+}
+
+/* Special Shiny Animation for Gold Badge */
+.badge.gold::after {
+    content: "";
+    position: absolute;
+    top: -50px;
+    left: -50px;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0) 60%);
+    transform: rotate(-45deg);
+    animation: shine 3s infinite linear;
+    pointer-events: none;
+}
+
+/* Shiny effect animation */
+@keyframes shine {
+    0% {
+        transform: rotate(-45deg) translate(-200%, -200%);
+    }
+    100% {
+        transform: rotate(-45deg) translate(200%, 200%);
+    }
 }

@@ -62,10 +62,6 @@
 
     <!-- Math Input and Keyboard -->
     <div class="math-input-container">
-        <div id="refill-timer" style="display: none; font-size: 1.2em; color: #ff0000; text-align: center; margin-top: 10px;">
-            <!-- This will be updated by JavaScript to show the countdown timer -->
-        </div>
-        <br/>
         <p style="font-family: 'Roboto', Arial; padding: 5px; font-weight: 400; border-radius: 6px;  text-align: center; color: #000000; border: 2px solid #FFB300; background-color: #ffb3005b; line-height: 1.5;">
                 ⚠️ You can use other symbols from your keyboard, like " <span style="color: red;">( )</span> " for grouping.<br/> 
                 <span style="font-weight: 500;">Remember:</span> " <span style="color: red;">/</span> " means divide or fraction, " <span style="color: red;">*</span> " means multiply, and " <span style="color: red;">^</span> " is for powers!
@@ -93,7 +89,10 @@
             <button onclick="clearInput()" class="material-icons">backspace</button>
         </div>              
     </div>
-
+    <br/>
+    <div id="refill-timer" style="display: none; font-size: 1.2em; color: #ff0000; text-align: center; margin-top: 10px;">
+        <!-- This will be updated by JavaScript to show the countdown timer -->
+    </div>
     <!-- Explanation and Follow-Up Actions -->
     <button id="getExplanationButton" class="action-button">Get Explanation 💡✨</button>
     <br/>
