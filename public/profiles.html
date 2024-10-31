@@ -41,14 +41,17 @@
     <button id="logout-button">Logout</button>
     </div>
 
-    <h2 class="title1">Who is there? 🐶</h2>
+    <h2 style="font-family: 'Creepster', system-ui; font-size: 2.4em; color: rgb(255, 153, 0) !important;">
+        🎃 Happy Halloween 🎃</h2>
+
+    <h2 class="title1" style="color: #fff;">Who is there? 🐶</h2>
     <div id="profiles-container"></div>
     <div class="center-container">
         <div id="options-container"></div>
     </div>
     <br/><br/>
     <br/>
-    <h2 class="title1">Homework Helpers 🚀 </h2>
+    <h2 class="title1" style="color: #fff;">Homework Helpers 🚀 </h2>
     <div class="centered-container">
         <a href="math-tutor.html">
             <img src="https://firebasestorage.googleapis.com/v0/b/kids-chatgpt.appspot.com/o/static%2FAlfie.webp?alt=media&token=65cb9863-983d-462b-b169-039854ccbba6" alt="Math Tutor Logo" class="logo">
@@ -57,7 +60,7 @@
             <img src="https://firebasestorage.googleapis.com/v0/b/kids-chatgpt.appspot.com/o/static%2Fenglish-math.webp?alt=media&token=37dec3eb-be56-47a6-9c53-b78f95c3254b" alt="English Tutor Logo" class="logo">
         </a>
     </div>        
-    <p style="text-align: center; font-size: 0.9em; color: #6a11cb;">✨🚀 Exclusive access to tutors will soon be available to <strong>Premium members</strong> only. <a href="./checkout.html">Subscribe</a> today to enjoy uninterrupted access!
+    <p style="text-align: center; font-size: 0.9em; color: #ffffff;">✨🚀 Exclusive access to tutors will soon be available to <strong>Premium members</strong> only. <a style="color: #fff;" href="./checkout.html">Subscribe</a> today to enjoy uninterrupted access!
     </p>
 
     <br/>
@@ -103,12 +106,20 @@
     </div>
     <br/><br/>
 <div class="info-bottom" style="text-align: center;">
-    <p><a href="./checkout.html" class="special-a">Subscription 💎</a> | <a href="./index.html">Home</a> | <a href="./edit-profile.html">🌍 Parents' Community</a> | <a href="./forgot-pin.html">Forgot your PIN?</a></p>
+    <p><a style="color: #fff;" href="./checkout.html" class="special-a">Subscription 💎</a> | <a style="color: #fff;" href="./index.html">Home</a> | <a style="color: #fff;" href="./edit-profile.html">🌍 Parents' Community</a> | <a style="color: #fff;" href="./forgot-pin.html">Forgot your PIN?</a></p>
 <br/><br/><br/>
 <img src="https://firebasestorage.googleapis.com/v0/b/kids-chatgpt.appspot.com/o/logo-alfie.webp?alt=media&token=92d7d084-ce10-486d-b00d-30c0b2642456" style="width: 160px; height: auto;">
 </div>
 <br/>
 
+  <!-- Floating Halloween Emojis -->
+  <div class="floating-emojis">
+    <span class="emoji pumpkin">🎃🌙</span>
+    <span class="emoji ghost">👻🍬</span>
+    <span class="emoji ghost">🧛🏻‍♀️</span>
+    <span class="emoji pumpkin">🔮</span>
+    <!-- Add more emojis if you want more floating around -->
+  </div>
     <script src="scripts/firebase-config.js" type="module"></script>
     <script type="module">
         import { loadProfiles, addProfile, viewChatHistory, startNewChat, setupImageGallery, deleteProfileHandler, verifyUserPin, toggleOptionsWithPin } from './scripts/profiles.js';
