@@ -1,94 +1,15 @@
 /* styles/profiles.css */
 @import url('https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Creepster&family=Fredoka:wght@300..700&family=M+PLUS+Rounded+1c:wght@400;500;700;800;900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
 
 /* General styling */
 body {
     font-family: "Open Sans", sans-serif;
     font-weight: 400;
-    background-color: #000000; /* Light greyish background for a cleaner look */
+    background-color: #e3e3e9; /* Light greyish background for a cleaner look */
     margin: 0;
     padding: 20px;
     color: #000000;
 }
-  
-/* Floating Emojis Container */
-.floating-emojis {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none; /* Emojis won't interfere with clicking */
-    z-index: 1000;
-  }
-  
-  /* Emoji Styles */
-  .emoji {
-    position: absolute;
-    font-size: 2.5rem;
-    opacity: 0.9;
-    filter: drop-shadow(0 0 8px rgba(255, 165, 0, 0.8)); /* Glowing effect */
-    animation: float 15s linear infinite, glow 1.5s ease-in-out infinite;
-  }
-  
-  /* Pumpkin and Ghost Colors */
-  .pumpkin {
-    color: orange;
-    filter: drop-shadow(0 0 12px rgba(255, 69, 0, 0.9));
-  }
-  
-  .ghost {
-    color: white;
-    filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.9));
-  }
-
-  .chair {
-    color: rgb(202, 4, 241);
-    filter: drop-shadow(0 0 12px rgba(147, 1, 245, 0.9));
-  }
-  
-  /* Floating Randomly Across Screen */
-  @keyframes float {
-    0% { transform: translate(0vw, 0vh) rotate(0deg); }
-    25% { transform: translate(20vw, -20vh) rotate(15deg); }
-    50% { transform: translate(-30vw, 30vh) rotate(-10deg); }
-    75% { transform: translate(40vw, -10vh) rotate(20deg); }
-    100% { transform: translate(0vw, 0vh) rotate(0deg); }
-  }
-  
-  /* Glow Animation */
-  @keyframes glow {
-    0%, 100% { opacity: 0.8; transform: scale(1); }
-    50% { opacity: 1; transform: scale(1.1); }
-  }
-  
-  /* Random Starting Positions and Delays for Each Emoji */
-  .emoji:nth-child(1) {
-    top: 20%;
-    left: 10%;
-    animation-delay: 0s, 0.2s;
-  }
-  .emoji:nth-child(2) {
-    top: 40%;
-    left: 30%;
-    animation-delay: 3s, 0.4s;
-  }
-  .emoji:nth-child(3) {
-    top: 30%;
-    left: 50%;
-    animation-delay: 6s, 0.6s;
-  }
-  .emoji:nth-child(4) {
-    top: 30%;
-    left: 70%;
-    animation-delay: 9s, 0.8s;
-  }
-  .emoji:nth-child(5) {
-    top: 20%;
-    left: 90%;
-    animation-delay: 12s, 0.8s;
-  }
 
 .centered-container {
     display: flex;
@@ -279,7 +200,7 @@ form#add-profile-form {
 }
 
 span.kid-name-circle:hover {
-    color: #ffffff;
+    color: #6a11cb;
 }
 
 .profile-image.hide, .kid-name-circle.hide {
@@ -326,7 +247,7 @@ span.kid-name-circle:hover {
     font-size: 1.2em !important;
     display: block;
     margin-top: 10px;
-    color: #ffffff;
+    color: #212529;
     font-size: 1.1em;
     font-weight: 900;
 }
@@ -366,7 +287,7 @@ span.kid-name-circle:hover {
 button.edit-button {
     cursor: pointer;
     background: none;
-    color: #ffffff;
+    color: #212529;
     font-size: 1.1em;
     margin-top: 10px;
 }
@@ -566,7 +487,7 @@ a.special-a:hover {
   
   a.special-a {
     display: inline-block;
-    color: #ffffff;
+    color: #6a0dad;
     font-size: 1.3em;
     animation: shake 1s ease infinite, shine 2s ease-in-out infinite;
     text-decoration: none;
