@@ -204,10 +204,10 @@ button {
 /* Additional styling for buttons within the sticky menu */
 .sticky-menu .btn {
   padding: 0.5em 1em;
-  font-weight: 500;
+  font-weight: 400 !important;
   font-size: 0.9em;
-  background: #fff;
-  color: #8A2BE2;
+  background: linear-gradient(135deg, #8A2BE2, #6A1B9A, #4A148C) !important;
+  color: #ffffff !important;
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -215,7 +215,7 @@ button {
 }
 
 .sticky-menu .btn:hover {
-  background: #E0C3FC;
+  background: linear-gradient(135deg, #892be2b7, #691b9ac5, #4a148cb7) !important;
 }
 
 /* Hero Section */
@@ -358,8 +358,13 @@ button {
 .about-image img {
   width: 100%;
   max-width: 400px;
-  border-radius: 10px;
+  border-radius: 40px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.233);
+  transition: border-radius 0.3s ease-in-out; /* Add transition */
+}
+
+.about-image img:hover {
+  border-radius: 10px;
 }
 
 /* Feature Section */
@@ -478,12 +483,17 @@ button {
 .comparison-item {
   background: rgba(255, 255, 255, 0.6);
   padding: 2em;
-  border-radius: 25px;
+  border-radius: 40px;
   width: 250px;
   text-align: center;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
   box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.2) !important;
+  transition: border-radius 0.3s ease-in-out, transform 0.3s ease-in-out !important; /* Transition for both properties */
   z-index: 99;
+}
+
+.comparison-item:hover {
+  border-radius: 10px;
 }
 
 .comparison-item.highlight {
@@ -519,10 +529,11 @@ button {
 
 .testimonial-item {
   background: rgba(255, 255, 255, 0.1); /* Light translucent background */
-  border-radius: 20px; /* Slightly sharper corners for a sleek look */
+  border-radius: 40px; /* Slightly sharper corners for a sleek look */
   padding: 2em;
   max-width: 300px;
   text-align: center;
+  transition: border-radius 0.3s ease-in-out, transform 0.3s ease-in-out !important; /* Transition for both properties */
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); /* Larger shadow for depth */
   backdrop-filter: blur(20px) saturate(180%); /* Strong blur and saturation for glass */
   -webkit-backdrop-filter: blur(20px) saturate(180%);
@@ -532,6 +543,10 @@ button {
   /* Gradient overlay for light reflection effect */
   position: relative;
   overflow: hidden;
+}
+
+.testimonial-item:hover {
+  border-radius: 10px;
 }
 
 .testimonial-item::before {
@@ -576,11 +591,16 @@ button {
   background: linear-gradient(135deg, #6a0dadd0, #4a4de7d2) !important;
   border: 3px solid #ffffffe7;
   padding: 2em;
-  border-radius: 30px;
+  border-radius: 40px;
+  transition: border-radius 0.3s ease-in-out, transform 0.3s ease-in-out !important; /* Transition for both properties */
   max-width: 300px;
   text-align: center;
   box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.2) !important;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.pricing-item:hover {
+  border-radius: 10px;
 }
 
 .pricing-item h3 {
