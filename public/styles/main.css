@@ -204,18 +204,18 @@ button {
 /* Additional styling for buttons within the sticky menu */
 .sticky-menu .btn {
   padding: 0.5em 1em;
-  font-weight: 400 !important;
+  font-weight: 500 !important;
   font-size: 0.9em;
-  background: linear-gradient(135deg, #8A2BE2, #6A1B9A, #4A148C) !important;
-  color: #ffffff !important;
-  border: none;
-  border-radius: 5px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(245, 245, 245, 0.9));
+  color: #000000 !important;
+  border: none !important;
   cursor: pointer;
   margin: 0 1em; /* Controls horizontal spacing without affecting centering */
 }
 
 .sticky-menu .btn:hover {
-  background: linear-gradient(135deg, #892be2b7, #691b9ac5, #4a148cb7) !important;
+  border: none !important;
+  background: linear-gradient(135deg, rgba(245, 245, 245, 0.9), rgba(255, 255, 255, 0.95)) !important;
 }
 
 /* Hero Section */
@@ -311,9 +311,68 @@ button {
   color: transparent;
 }
 
+/* Welcome Video Section */
+#welcome-video {
+  padding: 4em 1em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #e7e4f1;
+  color: #333;
+  text-align: center;
+}
+
+#welcome-video p {
+  font-size: 1.2em;
+}
+
+.welcome-video-content {
+  max-width: 1200px;
+  display: flex;
+  flex-wrap: wrap;
+    /* gap: 20px; */
+  align-items: center;
+  justify-content: center;
+}
+
+.welcome-video-text {
+  flex: 1 1 50%;
+  padding: 1em;
+}
+
+.video-frame {
+  flex: 1 1 50%;
+  max-width: 560px;
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+.video-frame iframe {
+  width: 100%;
+  height: 315px;
+  border: none;
+  border-radius: 40px;
+  transition: border-radius 0.3s ease-in-out; /* Add transition */
+}
+
+iframe:hover {
+  border-radius: 10px;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .welcome-video-content {
+      flex-direction: column;
+  }
+
+  .video-frame iframe {
+      height: 200px;
+  }
+}
+
 /* About Section */
 #about {
-  padding: 4em 1em;
+  padding: 2em 1em;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -369,7 +428,7 @@ button {
 
 /* Feature Section */
 .feature-section {
-  border-radius: 40px;
+  border-radius: 60px;
   margin-top: 40px;
   padding: 3em 1em;
   background: #e7e4f1;
@@ -573,7 +632,7 @@ button {
 
 /* Pricing Section */
 .pricing-section {
-  border-radius: 40px;
+  border-radius: 60px;
   margin-top: 40px;
   padding: 3em 1em;
   background: linear-gradient(135deg, #F5E3FF, #D8BFE6);
