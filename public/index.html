@@ -1,22 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Alfie AI - Chat safely! </title>
+  <title>Alfie AI - Chat Safely!</title>
   <link rel="icon" href="https://emojiisland.com/cdn/shop/products/Dog_Emoji_large.png?v=1571606065" type="image/x-icon">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Fredoka:wght@300..700&family=M+PLUS+Rounded+1c:wght@400;500;700;800;900&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Outfit:wght@100..900&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Raleway:wght@400;600&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
-  <link href="styles/main.css" rel="stylesheet">
-
-  <!-- Font Awesome for Social Media Icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" defer></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+  <!-- Font Awesome for icons -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <!-- AOS for animations -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+  <link rel="stylesheet" href="styles/main.css">
 
   <meta name="description" content="Alfie AI for Kids provides a safe, educational AI chatbot experience for children aged 5-12, enhancing learning and growth with parental controls." />
   <meta name="keywords" content="AI for kids, safe AI learning, parental controls, educational AI, chatbots for children, technology in education" />
@@ -38,7 +35,6 @@
   <style>
     /* Cookie Banner Styling */
     #cookie-consent {
-        font-family: "Fredoka One", sans-serif;
         position: fixed;
         bottom: 0;
         left: 0;
@@ -50,7 +46,6 @@
     }
 
     #cookie-consent p {
-      font-family: "Fredoka One", sans-serif;
       margin: 0;
       padding: 35px;
       font-size: 1em;
@@ -61,7 +56,6 @@
     }
 
     #cookie-consent a {
-        font-family: "Fredoka One", sans-serif;
         color: #ffd700;
         text-decoration: none;
     }
@@ -73,7 +67,6 @@
     .btn-accept {
         display: flex;
         margin: auto;
-        font-family: "Fredoka One", sans-serif;
         background: #ffd700;
         color: #6a11cb;
         padding: 10px 20px;
@@ -132,7 +125,6 @@
     .hidden {
         display: none;
     }
-
 </style>
 </head>
 <!-- Google tag (gtag.js) --> 
@@ -141,196 +133,171 @@
 </script>
 
 <body>
-  <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg navbar-light bg-light shadow">
-    <div class="container-fluid">
-      <a class="navbar-brand text-primary" href="./index.html"><img src="https://firebasestorage.googleapis.com/v0/b/kids-chatgpt.appspot.com/o/logo-alfie.webp?alt=media&token=92d7d084-ce10-486d-b00d-30c0b2642456" alt="Alfie AI - Logo (Navigation Bar)" style="width: 160px; height: auto;">      </a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item">
-            <a class="nav-link" href="./login.html">Login</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#about">About Us</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#features">Features</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#plans">Pricing</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#community">Community</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="./contact.html">Contact</a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </nav>
-  
-  <!-- Hero Section -->
-  <section id="hero" class="text-center text-white d-flex align-items-center">
-    <div class="container">
-        <a href="./profiles.html" style="font-size: 1.1em; background: #ffffff67; color: #fff; padding: 15px; border: 3px solid #ffffff !important;" class="btn btn-lg btn-warning rounded-pill mt-3">
-          Already a member?<br/>
-          Go to chat ✨</a>
-      <div style="margin-bottom: 60px;"></div>
-      <h1 class="display-3" data-aos="fade-up"><span style="font-weight: 600;">Meet,</span><br/>Alfie AI 🐶</h1>
-      <p class="lead" data-aos="fade-up" data-aos-delay="200">Unlock endless possibilities with every spark of imagination using the most advanced AI!</p>
-      <a href="#about" class="btn btn-lg btn-warning rounded-pill mt-3" data-aos="zoom-in" data-aos-delay="400">Explore Alfie!</a>
+
+<!-- Navbar -->
+<nav class="navbar" id="mainNavbar">
+    <a class="navbar-brand" href="index.html"><img src="https://firebasestorage.googleapis.com/v0/b/kids-chatgpt.appspot.com/o/logo-alfie.webp?alt=media&token=92d7d084-ce10-486d-b00d-30c0b2642456" alt="Alfie AI - Logo (Navigation Bar)" style="width: 130px; height: auto;"></a>
+    <button class="navbar-toggler" onclick="toggleNavbar()">
+        <i class="fas fa-bars"></i> <!-- Hamburger icon using Font Awesome -->
+    </button>
+    <ul class="navbar-nav" id="navbarMenu">
+        <li><a class="nav-link" href="login.html">Login</a></li>
+        <li><a class="nav-link" href="#pricing">Pricing</a></li>
+        <li><a class="nav-link" href="contact.html">Contact</a></li>
+    </ul>
+</nav>
+
+
+  <!-- Sticky Menu -->
+  <div class="sticky-menu" id="stickyMenu">
+    <button class="btn" onclick="location.href='login.html'">Sign Up Free</button>
+    <button class="btn" onclick="location.href='profiles.html'">Go to Chat ✨</button>
+  </div>
+<div style="overflow-x: hidden;">
+<!-- Hero Section -->
+<header id="hero" class="hero-section" data-aos="fade-up">
+    <div class="hero-content">
+        <br/>
+        <img src="https://firebasestorage.googleapis.com/v0/b/kids-chatgpt.appspot.com/o/logo-alfie.webp?alt=media&token=92d7d084-ce10-486d-b00d-30c0b2642456" alt="Alfie AI - Logo (Navigation Bar)" 
+        style="width: 260px; height: auto;">
+        <br/>
+        <p>Unlock endless possibilities with every spark of imagination using the most advanced AI!</p>
+        <br/>
+        <a href="profiles.html" style="text-decoration: none; color: #000000;">
+        <button class="cta-button button2">Already a member?<br/>Go to chat</button>
+        </a>
+        <br/><br/><br/>
+        <button class="cta-button" onclick="scrollToSection('#about')">Get Started</button>
     </div>
     <div class="floating-stars"></div>
-  </section>
+</header>
 
-  <!-- About Section -->
-  <section id="about" class="py-5">
-    <div class="container" data-aos="fade-right">
-      <div class="row">
-        <div class="col-md-6">
-          <h2 class="section-title">What is<br/>Alfie AI? 🐾</h2>
-          <p style="font-size: 1.2em;">Alfie AI is a fun, kid-friendly chatbot powered by advanced AI, built with safety first! Kids can explore and ask questions freely, while parents stay in control with access to chat history for peace of mind.</p>
+<!-- About Section -->
+<section id="about">
+    <div class="about-content" data-aos="fade-right">
+        <div class="about-text">
+            <h2 class="about-title">What is<br> Alfie AI? 🐶</h2>
+            <p>Alfie AI is a fun, kid-friendly chatbot powered by advanced AI, built with safety first! Kids can explore and ask questions freely, while parents stay in control with access to chat history for peace of mind.</p>
         </div>
-        <div class="col-md-6" data-aos="fade-left">
-          <img src="https://firebasestorage.googleapis.com/v0/b/kids-chatgpt.appspot.com/o/static%2Fkids-tablets.webp?alt=media&token=802f3d52-2938-4961-9438-a547b3f34791" alt="Kids Using Tablet - Alfie AI" class="img-fluid rounded shadow">
+        <div class="about-image" data-aos="fade-left">
+            <img src="https://firebasestorage.googleapis.com/v0/b/kids-chatgpt.appspot.com/o/static%2Falfie-ai-index.webp?alt=media&token=21d245aa-5db9-4901-bf7f-695fcbdf2d38" alt="Alfie Holding A Phone & Kids Behind - Alfie AI">
+            <p style="font-size: 0.8em;"><em>*Image generated using DALL-E (Available on Alfie AI)</em></p>
         </div>
-      </div>
     </div>
-  </section>
+</section>
 
-  <!-- Features Section -->
-  <section id="features" class="py-5 bg-light text-center">
-    <div class="container">
-      <h2 class="section-title" data-aos="fade-up">Why Alfie AI? 🚀🪐</h2>
-      <div class="row">
-        <div class="col-md-4" data-aos="zoom-in">
-          <i class="material-icons display-4 text-primary">security</i>
-          <h4 class="mt-2">Safe & Fun</h4>
-          <p>Alfie filters harmful content, keeping kids safe while they explore.</p>
+<!-- Features Section -->
+<section id="features" class="feature-section" data-aos="fade-up">
+    <h2 class="section-title">Why Alfie AI? 🚀</h2>
+    <div class="feature-grid">
+        <div class="feature-item" data-aos="zoom-in">
+            <i class="fas fa-shield-alt feature-icon"></i>
+            <h3 style="background-color: #dbd8d8; padding: 5px; border-radius: 8px; margin-bottom: 10px;">Safe & Secure</h3>
+            <p>Alfie filters harmful content, keeping kids safe while they explore.</p>
         </div>
-        <div class="col-md-4" data-aos="zoom-in" data-aos-delay="200">
-          <i class="material-icons display-4 text-warning">lightbulb</i>
-          <h4 class="mt-2">Interactive Learning</h4>
-          <p>Kids can learn through playful conversions and discovery through images and dialogue.</p>
+        <div class="feature-item" data-aos="zoom-in" data-aos-delay="100">
+            <i class="fas fa-child feature-icon"></i>
+            <h3 style="background-color: #dbd8d8; padding: 5px; border-radius: 8px; margin-bottom: 10px;">Kid-Friendly Design</h3>
+            <p>Kids can learn through playful conversions and discovery through images and dialogue.</p>
         </div>
-        <div class="col-md-4" data-aos="zoom-in" data-aos-delay="400">
-          <i class="material-icons display-4 text-success">explore</i>
-          <h4 class="mt-2">Endless Exploration</h4>
-          <p>Alfie makes education exciting, encouraging kids to explore, ask questions, and discover new interests.</p>
+        <div class="feature-item" data-aos="zoom-in" data-aos-delay="200">
+            <i class="fas fa-user-shield feature-icon"></i>
+            <h3 style="background-color: #dbd8d8; padding: 5px; border-radius: 8px; margin-bottom: 10px;">Parental Control</h3>
+            <p>Full access and control over what your child experiences.</p>
         </div>
-      </div>
     </div>
-  </section>
+</section>
 
-  <!-- Carousel Section -->
-  <section id="testimonials" class="py-5">
-    <div class="container" data-aos="fade-up">
-      <h2 class="section-title text-center mb-4">What Parents Say 💜</h2>
-      <div id="testimonialCarousel" class="carousel slide" data-bs-ride="carousel">
-        <div class="carousel-inner">
-          <div class="carousel-item active">
-            <div class="d-flex justify-content-center">
-              <div class="card p-4 bg-warning text-dark shadow">
-                <div class="card-body">
-                  <blockquote class="blockquote mb-0">
-                    <p>Xander has found a new friend in Alfie. He literally was chatting with it.</p>
-                    <br/>
-                    <p style="margin-bottom: 22px; font-size: 0.9em;">⭐⭐⭐⭐⭐</p>
-                    <footer style="background: none !important;" class="blockquote-footer text-dark">Rakeisha, Parent</footer>
-                  </blockquote>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="carousel-item">
-            <div class="d-flex justify-content-center">
-              <div class="card p-4 bg-primary text-white shadow">
-                <div class="card-body">
-                  <blockquote class="blockquote mb-0">
-                    <p>A fun and educational tool that keeps my kids entertained while they learn!</p>
-                    <br/>
-                    <p style="margin-bottom: 22px; font-size: 0.9em;">⭐⭐⭐⭐⭐</p>
-                    <footer style="background: none !important;" class="blockquote-footer text-white">John, Parent</footer>
-                  </blockquote>
-                </div>
-              </div>
-            </div>
-          </div>
+<!-- Comparison Section -->
+<section id="comparison" class="comparison-section" data-aos="fade-up">
+    <h2 class="section-title">How Alfie AI Stands Out 🌟</h2>
+    <div class="comparison-grid">
+        <div class="comparison-item" data-aos="fade-right">
+            <h3>ChatGPT</h3>
+            <ul>
+                <li>❌ No parental controls</li>
+                <li>❌ Complex interface</li>
+                <li>❌ Limited educational content</li>
+                <li>❌ Can delete chat history</li>
+            </ul>
         </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="prev">
-          <span class="carousel-control-prev-icon"></span>
-          <span class="visually-hidden">Previous</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="next">
-          <span class="carousel-control-next-icon"></span>
-          <span class="visually-hidden">Next</span>
-        </button>
-      </div>
+        <div class="comparison-item highlight" data-aos="fade-left">
+            <h3>Alfie AI</h3>
+            <ul>
+                <li>✅ Full parental control</li>
+                <li>✅ Kid-friendly design</li>
+                <li>✅ Educational experiences</li>
+                <li>✅ Cannot delete chat history</li>
+            </ul>
+        </div>
     </div>
-  </section>
+</section>
 
-  <!-- Membership Plans Section -->
-  <section id="plans" class="py-5 text-center text-white">
-    <div class="container" data-aos="zoom-in">
-      <h2 class="section-title" style="color: white">Choose Your Adventure 🏆</h2>
-      <div class="row">
-        <div class="col-md-4">
-          <div class="card bg-primary text-white">
-            <div class="card-body">
-              <h4 class="card-title">Free Version</h4>
-              <p>Enjoy up to 5 interactive conversations per hour. This allows them to explore topics, ask questions, and engage in fun learning experiences—all while staying safe!</p>
-              <a href="./login.html" class="btn btn-warning rounded-pill">Sign Up</a>
-            </div>
-          </div>
+<!-- Testimonials Section -->
+<section id="testimonials" class="testimonial-section" data-aos="fade-up">
+    <h2 class="section-title">What Parents Say 💜</h2>
+    <div class="testimonial-slider">
+        <div class="testimonial-item" data-aos="zoom-in">
+            <p>Xander has found a new friend in Alfie. He literally was chatting with it.</p>
+            <br/>
+            <p style="margin-bottom: 10px; font-size: 0.9em;">⭐⭐⭐⭐⭐</p>
+            <h4>- Rakeisha, <span>Parent</span></h4>
         </div>
-        <div class="col-md-4">
-          <div class="card bg-warning text-dark">
-            <div class="card-body">
-              <h4 class="card-title">Gold Version</h4>
-              <p>Includes 20 interactions per hour, with image capabilities, for just $8.99 per month. It’s perfect for kids who love exploring with Alfie AI while getting access to rich visuals and interactive fun!</p>
-              <a href="./login.html" class="btn btn-primary rounded-pill">Sign Up</a>
-            </div>
-          </div>
+        <div class="testimonial-item" data-aos="zoom-in" data-aos-delay="100">
+            <p>Finally, a messaging app that I can trust for my family!</p>
+            <br/>
+            <p style="margin-bottom: 10px; font-size: 0.9em;">⭐⭐⭐⭐⭐</p>
+            <h4>- John, <span>Parent</span></h4>
         </div>
-        <div class="col-md-4">
-          <div class="card bg-success text-white">
-            <div class="card-body">
-              <h4 class="card-title" style="color: #000;">Premium Version</h4>
-              <p style="color: #000;">Includes 30 interactions per hour, complete with image capabilities, for $18.99 per month. Ideal for curious kids who want even more time to explore and create with Alfie AI’s full features!</p>
-              <a href="./login.html" class="btn btn-warning rounded-pill">Sign Up</a>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
-  </section>
+</section>
 
-  <!-- Community Section -->
-  <section id="community" class="py-5 text-center bg-light">
-    <div class="container" data-aos="fade-up">
-      <h2 class="section-title">Access Our Parent Community 🌎</h2>
-      <p style="font-size: 1.1em;">Become part of the Alfie AI Parent Community when you create an account. Connect with fellow members dedicated to creating a safe and enriching experience for their children. Exchange tips on online safety, educational resources, and creative activities that enhance your child's learning journey. </p>
-      <a href="./login.html" class="btn btn-primary rounded-pill">Join Now 🚀</a>
+<!-- Pricing Section -->
+<section id="pricing" class="pricing-section" data-aos="fade-up">
+    <h2 class="section-title">Choose Your Adventure 🏆</h2>
+    <h3 style="margin-top: -40px; padding: 15px;">Register for Free and Choose Your Plan</h3>
+    <br/><br/>
+    <div class="pricing-grid">
+        <div class="pricing-item" data-aos="fade-up" data-aos-delay="100">
+            <h3>Free Plan</h3>
+            <p>Enjoy up to 5 interactive conversations per hour. This allows them to explore topics, ask questions, and engage in fun learning experiences—all while staying safe!</p>
+            <p class="price">$0/month</p>
+            <button class="cta-button" onclick="location.href='login.html'">Get Started</button>
+        </div>
+        <div class="pricing-item" data-aos="fade-up" data-aos-delay="200">
+            <h3>Gold Plan</h3>
+            <p>Includes 20 interactions per hour, with image capabilities, for just $8.99 per month. It’s perfect for kids who love exploring with Alfie AI while getting access to rich visuals and interactive fun!</p>
+            <p class="price">$8.99/month</p>
+            <button class="cta-button" onclick="location.href='login.html'">Get Gold</button>
+        </div>
+        <div class="pricing-item" data-aos="fade-up" data-aos-delay="300">
+            <h3>Premium Plan</h3>
+            <p>Includes 30 interactions per hour, complete with image capabilities, for $18.99 per month. Ideal for curious kids who want even more time to explore and create with Alfie AI’s full features!</p>
+            <p class="price">$18.99/month</p>
+            <button class="cta-button" onclick="location.href='login.html'">Get Premium</button>
+        </div>
     </div>
-  </section>
+</section>
+
+<!-- Community Section -->
+<section id="community" class="community-section" data-aos="fade-up">
+    <h2 class="section-title">Join Our Community 🌎</h2>
+    <p>Become part of the Alfie AI Parent Community when you create an account. Connect with fellow members dedicated to creating a safe and enriching experience for their children. Exchange tips on online safety, educational resources, and creative activities that enhance your child's learning journey.</p>
+    <button class="cta-button" onclick="location.href='login.html'">Join Now 🚀</button>
+</section>
 
   <!-- Footer -->
-  <footer class="bg-dark text-white text-center py-4">
-    <div class="social-icons">
-      <a href="https://www.instagram.com/alfieaikids" target="_blank"><i class="fab fa-instagram"></i></a>
+  <footer class="footer-section">
+    <div class="social-icons" data-aos="fade-up" data-aos-delay="200">
       <a href="https://www.facebook.com/profile.php?id=61567025567413&mibextid=LQQJ4d" target="_blank"><i class="fab fa-facebook"></i></a>
-  <!--<a href="https://twitter.com" target="_blank"><i class="fab fa-twitter"></i></a>-->
-  </div>
-  <br/>
-    <p>Powered by the future 🐾</p>
-    <img data-aos="fade-up" data-aos-delay="200" style="width: 240px; height: auto;"
+      <a href="https://www.instagram.com/alfieaikids" target="_blank"><i class="fab fa-instagram"></i></a>
+    </div>
+    <br/>
+    <p data-aos="fade-right" data-aos-delay="300">Powered by the future 🐾</p>
+    <img data-aos="fade-up" data-aos-delay="500" style="width: 240px; height: auto; margin-top: 10px;"
     src="https://firebasestorage.googleapis.com/v0/b/kids-chatgpt.appspot.com/o/static%2Fpowered-by-the-future.png?alt=media&token=c90e71c1-34b0-4668-a151-972eb85b2960" alt="Logos of: Chat GPT & Google Vision APIs">
-    <br/><br/>
-    <p style="padding: 15px; color: #ffffff; font-size: 0.8em; font-family: 'Roboto', Arial;">*Alfie AI utilizes the ChatGPT API and Google Vision; however, we are neither affiliated with ChatGPT nor a subsidiary of Google.</p>
+    <br/>
+    <p data-aos="fade-up" data-aos-delay="700" style="padding: 15px; color: #ffffff; font-size: 0.8em;">*Alfie AI utilizes the ChatGPT API and Google Vision; however, we are neither affiliated with ChatGPT nor a subsidiary of Google.</p>
     <div style="margin-top: 40px;"></div>
     <p><a href="./privacy-policy.html">Privacy Policy</a> | <a href="./cookie-policy.html">Cookie Policy</a> | <a href="./contact.html">Contact</a></p>
     <div style="margin-top: 20px;"></div>
@@ -352,6 +319,8 @@
     <br/>
     <button class="btn-accept" id="accept-cookies">Accept</button>
     <br/>
+</div>
+
 </div>
 
 <script>
@@ -384,7 +353,9 @@
     });
 </script>
 
+  <!-- AOS Animation Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
   <script src="scripts/main.js"></script>
-</body>
 
+</body>
 </html>
