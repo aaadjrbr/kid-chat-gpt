@@ -77,3 +77,18 @@ window.addEventListener('resize', () => {
 
 // Initial call to create stars
 createFloatingStars();
+
+// Go to the top button
+function scrollToTop() {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Toggle the visibility of the button
+window.addEventListener('scroll', () => {
+  const goToTopButton = document.getElementById('goToTopButton');
+  if (window.scrollY > 100) { // Show after scrolling down 100px
+      goToTopButton.classList.add('show');
+  } else {
+      goToTopButton.classList.remove('show');
+  }
+});

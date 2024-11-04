@@ -11,6 +11,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Raleway:wght@400;600&display=swap" rel="stylesheet">
   <!-- Font Awesome for icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <!-- Google Material Icons Link -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
   <!-- AOS for animations -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
@@ -33,100 +36,6 @@
 
   <meta name="robots" content="index, follow" />
 
-  <style>
-    /* Cookie Banner Styling */
-    #cookie-consent {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        background-color: #000000ed;
-        color: white;
-        width: 100%;
-        align-items: center;
-        z-index: 1000;
-    }
-
-    #cookie-consent p {
-      margin: 0;
-      padding: 35px;
-      font-size: 1em;
-      margin: auto;
-      text-align: center !important;
-      margin-bottom: -35px;
-      margin-top: -40px;
-    }
-
-    #cookie-consent a {
-        color: #ffd700;
-        text-decoration: none;
-    }
-
-    #cookie-consent a:hover {
-        text-decoration: underline;
-    }
-
-    .btn-accept {
-        display: flex;
-        margin: auto;
-        background: #ffd700;
-        color: #6a11cb;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 5px;
-        font-size: 1em;
-        cursor: pointer;
-        text-align: center !important;
-    }
-
-    .btn-accept:hover {
-        background: #f0d700;
-        border: none !important;
-    }
-
-    /* Toggle Switch Styling */
-    .toggle-container {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0;
-        flex-wrap: wrap;
-    }
-
-    .toggle {
-        font-family: "Fredoka One", sans-serif;
-        position: relative;
-        width: 40px;
-        height: 20px;
-        background-color: #ccc;
-        border-radius: 20px;
-        margin-left: 10px;
-        cursor: pointer;
-    }
-
-    .toggle::before {
-        content: '';
-        position: absolute;
-        top: 2px;
-        left: 2px;
-        width: 16px;
-        height: 16px;
-        background-color: white;
-        border-radius: 50%;
-        transition: all 0.3s ease;
-    }
-
-    .toggle.active {
-        background-color: #ffd700;
-    }
-
-    .toggle.active::before {
-        left: 22px;
-    }
-
-    .hidden {
-        display: none;
-    }
-</style>
 </head>
 <!-- Google tag (gtag.js) --> 
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-WYMRF4LKM1"></script>
@@ -148,11 +57,10 @@
     </ul>
 </nav>
 
-
   <!-- Sticky Menu -->
   <div class="sticky-menu" id="stickyMenu">
-    <button class="btn" onclick="location.href='login.html'">Sign Up Free</button>
-    <button class="btn" onclick="location.href='profiles.html'">Go to Chat ✨</button>
+    <button class="btn" onclick="location.href='login.html'">Join for Free</button>
+    <button class="btn" onclick="location.href='profiles.html'">Go to Chat 🐶</button>
   </div>
 <div style="overflow-x: hidden;">
 <!-- Hero Section -->
@@ -355,6 +263,12 @@
     <button class="btn-accept" id="accept-cookies">Accept</button>
     <br/>
 </div>
+
+
+<!-- Go to Top Button -->
+<button class="go-to-top" id="goToTopButton" onclick="scrollToTop()">
+    <span class="material-icons">arrow_upward</span>
+</button>
 
 </div>
 

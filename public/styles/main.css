@@ -352,6 +352,7 @@ button {
   height: 315px;
   border: none;
   border-radius: 40px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   transition: border-radius 0.3s ease-in-out; /* Add transition */
 }
 
@@ -736,3 +737,149 @@ iframe:hover {
 .social-icons a:hover {
   color: #ffc107;
 }
+
+/* Go to the top button */
+/* Go to Top Button Styles */
+.go-to-top {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: #ffcc00; /* Bright yellow for kids */
+  color: #333;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  font-size: 24px; /* Icon size */
+  opacity: 0; /* Hidden by default */
+  visibility: hidden;
+  z-index: 1000;
+}
+
+/* Show button when visible */
+.go-to-top.show {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.3s ease;
+}
+
+/* Hover Effect - Bounce */
+.go-to-top:hover {
+  transform: translateY(-10px); /* Lift up effect */
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.3);
+  animation: bounce 0.5s infinite alternate;
+}
+
+/* Icon Styling */
+.go-to-top .material-icons {
+  font-size: 30px; /* Icon size */
+}
+
+/* Keyframes for Bounce Animation */
+@keyframes bounce {
+  from {
+      transform: translateY(-10px);
+  }
+  to {
+      transform: translateY(-15px);
+  }
+}
+
+    /* Cookie Banner Styling */
+    #cookie-consent {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      background-color: #000000ed;
+      color: white;
+      width: 100%;
+      align-items: center;
+      z-index: 1000;
+  }
+
+  #cookie-consent p {
+    margin: 0;
+    padding: 35px;
+    font-size: 1em;
+    margin: auto;
+    text-align: center !important;
+    margin-bottom: -35px;
+    margin-top: -40px;
+  }
+
+  #cookie-consent a {
+      color: #ffd700;
+      text-decoration: none;
+  }
+
+  #cookie-consent a:hover {
+      text-decoration: underline;
+  }
+
+  .btn-accept {
+      display: flex;
+      margin: auto;
+      background: #ffd700;
+      color: #6a11cb;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      font-size: 1em;
+      cursor: pointer;
+      text-align: center !important;
+  }
+
+  .btn-accept:hover {
+      background: #f0d700;
+      border: none !important;
+  }
+
+  /* Toggle Switch Styling */
+  .toggle-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0;
+      flex-wrap: wrap;
+  }
+
+  .toggle {
+      font-family: "Fredoka One", sans-serif;
+      position: relative;
+      width: 40px;
+      height: 20px;
+      background-color: #ccc;
+      border-radius: 20px;
+      margin-left: 10px;
+      cursor: pointer;
+  }
+
+  .toggle::before {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 16px;
+      height: 16px;
+      background-color: white;
+      border-radius: 50%;
+      transition: all 0.3s ease;
+  }
+
+  .toggle.active {
+      background-color: #ffd700;
+  }
+
+  .toggle.active::before {
+      left: 22px;
+  }
+
+  .hidden {
+      display: none;
+  }
