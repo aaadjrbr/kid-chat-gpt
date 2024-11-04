@@ -252,7 +252,7 @@ function isInstagramBrowser() {
         message.style.textAlign = "center";
         message.style.zIndex = "1000";
         message.innerHTML = `
-            <p style="margin: 0;">
+            <p style="margin: 0; padding: 10px;">
                 For the best experience, please open this page in an external browser (Safari or Chrome).
                 <a href="${window.location.href}" style="font-weight: bold; color: #000;">Okay!</a>
             </p>
