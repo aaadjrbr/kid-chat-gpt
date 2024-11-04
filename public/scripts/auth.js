@@ -233,3 +233,37 @@ document.querySelectorAll('.toggle-password').forEach(togglePassword => {
         togglePassword.textContent = type === 'password' ? '👀' : '🙈';
     });
 });
+
+// Detect Instagram Browser
+function isInstagramBrowser() {
+    return /instagram/i.test(navigator.userAgent);
+}
+
+// Notify and suggest opening in an external browser
+function notifyInstagramBrowser() {
+    if (isInstagramBrowser()) {
+        const message = document.createElement("div");
+        message.style.position = "fixed";
+        message.style.top = "0";
+        message.style.left = "0";
+        message.style.width = "100%";
+        message.style.padding = "1em";
+        message.style.backgroundColor = "#FFD700";
+        message.style.color = "#333";
+        message.style.textAlign = "center";
+        message.style.zIndex = "1000";
+        message.style.boxShadow = "0px 4px 10px rgba(0, 0, 0, 0.1)";
+        message.innerHTML = `
+            <p style="margin: 0;">
+                For the best experience, please 
+                <a href="${window.location.href}" target="_blank" style="font-weight: bold; color: #000; text-decoration: underline;">
+                    open this page in your external browser (Safari or Chrome)
+                </a>.
+            </p>
+        `;
+        document.body.appendChild(message);
+    }
+}
+
+// Call the function to notify if Instagram browser detected
+notifyInstagramBrowser();
