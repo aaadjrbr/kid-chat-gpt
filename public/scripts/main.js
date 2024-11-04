@@ -27,6 +27,36 @@ window.onscroll = function () {
   }
 };
 
+// Detect Instagram Browser and Notify User
+function isInstagramBrowser() {
+  return navigator.userAgent.includes("Instagram");
+}
+
+function notifyInstagramBrowser() {
+  if (isInstagramBrowser()) {
+      const message = document.createElement("div");
+      message.style.position = "fixed";
+      message.style.top = "0";
+      message.style.left = "0";
+      message.style.width = "100%";
+      message.style.padding = "1em";
+      message.style.backgroundColor = "#FFD700";
+      message.style.color = "#333";
+      message.style.textAlign = "center";
+      message.style.zIndex = "1000";
+      message.innerHTML = `
+          <p style="margin: 0;">
+              For a better experience, please open this page in your browser.
+              <a href="${window.location.href}" style="font-weight: bold; color: #000;">Open in Browser</a>
+          </p>
+      `;
+      document.body.appendChild(message);
+  }
+}
+
+// Call the function to notify if Instagram browser detected
+notifyInstagramBrowser();
+
 // Smooth Scroll
 function scrollToSection(selector) {
   document.querySelector(selector).scrollIntoView({ behavior: 'smooth' });
@@ -36,46 +66,31 @@ function scrollToSection(selector) {
 const createFloatingStars = () => {
   const starContainer = document.querySelector('.floating-stars');
   const screenWidth = window.innerWidth;
-
-  // Determine the number of stars based on screen width
   const numberOfStars = screenWidth > 1200 ? 150 : screenWidth > 768 ? 100 : 50;
 
-  // Clear existing stars
-  starContainer.innerHTML = '';
+  starContainer.innerHTML = ''; // Clear existing stars
 
   for (let i = 0; i < numberOfStars; i++) {
       const star = document.createElement('div');
       star.classList.add('star');
 
-      // Randomize position
       star.style.left = `${Math.random() * 100}%`;
       star.style.top = `${Math.random() * 100}%`;
-
-      // Randomize animation duration and easing for floating effect
       star.style.animationDuration = `${Math.random() * 5 + 3}s`;
       star.style.animationTimingFunction = 'ease-in-out';
-
-      // Adjust star size and opacity for variety
       star.style.transform = `scale(${Math.random() * 0.8 + 0.2})`;
       star.style.opacity = `${Math.random() * 0.8 + 0.2}`;
-
-      // Subtle color variation for a natural look
       const starColor = Math.random() < 0.5 ? 'rgba(255, 255, 255, 0.8)' : 'rgba(173, 216, 230, 0.8)';
       star.style.backgroundColor = starColor;
-
-      // Append each star to the container
       starContainer.appendChild(star);
   }
 };
 
-// Debounce function for resize events
 let resizeTimeout;
 window.addEventListener('resize', () => {
   clearTimeout(resizeTimeout);
   resizeTimeout = setTimeout(createFloatingStars, 200);
 });
-
-// Initial call to create stars
 createFloatingStars();
 
 // Go to the top button
@@ -86,7 +101,7 @@ function scrollToTop() {
 // Toggle the visibility of the button
 window.addEventListener('scroll', () => {
   const goToTopButton = document.getElementById('goToTopButton');
-  if (window.scrollY > 100) { // Show after scrolling down 100px
+  if (window.scrollY > 100) { 
       goToTopButton.classList.add('show');
   } else {
       goToTopButton.classList.remove('show');
