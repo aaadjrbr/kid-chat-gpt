@@ -108,14 +108,21 @@ async function createPost(postTitle, postContent, postCategory) {
     userId: user.uid,
     postTitle,
     postContent,
-    postCategory,  // Store the category
+    postCategory,
     timestamp: new Date(),
     edited: false,
     replies: [],
   };
 
-  await addDoc(postsRef, post);
-  alert('Post created!');
+  // Add the post to Firestore and get the document reference
+  const docRef = await addDoc(postsRef, post);
+
+  // Display the new post immediately at the top of the page
+  const postsContainer = document.getElementById('posts-container');
+  const postElement = await renderPost(post, docRef.id);
+  postsContainer.insertAdjacentElement('afterbegin', postElement);
+
+  alert('✅ Post created!');
 }
 
 // Add a video (Admin only)
@@ -330,27 +337,21 @@ async function loadPostsByCategory(category) {
     return;
   }
 
-  // If changing category, reset pagination
-  if (category !== selectedCategory) {
-    postsContainer.innerHTML = '';  // Clear the posts container to avoid duplicates
-    lastVisiblePost = null;
+  // Clear posts container only if changing category or initial load
+  if (category !== selectedCategory || !lastVisiblePost) {
+    postsContainer.innerHTML = '';  // Clear posts to avoid duplicates
+    lastVisiblePost = null;  // Reset pagination
   }
 
-  // Clear any previous "No posts found" message before new query
-  const noPostsMessage = postsContainer.querySelector('p');
-  if (noPostsMessage && noPostsMessage.textContent.includes('No posts found')) {
-    noPostsMessage.remove();  // Remove the message
-  }
-
+  // Fetch posts from Firestore
   let q = query(postsRef, where('postCategory', '==', category), orderBy('timestamp', 'desc'), limit(limitNum));
   if (lastVisiblePost) {
     q = query(postsRef, where('postCategory', '==', category), orderBy('timestamp', 'desc'), startAfter(lastVisiblePost), limit(limitNum));
   }
 
   const querySnapshot = await getDocs(q);
-  
+
   if (querySnapshot.empty) {
-    // Only show "No posts found" if it's the first batch and no posts are found
     if (!lastVisiblePost) {
       postsContainer.innerHTML = '<p>❌ No posts found</p>';
     }
@@ -358,11 +359,8 @@ async function loadPostsByCategory(category) {
     querySnapshot.forEach((doc) => {
       renderPost(doc.data(), doc.id);
     });
-
-    // Update the last visible post for pagination
-    if (querySnapshot.docs.length > 0) {
-      lastVisiblePost = querySnapshot.docs[querySnapshot.docs.length - 1];
-    }
+    lastVisiblePost = querySnapshot.docs[querySnapshot.docs.length - 1];
+  }
 
     // If no more posts are available
     if (querySnapshot.size < limitNum) {
@@ -371,7 +369,6 @@ async function loadPostsByCategory(category) {
       loadMoreBtn.textContent = '✅ No more posts to load';
     }
   }
-}
 
 // Event listener for category selection and filtering
 document.getElementById('filter-btn').addEventListener('click', () => {
@@ -470,6 +467,7 @@ async function renderPost(postData, postId) {
   // Create HTML for the post
   const postElement = document.createElement('div');
   postElement.classList.add('post');
+  postElement.setAttribute('data-post-id', postId); // Set the post ID for easy access later
 
   // Check if the user has a profile picture
   const profilePictureUrl = userData.profilePicture || 'https://firebasestorage.googleapis.com/v0/b/kids-chatgpt.appspot.com/o/default-profile.webp?alt=media&token=8f1f9033-90a1-42c6-9845-aefd87fb6fdd';  // Fallback to default if no picture
@@ -562,6 +560,9 @@ async function renderPost(postData, postId) {
       repliesList.style.display = 'none'; // Hide replies
     });
   }
+
+    // Return the post element so it can be inserted at the top
+    return postElement;
 }
 
 // Function to delete a post
@@ -569,7 +570,7 @@ async function deletePost(postId) {
   try {
     const postRef = doc(postsRef, postId);
     await deleteDoc(postRef); // Delete the post from Firestore
-    alert('Post deleted successfully! Refresh the page.');
+    alert('✅ Post deleted successfully!');
     
     // Optionally, you can remove the post from the DOM here
     const postElement = document.querySelector(`[data-post-id="${postId}"]`);

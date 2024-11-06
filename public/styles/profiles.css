@@ -1079,7 +1079,6 @@ div#pin-verification-popup p a:hover {
 
 .comparison-item:hover, .math-tutor:hover, .english-tutor:hover {
     border-radius: 10px;
-    transform: scale(1.05) translateY(-5px); /* Slight lift */
     box-shadow: 
         0 12px 20px rgba(0, 0, 0, 0.3),       /* Enhanced outer shadow on hover */
         inset 0 6px 12px rgba(0, 0, 0, 0.3),  /* Stronger inner shadow */

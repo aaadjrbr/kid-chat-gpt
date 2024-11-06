@@ -29,14 +29,14 @@ h1 {
 }
 
 h2 {
-  color: #0056b3;
+  color: #7b2cbf;
   text-align: center;
   margin-bottom: 20px;
   font-weight: 700;
 }
 
 button {
-  background: linear-gradient(135deg, #007bff, #0056b3);
+  background: linear-gradient(to bottom right, #7b2cbf, #9d4edd, #5a189a);
   color: #fff;
   padding: 10px 20px;
   border: none;
@@ -50,7 +50,7 @@ button {
 }
 
 button:hover {
-  background: linear-gradient(135deg, #0056b3, #004080);
+  background: linear-gradient(to bottom right,#5a189a, #9d4edd, #7b2cbf);
 }
 
 button .material-icons {
@@ -60,7 +60,7 @@ button .material-icons {
 
 /* Header Styles */
 header {
-  background: linear-gradient(135deg, #007bff, #0056b3);
+  background: linear-gradient(to bottom right, #7b2cbf, #9d4edd, #5a189a);
   color: white;
   padding: 20px;
   text-align: center;
@@ -72,7 +72,7 @@ header {
 div#video-container h3 {
   font-size: 1.6em;
   color: #fff;
-  background: #0056b3;
+  background: #7b2cbf;
   padding: 10px;
   border-radius: 10px;
 }
@@ -232,7 +232,7 @@ button.edit-btn:hover, button.delete-btn:hover, button.edit-reply-btn:hover, but
 
 .filter-post-stuff {
   box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.158);
-  background: linear-gradient(135deg, #007bff, #0056b3);
+  background: linear-gradient(to bottom right, #7b2cbf, #9d4edd, #5a189a);
   padding: 30px;
 }
 
@@ -246,13 +246,13 @@ div.replies-list p {
 }
 
 div.reply h4 {
-  color: #0056b3;
+  color: #7b2cbf;
   font-size: 0.9em;
   margin-top: -5px;
 }
 
 div.post h2 {
-  color: #0056b3;
+  color: #7b2cbf;
   text-align: left;
   font-size: 1em;
 }
@@ -321,12 +321,33 @@ button.reply-btn {
 
 .admin-tag {
   color: #fff;
-  background: #ff5733;
+  background: linear-gradient(135deg, #ff5733, #ff6f4d); /* Gradient for depth */
   font-weight: bold;
   font-size: 1em;
-  padding: 8px;
+  padding: 8px 15px;
   border-radius: 8px;
   margin-left: 10px;
+  position: relative;
+  box-shadow: 
+      0 4px 8px rgba(0, 0, 0, 0.2), /* Main shadow for lift */
+      inset 0 2px 4px rgba(255, 255, 255, 0.3); /* Inner glow for light source effect */
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Optional: Hover effect for more interactivity */
+.admin-tag:hover {
+  box-shadow: 
+      0 6px 12px rgba(0, 0, 0, 0.3), /* Stronger shadow on hover */
+      inset 0 3px 6px rgba(255, 255, 255, 0.4); /* Enhanced inner highlight */
+  transform: translateY(-2px) scale(1.02); /* Slight lift on hover */
+}
+
+/* Active state for pressed effect */
+.admin-tag:active {
+  box-shadow: 
+      0 3px 6px rgba(0, 0, 0, 0.2), /* Reduced shadow for pressed effect */
+      inset 0 1px 3px rgba(255, 255, 255, 0.3); /* Softer inner glow */
+  transform: translateY(1px) scale(0.98); /* Press-down effect */
 }
 
 /* Replies Section */
@@ -369,7 +390,7 @@ button.reply-btn {
 /* Category Message */
 #category-message {
   font-weight: bold;
-  background: linear-gradient(135deg, #007bff, #0056b3);
+  background: linear-gradient(to bottom right, #7b2cbf, #9d4edd, #5a189a);
   padding: 20px;
   border-radius: 20px;
   color: #fff;
@@ -455,7 +476,7 @@ button.reply-btn {
 }
 
 #video-form input:focus {
-  border-color: #007bff;
+  border-color: #7b2cbf;
   outline: none;
 }
 
@@ -496,7 +517,7 @@ div#video-container p {
 .button-next-back button {
   flex: 1; /* Ensures both buttons take equal width */
   padding: 10px 20px;
-  background: linear-gradient(135deg, #007bff, #0056b3);
+  background: linear-gradient(to bottom right, #7b2cbf, #9d4edd, #5a189a);
   color: white;
   border: none;
   border-radius: 30px;
@@ -507,7 +528,7 @@ div#video-container p {
 }
 
 .button-next-back button:hover {
-  background: linear-gradient(135deg, #0056b3, #004080);
+  background: linear-gradient(to bottom right, #7b2cbf, #9d4edd, #5a189a);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
@@ -541,7 +562,7 @@ select#category-select {
 }
 
 select#category-select:focus {
-  border-color: #007bff;
+  border-color: #7b2cbf;
   padding: 5px !important;
   font-size: 0.9em !important;
   outline: none;
@@ -549,7 +570,7 @@ select#category-select:focus {
 }
 
 select#category-select:hover {
-  border-color: #0056b3;
+  border-color: #7b2cbf;
 }
 
 /* Responsive iframe styling */
@@ -557,7 +578,7 @@ iframe {
   width: 90%;
   max-width: 700px; /* Restricts maximum width */
   height: 400px; /* Adjusts the height relative to width */
-  border: 8px solid #0056b3;
+  border: 8px solid #7b2cbf;
   border-radius: 20px; /* Rounds the edges for a modern look */
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Adds a subtle shadow for depth */
   margin: 20px auto;
@@ -645,6 +666,21 @@ iframe {
   margin-right: 10px;
   margin-top: -30px;
   margin-bottom: 10px;
+
+  /* 3D effect with shadows */
+  box-shadow: 
+      0 4px 8px rgba(0, 0, 0, 0.2), /* Outer shadow for depth */
+      inset 0 2px 4px rgba(255, 255, 255, 0.3); /* Inner light at the top */
+  border: 2px solid rgba(255, 255, 255, 0.7); /* Soft border to add contrast */
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(0, 0, 0, 0.1)); /* Subtle overlay for depth */
+  transition: box-shadow 0.3s ease, transform 0.2s ease;
+}
+
+/* Optional: Hover effect for more interactivity */
+.profile-picture:hover {
+  box-shadow: 
+      0 6px 12px rgba(0, 0, 0, 0.3), /* Enhanced shadow on hover */
+      inset 0 3px 6px rgba(255, 255, 255, 0.4); /* Enhanced inner glow */
 }
 
 .post-header {
@@ -682,7 +718,7 @@ h4.admin-tag {
 
 div.video-block h4 {
   font-size: 1.5em;
-  color: #0056b3;
+  color: #7b2cbf;
 }
 
 .modal {
@@ -700,7 +736,7 @@ div.video-block h4 {
 
 .modal-content {
   background-color: #fefefe;
-  border: 8px solid #0056b3;
+  border: 8px solid #7b2cbf;
   border-radius: 25px;
   box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05);
   margin: auto;
@@ -746,7 +782,7 @@ div.video-block h4 {
   width: 100%;
   padding: 10px;
   margin-bottom: -10px;
-  border: 4px solid #0056b3;
+  border: 4px solid #7b2cbf;
   border-radius: 25px;
   font-size: 1em;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -763,7 +799,7 @@ div.video-block h4 {
 #see-all-videos-btn {
   margin-top: -50px;
   padding: 8px 16px;
-  background-color: #007bff;
+  background-color: #7b2cbf;
   color: white;
   border: none;
   border-radius: 30px;

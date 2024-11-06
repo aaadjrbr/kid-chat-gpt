@@ -8,7 +8,7 @@
 
 body {
     font-family: 'Roboto', sans-serif;
-    background: radial-gradient(circle, var(--color-bg1) 0%, var(--color-bg2) 100%);
+    background: linear-gradient(135deg, rgba(23, 212, 133, 0.3), rgb(114, 196, 161, 0.2));
     margin: 0;
     text-align: center;
     overflow-x: hidden; /* Prevent horizontal scrolling */
@@ -54,6 +54,8 @@ button.remove-kid-btn {
 /* Container for the form */
 .forgot-pin-container {
     padding: 40px;
+    margin: auto;
+    text-align: center;
 }
 
 #status {
@@ -145,10 +147,12 @@ div.user-box p {
 /* Mobile Adjustments */
 @media (max-width: 600px) {
     .forgot-pin-container {
-        width: 95%; /* Increase width to 95% for better space utilization */
+        width: 95%;
         padding: 10px;
         top: 10px;
         max-height: 85vh;
+        margin: auto;
+        text-align: center;
     }
 
     .forgot-pin-container h2 {
