@@ -899,15 +899,33 @@ div#pin-verification-popup p a:hover {
     left: -50%;
     width: 200%;
     height: 200%;
-    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0));
-    transform: rotate(45deg);
-    animation: light-pulse 5s linear infinite;
+    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.6), rgba(0, 162, 255, 0.2), rgba(255, 0, 150, 0));
+    animation: light-pulse 6s ease-in-out infinite, color-shift 12s ease-in-out infinite;
     pointer-events: none;
+    z-index: -3;
 }
 
 @keyframes light-pulse {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0%, 100% {
+        transform: scale(1);
+        opacity: 0.8;
+    }
+    50% {
+        transform: scale(1.05);
+        opacity: 1;
+    }
+}
+
+@keyframes color-shift {
+    0% {
+        filter: hue-rotate(0deg);
+    }
+    50% {
+        filter: hue-rotate(180deg);
+    }
+    100% {
+        filter: hue-rotate(360deg);
+    }
 }
 
 .feature-grid {
