@@ -32,32 +32,59 @@ button, input {
 button#toggle-add-profile, .toggle-add-profile2 {
     font-family: 'Fredoka One', 'Raleway', sans-serif;
     color: #ffffff;
-    background: #0d6dfdec;
-    border: 3px solid #0d6dfd;
+    background-image: url('https://firebasestorage.googleapis.com/v0/b/kids-chatgpt.appspot.com/o/static%2Falfie-bg-button.webp?alt=media&token=5916041f-c045-494f-8ac8-f13af15b5392'); /* Replace with your image path */
+    background-size: cover;
+    background-position: center;
+    border: 2px solid #fffffff3;
     padding: 15px;
     font-size: 1.1em;
     border-radius: 35px;
-    transition: background-color 0.3s, box-shadow 0.3s, transform 0.3s;
-    box-shadow: 
-        0 4px 8px rgba(0, 0, 0, 0.2),      /* Main shadow for depth */
-        inset 0 -3px 5px rgba(0, 0, 0, 0.15); /* Inner shadow for a pressed look */
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2), inset 0 -3px 5px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Moving star effects */
+button#toggle-add-profile::before, .toggle-add-profile2::before,
+button#toggle-add-profile::after, .toggle-add-profile2::after {
+    content: '';
+    position: absolute;
+    width: 200%;
+    height: 200%;
+    top: -50%;
+    left: -50%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.61) 6%, transparent 4%) repeat;
+    background-size: 20px 20px;
+    pointer-events: none;
+    opacity: 0.5;
+    animation: moveStars 6s linear infinite;
+}
+
+button#toggle-add-profile::after, .toggle-add-profile2::after {
+    background-size: 25px 25px; /* Slightly different size for variety */
+    opacity: 0.3;
+    animation-duration: 8s; /* Different speed for more variation */
+}
+
+@keyframes moveStars {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    25% { transform: translate(10px, -10px) rotate(45deg); }
+    50% { transform: translate(-15px, 15px) rotate(90deg); }
+    75% { transform: translate(20px, -20px) rotate(135deg); }
+    100% { transform: translate(0, 0) rotate(360deg); }
 }
 
 button#toggle-add-profile:hover, .toggle-add-profile2:hover {
-    background-image: linear-gradient(to right, #ffffff57, #ffffff6e);
-    border: 3px solid #0d6efd;
     transform: scale(1.05) translateY(-3px); /* Lifted effect on hover */
     box-shadow: 
         0 8px 15px rgba(0, 0, 0, 0.3),      /* Enhanced outer shadow */
         inset 0 -4px 8px rgba(255, 255, 255, 0.3); /* Inner light highlight for depth */
-    transition: background-color 0.3s, box-shadow 0.3s, transform 0.3s;
 }
 
-button#toggle-add-profile:active, .toggle-add-profile2:active {
-    transform: scale(0.98) translateY(2px); /* Pressed down effect on click */
-    box-shadow: 
-        0 2px 5px rgba(0, 0, 0, 0.2), /* Softer shadow for pressed effect */
-        inset 0 4px 6px rgba(0, 0, 0, 0.3); /* Inner shadow for depth */
+button#toggle-add-profile span, .toggle-add-profile2 span {
+    position: relative; /* Ensures text stays above everything */
+    z-index: 2; /* Place text above sparkles */
 }
 
 button#save-changes-button {
@@ -80,8 +107,10 @@ button#delete-profile-button:hover {
 button.history-btn {
     cursor: pointer;
     background: none !important;
-    color: #212529;
+    color: #ffffff;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
     font-family: 'Fredoka One', 'Raleway', sans-serif;
+    font-weight: 500;
     font-size: 1em !important;
     margin-top: -30px !important;
     padding: 0px !important;
@@ -90,22 +119,62 @@ button.history-btn {
 
 button.history-btn:hover {
     background: none;
-    color: #6a11cb;
+    color: #fff350;
 }
 
 button.start-chat-btn {
-    background: #198754 !important;
-    border: 3px solid #198754;
     font-family: 'Fredoka One', 'Raleway', sans-serif;
+    color: #ffffff;
+    background-image: url('https://firebasestorage.googleapis.com/v0/b/kids-chatgpt.appspot.com/o/static%2Falfie-bg-button.webp?alt=media&token=5916041f-c045-494f-8ac8-f13af15b5392') !important;
+    background-size: cover;
+    background-position: center;
+    border: 2px solid #ffffffd2;
+    padding: 15px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2), inset 0 -3px 5px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
     font-weight: 400 !important;
     font-size: 1em !important;
     border-radius: 35px !important;
-    color: #ffffff;
 }
 
+/* Sparkle effect */
+button.start-chat-btn::before,
+button.start-chat-btn::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.61) 6%, transparent 4%) repeat;
+    background-size: 25px 25px;
+    pointer-events: none;
+    opacity: 0.4;
+    animation: moveStars 6s linear infinite;
+    z-index: 1; /* Behind the text */
+}
+
+button.start-chat-btn::after {
+    background-size: 15px 15px; /* Slightly different size for variation */
+    opacity: 0.3;
+    animation-duration: 8s; /* Different speed for additional effect */
+}
+
+@keyframes moveStars {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    25% { transform: translate(10px, -10px) rotate(45deg); }
+    50% { transform: translate(-15px, 15px) rotate(90deg); }
+    75% { transform: translate(20px, -20px) rotate(135deg); }
+    100% { transform: translate(0, 0) rotate(360deg); }
+}
+
+/* Hover effect */
 button.start-chat-btn:hover {
-    background: #198754c7 !important;
-    border: 3px solid #198754;
+    box-shadow: 
+        0 8px 15px rgba(0, 0, 0, 0.3),      /* Enhanced outer shadow */
+        inset 0 -4px 8px rgba(255, 255, 255, 0.3); /* Inner light highlight for depth */
 }
 
 h2 {
@@ -231,7 +300,7 @@ form#add-profile-form {
 }
 
 span.kid-name-circle:hover {
-    color: #6a11cb;
+    color: #fff350;
 }
 
 .profile-image.hide, .kid-name-circle.hide {
@@ -336,7 +405,7 @@ button.edit-button {
 }
 
 button.edit-button:hover {
-    color: #6a11cb;
+    color: #fff350;
     background: none;
     transform: scale(1.05);
 }
@@ -657,23 +726,45 @@ a.special-a:hover {
 }
 
 #pin-verification-popup {
-    background-color: #fff8e1 !important; /* Soft, warm background color */
-    border: 3px solid #fbc02d; /* Cute yellow border */
+    background: linear-gradient(135deg, #fff8e1, #fff3c4); /* Soft gradient for depth */
+    border: 3px solid #fbc02d;
     border-radius: 15px;
     padding: 20px;
     width: 70% !important;
     text-align: center;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05) !important;
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 1000;
-    font-family: 'M PLUS Rounded 1c', sans-serif; /* Rounded, cute font */
+    font-family: 'Outfit', sans-serif;
+
+    /* Outer shadows for a lifted effect */
+    box-shadow: 
+        0 15px 25px rgba(0, 0, 0, 0.2), /* Main shadow for depth */
+        inset 0 5px 10px rgba(255, 255, 255, 0.6), /* Inner glow */
+        inset 0 -3px 8px rgba(0, 0, 0, 0.1); /* Inner shadow at the bottom */
+    
+    /* Slight 3D effect on borders */
+    border-top: 3px solid #ffd54f; /* Lighter top border */
+    border-left: 3px solid #ffd54f; /* Lighter left border */
+    border-bottom: 3px solid #f57f17; /* Darker bottom border */
+    border-right: 3px solid #f57f17; /* Darker right border */
+}
+
+/* Optional: Add a slight animation to make it feel more dynamic */
+@keyframes popup-bounce {
+    0% { transform: translate(-50%, -50%) scale(0.95); }
+    50% { transform: translate(-50%, -50%) scale(1.02); }
+    100% { transform: translate(-50%, -50%) scale(1); }
+}
+
+#pin-verification-popup {
+    animation: popup-bounce 0.4s ease-in-out;
 }
 
 #pin-verification-popup h3 {
+    font-family: 'M PLUS Rounded 1c', sans-serif; /* Rounded, cute font */
     color: #ff6f61; /* Soft red for heading */
     font-size: 1.5em;
     margin-bottom: 20px;
@@ -685,6 +776,23 @@ a.special-a:hover {
     border-radius: 10px;
     margin-bottom: -15px;
     font-size: 1.2em;
+    background: linear-gradient(135deg, #fffef5, #fdf5d8); /* Light gradient for depth */
+    box-shadow: 
+        0 4px 8px rgba(0, 0, 0, 0.1),      /* Outer shadow for depth */
+        inset 0 2px 4px rgba(255, 255, 255, 0.7), /* Inner glow for light source effect */
+        inset 0 -2px 4px rgba(0, 0, 0, 0.1); /* Subtle inner shadow at the bottom */
+    transition: box-shadow 0.3s ease, transform 0.2s ease; /* Smooth transitions for interaction */
+}
+
+/* Hover and focus effects for a more dynamic interaction */
+#pin-verification-popup input:hover,
+#pin-verification-popup input:focus {
+    box-shadow: 
+        0 6px 12px rgba(0, 0, 0, 0.15),      /* Stronger outer shadow on hover/focus */
+        inset 0 3px 5px rgba(255, 255, 255, 0.9), /* Enhanced inner glow */
+        inset 0 -3px 5px rgba(0, 0, 0, 0.15); /* Slightly darker inner shadow */
+    outline: none; /* Remove default focus outline */
+    transform: scale(1.02); /* Slightly larger on hover/focus */
 }
 
 div#pin-verification-popup p a {
@@ -696,7 +804,7 @@ div#pin-verification-popup p a:hover {
 }
 
 #pin-verification-popup button {
-    background-color: #ffcc80; /* Light orange button */
+    background: linear-gradient(135deg, #ffcc80, #ffb74d); /* Light gradient for depth */
     color: #fff;
     border: none;
     border-radius: 10px;
@@ -704,11 +812,31 @@ div#pin-verification-popup p a:hover {
     font-size: 1em;
     cursor: pointer;
     margin: 5px;
-    transition: background-color 0.3s;
+    transition: 
+        background-color 0.3s,
+        box-shadow 0.3s,
+        transform 0.2s ease;
+
+    /* 3D effect with outer and inner shadows */
+    box-shadow: 
+        0 4px 8px rgba(0, 0, 0, 0.2), /* Outer shadow for depth */
+        inset 0 2px 4px rgba(255, 255, 255, 0.5); /* Soft inner highlight */
 }
 
 #pin-verification-popup button:hover {
-    background-color: #ffa726; /* Darker orange on hover */
+    background: linear-gradient(135deg, #ffa726, #ff9800); /* Darker gradient on hover */
+    box-shadow: 
+        0 6px 12px rgba(0, 0, 0, 0.3), /* Enhanced outer shadow on hover */
+        inset 0 3px 5px rgba(255, 255, 255, 0.5); /* Stronger inner glow */
+    transform: translateY(-2px) scale(1.03); /* Lift and slightly enlarge on hover */
+}
+
+#pin-verification-popup button:active {
+    background: #ff9800; /* Solid color for active state */
+    box-shadow: 
+        0 3px 6px rgba(0, 0, 0, 0.2), /* Softer outer shadow when pressed */
+        inset 0 1px 3px rgba(255, 255, 255, 0.4); /* Softer inner glow */
+    transform: translateY(1px) scale(0.98); /* Slight press-down effect */
 }
 
 #pin-error-message {
@@ -719,13 +847,36 @@ div#pin-verification-popup p a:hover {
 }
 
 #pin-verification-popup #cancel-pin-btn {
-    background-color: #f4f4f4; /* Light background for cancel button */
+    background: linear-gradient(135deg, #f4f4f4, #eaeaea); /* Soft gradient for depth */
     color: #555;
-    border: 2px solid #ddd; /* Subtle border */
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: 
+        background-color 0.3s,
+        box-shadow 0.3s,
+        transform 0.2s ease;
+    box-shadow: 
+        0 2px 5px rgba(0, 0, 0, 0.1), /* Outer shadow for a lifted effect */
+        inset 0 1px 2px rgba(255, 255, 255, 0.5); /* Soft inner glow for dimension */
 }
 
 #pin-verification-popup #cancel-pin-btn:hover {
-    background-color: #e0e0e0; /* Slight change on hover */
+    background: linear-gradient(135deg, #e0e0e0, #d0d0d0); /* Slightly darker gradient on hover */
+    box-shadow: 
+        0 4px 8px rgba(0, 0, 0, 0.15), /* Enhanced outer shadow for more depth on hover */
+        inset 0 2px 3px rgba(255, 255, 255, 0.6); /* Inner highlight to simulate light */
+    transform: translateY(-1px) scale(1.02); /* Slight lift and enlargement */
+}
+
+#pin-verification-popup #cancel-pin-btn:active {
+    background: #e0e0e0; /* Solid background on press */
+    box-shadow: 
+        0 2px 4px rgba(0, 0, 0, 0.1), /* Reduced shadow for pressed effect */
+        inset 0 1px 2px rgba(255, 255, 255, 0.4); /* Softer inner highlight */
+    transform: translateY(1px) scale(0.98); /* Slight press-down effect */
 }
 
 /* Feature Section */
