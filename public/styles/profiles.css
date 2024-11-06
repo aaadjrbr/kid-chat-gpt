@@ -3,11 +3,10 @@
 
 /* General styling */
 body {
-    font-family: "Open Sans", sans-serif;
+    font-family: 'Outfit', sans-serif;
     font-weight: 400;
-    background-color: #e3e3e9; /* Light greyish background for a cleaner look */
+    background: linear-gradient(135deg, rgba(23, 212, 133, 0.3), rgb(114, 196, 161, 0.2));
     margin: 0;
-    padding: 20px;
     color: #000000;
 }
 
@@ -25,10 +24,6 @@ body {
     transition: transform 0.3s ease; /* Smooth hover transition */
 }
 
-.logo:hover {
-    transform: scale(1.1); /* Scale image up on hover */
-}
-
 button, input {
     font-family: "Open Sans", sans-serif;
     font-weight: 500;
@@ -36,20 +31,33 @@ button, input {
 
 button#toggle-add-profile, .toggle-add-profile2 {
     font-family: 'Fredoka One', 'Raleway', sans-serif;
-    color:#ffffff;
+    color: #ffffff;
     background: #0d6dfdec;
     border: 3px solid #0d6dfd;
     padding: 15px;
     font-size: 1.1em;
     border-radius: 35px;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s, box-shadow 0.3s, transform 0.3s;
+    box-shadow: 
+        0 4px 8px rgba(0, 0, 0, 0.2),      /* Main shadow for depth */
+        inset 0 -3px 5px rgba(0, 0, 0, 0.15); /* Inner shadow for a pressed look */
 }
 
 button#toggle-add-profile:hover, .toggle-add-profile2:hover {
     background-image: linear-gradient(to right, #ffffff57, #ffffff6e);
     border: 3px solid #0d6efd;
-    transform: scale(1.05);
-    transition: background-color 0.3s;
+    transform: scale(1.05) translateY(-3px); /* Lifted effect on hover */
+    box-shadow: 
+        0 8px 15px rgba(0, 0, 0, 0.3),      /* Enhanced outer shadow */
+        inset 0 -4px 8px rgba(255, 255, 255, 0.3); /* Inner light highlight for depth */
+    transition: background-color 0.3s, box-shadow 0.3s, transform 0.3s;
+}
+
+button#toggle-add-profile:active, .toggle-add-profile2:active {
+    transform: scale(0.98) translateY(2px); /* Pressed down effect on click */
+    box-shadow: 
+        0 2px 5px rgba(0, 0, 0, 0.2), /* Softer shadow for pressed effect */
+        inset 0 4px 6px rgba(0, 0, 0, 0.3); /* Inner shadow for depth */
 }
 
 button#save-changes-button {
@@ -120,10 +128,33 @@ h2 {
 }
 
 .title1 {
-    font-family: 'Fredoka One', 'Raleway', sans-serif;
-    font-size: 2.6em;
-    color: #6a11cb;
-    font-weight: 400;
+    font-size: 2.5em;
+    font-family: 'Fredoka', Helvetica;
+    font-weight: 600;
+    text-align: center;
+    background: linear-gradient(to bottom right, #7b2cbf, #9d4edd, #5a189a);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    margin-top: 15px;
+    position: relative;
+    text-shadow: 2px 2px 4px rgb(0 0 0 / 7%),
+    4px 4px 13px rgb(0 0 0 / 0%);
+}
+
+.title1::after {
+    content: ''; /* Empty content to create a highlight layer */
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to bottom right, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    pointer-events: none; /* Prevent interaction */
+    opacity: 0.7;
 }
 
 form#add-profile-form {
@@ -218,38 +249,49 @@ span.kid-name-circle:hover {
 
 /* Profile item styling */
 .profile-item {
-    background-color: #ffc10796;
-    border: 4px solid #ffc107;
+    background: linear-gradient(to bottom right, #7b2cbf, #9d4edd, #5a189a);
+    border: 4px solid rgba(157, 78, 221, 0.6); /* Semi-transparent border */
     border-radius: 50% !important;
     padding: 20px;
     width: 150px !important;
     height: 150px !important;
     text-align: center;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05);
-    transition: transform 0.3s, background-color 0.3s;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s;
+
+    /* 3D effect shadows */
+    box-shadow: 
+        8px 8px 15px rgba(0, 0, 0, 0.2),   /* Main shadow */
+        -4px -4px 10px rgba(255, 255, 255, 0.3), /* Light source highlight */
+        inset 0 4px 6px rgba(0, 0, 0, 0.1), /* Subtle inner shadow */
+        inset -4px -4px 8px rgba(255, 255, 255, 0.2); /* Inner highlight */
 }
 
 .profile-item:hover {
-    background-image: linear-gradient(to right, #ffffff1c, #ffffff70);
-    border: 4px solid #6a11cb;
-    transform: scale(1.05);
+    background: linear-gradient(to bottom right, #7a2cbfa2, #9d4eddb6, #59189a80);
+    border: 4px solid #ffffff;
+    transform: scale(1.05) translateY(-5px); /* Slight lift on hover */
+
+    /* Enhanced shadow on hover */
+    box-shadow: 
+        10px 10px 20px rgba(0, 0, 0, 0.3), 
+        -5px -5px 10px rgba(255, 255, 255, 0.4),
+        inset 0 5px 8px rgba(0, 0, 0, 0.15), 
+        inset -3px -3px 6px rgba(255, 255, 255, 0.25);
 }
 
 /* Kid name styling inside the profile */
 .profile-item span {
     font-family: 'Fredoka One', 'Raleway', sans-serif !important; 
-    font-weight: 300 !important;
+    font-weight: 400 !important;
     font-size: 1.2em !important;
     display: block;
     margin-top: 10px;
-    color: #212529;
-    font-size: 1.1em;
-    font-weight: 900;
+    color: #ffffff;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3); /* Subtle shadow for depth */
 }
 
 /* Center the options-container using text-align */
@@ -287,9 +329,10 @@ span.kid-name-circle:hover {
 button.edit-button {
     cursor: pointer;
     background: none;
-    color: #212529;
+    color: #ffffff;
     font-size: 1.1em;
     margin-top: 10px;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3); /* Subtle shadow for depth */
 }
 
 button.edit-button:hover {
@@ -346,10 +389,16 @@ button:hover {
 /* Profile image styling */
 .profile-image {
     border-radius: 50%;
-    border: 3px solid #212529;
     width: 80px;
     height: 80px;
+    border: 3px solid rgba(255, 255, 255, 0.22); /* Softer outer border */
+    background: linear-gradient(145deg, #ffffff, #d1d1d1); /* Light gradient for a soft 3D look */
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3), /* Main shadow for depth */
+                -5px -5px 10px rgba(255, 255, 255, 0.2), /* Highlight to mimic light source */
+                inset 2px 2px 5px rgba(0, 0, 0, 0.3), /* Inner shadow for a recessed effect */
+                inset -2px -2px 5px rgba(255, 255, 255, 0.2); /* Light inner highlight */
 }
+
 
 /* Profile name styling */
 .profile-item span {
@@ -441,14 +490,30 @@ button:hover {
     border-radius: 35px;
     cursor: pointer;
     font-size: 16px;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 
+        0 4px 10px rgba(0, 0, 0, 0.2),      /* Outer shadow for depth */
+        inset 0 -3px 5px rgba(0, 0, 0, 0.1); /* Inner shadow for a subtle pressed look */
 }
 
 #logout-button:hover {
     background-color: #e60000; /* Darker red on hover */
+    transform: scale(1.05); /* Slightly larger on hover */
+    box-shadow: 
+        0 6px 15px rgba(0, 0, 0, 0.3),      /* Stronger outer shadow on hover */
+        inset 0 -4px 8px rgba(255, 255, 255, 0.2); /* Inner highlight for depth */
+}
+
+#logout-button:active {
+    transform: scale(0.98); /* Slightly smaller on click for pressed effect */
+    box-shadow: 
+        0 2px 5px rgba(0, 0, 0, 0.2), /* Softer shadow for pressed effect */
+        inset 0 4px 6px rgba(0, 0, 0, 0.2); /* Inner shadow for depth */
 }
 
 .info-bottom {
+    padding: 20px;
+    background: linear-gradient(to bottom right, #7b2cbf, #9d4edd, #5a189a);
     text-align: center; /* Center align the content */
     margin-top: 20px; /* Add some space above */
 }
@@ -457,23 +522,32 @@ button:hover {
     margin-left: 6px;
     margin-right: 6px;
     text-decoration: none; /* Remove underline from links */
-    color: #333; /* Set a default color */
+    color: #ffffff; /* Default color */
+    font-weight: 500;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1) !important; /* Subtle shadow for depth */
+    transition: color 0.3s ease, transform 0.3s ease; /* Smooth transition for hover effect */
+}
+
+.info-bottom a:hover {
+    color: #0d6efd; /* Highlight color on hover */
+    transform: translateY(-2px); /* Subtle lift effect */
 }
 
 .info-bottom p {
-    font-family: 'Fredoka One', 'Raleway', sans-serif;
+    font-family: 'Outfit', sans-serif;
     display: inline-block; /* Display the <p> elements inline */
     margin: 0; /* Remove default margins */
     font-size: 16px; /* Set font size */
-    font-weight: bold; /* Make text bold */
+    color: #ffffff;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1) !important; /* Subtle shadow for depth */
 }
 
 .info-bottom p a:hover {
-    color: #6a0dad; /* Change color on hover */
+    color: #ffc107; /* Change color on hover */
 }
 
 a.special-a:hover {
-    color: #333 !important; /* Change color on hover */
+    color: #ffffff !important; /* Change color on hover */
 }
 
 /* Shaking effect */
@@ -487,7 +561,7 @@ a.special-a:hover {
   
   a.special-a {
     display: inline-block;
-    color: #6a0dad;
+    color: #fff350;
     font-size: 1.3em;
     animation: shake 1s ease infinite, shine 2s ease-in-out infinite;
     text-decoration: none;
@@ -652,4 +726,259 @@ div#pin-verification-popup p a:hover {
 
 #pin-verification-popup #cancel-pin-btn:hover {
     background-color: #e0e0e0; /* Slight change on hover */
+}
+
+/* Feature Section */
+.feature-section {
+    border-radius: 60px;
+    margin-top: 40px;
+    padding: 20px;
+    background: linear-gradient(135deg, rgba(231, 228, 241, 0.9), rgba(255, 255, 255, 0.5)); /* Soft gradient for glassy effect */
+    backdrop-filter: blur(10px) saturate(150%); /* Glass effect */
+    box-shadow: 0 8px 20px rgba(138, 43, 226, 0.3), 0 0 20px rgba(138, 43, 226, 0.5); /* Neon outer glow */
+    border: 1px solid rgba(255, 255, 255, 0.2); /* Soft border */
+    position: relative;
+    overflow: hidden;
+}
+
+.feature-section::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0));
+    transform: rotate(45deg);
+    animation: light-pulse 5s linear infinite;
+    pointer-events: none;
+}
+
+@keyframes light-pulse {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.feature-grid {
+    display: flex;
+    justify-content: space-around;
+    gap: 2em;
+    flex-wrap: wrap;
+    position: relative;
+    z-index: 1;
+}
+
+.feature-item {
+    text-align: center;
+    max-width: 300px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15), 0 4px 15px rgba(138, 43, 226, 0.3); /* Drop shadow with glow */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+}
+
+.feature-item:hover {
+    transform: translateY(-5px) scale(1.05); /* Lift on hover */
+    box-shadow: 0 8px 20px rgba(138, 43, 226, 0.5), 0 4px 15px rgba(0, 0, 0, 0.2); /* Stronger glow on hover */
+}
+
+.feature-icon {
+    font-size: 3em;
+    margin-bottom: 0.5em;
+    color: #8A2BE2;
+    text-shadow: 0 0 10px rgba(138, 43, 226, 0.6), 0 0 20px rgba(138, 43, 226, 0.3); /* Neon glow */
+    animation: pulse 2s infinite alternate;
+}
+
+@keyframes pulse {
+    0% { text-shadow: 0 0 10px rgba(138, 43, 226, 0.6), 0 0 20px rgba(138, 43, 226, 0.3); }
+    100% { text-shadow: 0 0 20px rgba(138, 43, 226, 0.8), 0 0 30px rgba(138, 43, 226, 0.5); }
+}
+
+
+/* Comparison Section */
+.comparison-section {
+    background-color: #9d4edd;
+    background-image: 
+        linear-gradient(90deg, rgba(255, 255, 255, 0.15) 1px, transparent 1px),
+        linear-gradient(rgba(255, 255, 255, 0.15) 1px, transparent 1px);
+    background-size: 50px 50px; /* Size of each grid square */
+    margin-top: 40px;
+    padding: 3em 1em;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+  }
+  
+/* Adding the fade effect */
+.comparison-section::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to right, #7a2cbff3, #9d4edd7c, transparent);
+    z-index: -2;
+    pointer-events: none;
+  }
+  
+/* Optional glowing animation */
+.comparison-section::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(137, 43, 226, 0.15), transparent 80%);
+    opacity: 0.6;
+    animation: pulse 5s infinite alternate;
+    z-index: 2;
+    pointer-events: none;
+}
+  
+/* Animation keyframes for glow */
+@keyframes pulse {
+    from {
+        opacity: 0.4;
+    }
+    to {
+        opacity: 0.7;
+    }
+}
+  
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+    .comparison-section {
+      background-size: 35px 35px; /* Reduce grid size on small screens */
+    }
+    
+    .comparison-section::after {
+      background: linear-gradient(to right, rgba(137, 43, 226, 0.9), rgba(137, 43, 226, 0.5), transparent); /* Adjust fading effect */
+    }
+}
+  
+.english-tutor h3, .math-tutor h3 {
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    text-align: center;
+}
+  
+.english-tutor h3, .math-tutor h3 {
+    display: flex;
+    align-items: center;
+    font-size: 1.5em; /* Adjust size as needed */
+    font-weight: 500;
+  }
+  
+.centered-title i {
+    margin-right: 8px; /* Adjust spacing between icon and text */
+}
+
+.centered-container2 {
+    display: flex;
+    justify-content: center;
+    margin: auto;
+    gap: 10px;
+    flex-direction: row; /* Default to side by side */
+}
+
+@media (max-width: 768px) {
+    .centered-container2 {
+        flex-direction: column; /* Stack vertically on smaller screens */
+    }
+}
+
+.english-tutor-img {
+    width: 150px;
+    height: auto;
+    transition: transform 0.3s ease;
+    display: flex;
+    margin: 15px auto;
+}
+
+.comparison-grid {
+    display: flex;
+    justify-content: center;
+    gap: 3em;
+    flex-wrap: wrap;
+}
+  
+.comparison-item, .math-tutor, .english-tutor {
+    background: rgba(255, 255, 255, 0.6);
+    padding: 1.5em;
+    border-radius: 40px;
+    text-align: center;
+    box-shadow: 
+        0 8px 15px rgba(0, 0, 0, 0.2),           /* Main outer shadow */
+        inset 0 4px 10px rgba(0, 0, 0, 0.25),    /* Inner shadow for depth */
+        inset -2px -2px 5px rgba(255, 255, 255, 0.3); /* Inner highlight */
+    transition: 
+        border-radius 0.3s ease-in-out, 
+        transform 0.3s ease-in-out, 
+        box-shadow 0.3s ease-in-out; /* Smooth transitions for a 3D effect */
+    z-index: 99;
+    position: relative;
+}
+
+.comparison-item:hover, .math-tutor:hover, .english-tutor:hover {
+    border-radius: 10px;
+    transform: scale(1.05) translateY(-5px); /* Slight lift */
+    box-shadow: 
+        0 12px 20px rgba(0, 0, 0, 0.3),       /* Enhanced outer shadow on hover */
+        inset 0 6px 12px rgba(0, 0, 0, 0.3),  /* Stronger inner shadow */
+        inset -3px -3px 7px rgba(255, 255, 255, 0.35); /* Inner highlight */
+}
+
+.math-tutor.highlight {
+    background: linear-gradient(to bottom right, #7b2cbf, #9d4edd, #5a189a);
+    color: #fff;
+    box-shadow: 
+        0 8px 15px rgba(0, 0, 0, 0.25), 
+        inset 0 4px 10px rgba(0, 0, 0, 0.3), 
+        inset -2px -2px 5px rgba(255, 255, 255, 0.35); /* Consistent 3D shadow effect */
+}
+  
+.section-title2 {
+    margin-top: -20px;
+    font-size: 2.5em;
+    font-family: 'Fredoka One', 'Raleway', sans-serif;
+    font-weight: 500;
+    text-align: center;
+    background: linear-gradient(135deg, rgb(255, 255, 255), rgb(255, 255, 255));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    position: relative;
+    text-shadow: 
+        2px 2px 4px rgba(0, 0, 0, 0.034),  /* Soft shadow for subtle depth */
+        4px 4px 8px rgba(0, 0, 0, 0.1);   /* Additional shadow for a lifted effect */
+    transition: transform 0.3s ease, text-shadow 0.3s ease;
+}
+
+.section-title2:hover {
+    transform: scale(1.05); /* Slightly enlarges on hover */
+    text-shadow: 
+        3px 3px 6px rgba(0, 0, 0, 0.2), /* Increased shadow on hover */
+        6px 6px 12px rgba(0, 0, 0, 0.15); /* Adds depth on hover */
+}
+
+.section-title2::after {
+    content: ''; /* Empty content to create a subtle highlight overlay */
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    pointer-events: none; /* Ensures overlay doesn’t interfere */
+    opacity: 0.5;
 }
