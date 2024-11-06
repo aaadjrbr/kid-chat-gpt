@@ -1041,7 +1041,9 @@ div#pin-verification-popup p a:hover {
 
 @media (max-width: 768px) {
     .centered-container2 {
-        flex-direction: column; /* Stack vertically on smaller screens */
+        flex-direction: column;
+        gap: 30px;
+        padding: 10px;
     }
 }
 
