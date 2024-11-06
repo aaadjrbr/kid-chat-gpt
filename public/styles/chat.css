@@ -61,15 +61,16 @@ button, input {
     border-radius: 15px;
     box-shadow: 12px 9px 16px 3px rgba(0, 0, 0, 0.15), 0 6px 20px rgba(100, 150, 255, 0.2);
     border: 3px solid #6a11cb6b;
-    margin: 10px auto;
+    margin: auto;
     width: 95%;
-    max-width: 1000px; /* Optional max width */
-    min-width: 300px; /* Prevent it from shrinking too much */
+    max-width: 1000px;
+    min-width: 300px;
     display: flex;
     flex-direction: column;
     height: 80vh;
     overflow: auto;
     position: relative;
+    margin-top: -15px;
 }
 
 /* Resizer handle for vertical resizing */
@@ -499,6 +500,7 @@ img {
 
 button#toggle-bg-controls {
     color: #6a11cb;
+    margin-top: 5px;
 }
 
 .hello-container {
