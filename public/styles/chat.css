@@ -4,11 +4,45 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
 
 /* General Styling */
+/* Body with Lined Paper Background and Dots at Intersections */
 body {
     font-family: "Fredoka", sans-serif;
-    background-color: #e3e3e9; /* Light greyish background for a cleaner look */
+    background-color: #e3e3e9;
     margin: 0;
     color: #333;
+    background-image: 
+        linear-gradient(rgba(0, 0, 255, 0.2) 1px, transparent 1px), /* Horizontal lines */
+        linear-gradient(90deg, rgba(255, 0, 0, 0.081) 1px, transparent 1px); /* Vertical margin line */
+       /* radial-gradient(circle, rgba(25, 98, 255, 0.12) 2px, transparent 3px);  Circles at intersections */
+    background-size: 100% 50px, 50px 100%, 50px 50px; /* Line and dot alignment */
+    background-position: 25px 25px; /* Offset dots to line intersections */
+}
+
+/* Media Query for Smaller Screens */
+@media (max-width: 768px) {
+    body {
+        background-size: 100% 40px, 40px 100%, 40px 40px; /* Adjust line spacing */
+        background-position: 20px 20px; /* Align circles for smaller screens */
+    }
+}
+
+/* Media Query for Extra Small Screens */
+@media (max-width: 480px) {
+    body {
+        background-size: 100% 30px, 30px 100%, 30px 30px; /* Tighten spacing for small screens */
+        background-position: 15px 15px; /* Adjust dot alignment */
+    }
+}
+
+/* Optional: Style for main content area to look like a notebook */
+.container {
+    width: 90%;
+    max-width: 800px;
+    margin: auto;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.8); /* Slight transparency for layered look */
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 button, input {
@@ -73,21 +107,29 @@ button, input {
     margin-top: -15px;
 }
 
-/* Resizer handle for vertical resizing */
+/* Modern 3D Resizer Handle for Vertical Resizing */
 #resizer {
     width: 100%; /* Full width across the bottom */
-    height: 10px; /* Height of the resizer handle */
-    background: radial-gradient(circle, #6a11cb 0%, #6b11cbc7 100%);
+    height: 12px; /* Slightly taller for easier grabbing */
+    background: linear-gradient(145deg, rgb(128, 11, 182), rgb(127, 11, 180));
     position: absolute;
-   /*bottom: 0;  Positioned at the bottom of the chat container */
     left: 0;
     cursor: ns-resize; /* Vertical resize cursor */
-    z-index: 10; /* Make sure it's on top */
+    z-index: 10; /* On top */
+
+    /* Add 3D effect with shadow */
+    box-shadow: 0px -2px 5px rgba(0, 0, 0, 0.3), inset 0px 1px 3px rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
 }
 
 /* Hover effect for the resizer handle */
 #resizer:hover {
-    background: rgba(0, 0, 0, 0.4); /* Darker gray on hover for visibility */
+    background: linear-gradient(145deg, rgba(106, 17, 203, 0.8), rgba(107, 17, 203, 0.6));
+}
+
+/* Active (Grabbed) effect */
+#resizer:active {
+    background: linear-gradient(145deg, rgba(107, 17, 203, 1), rgba(106, 17, 203, 0.8));
 }
 
 /* Messages Container Styling */
@@ -96,7 +138,7 @@ button, input {
     flex: 1;
     padding: 15px;
     overflow-y: auto;
-    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.233);
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.2);
     /*background-image: url('your-image-path.jpg'); Replace with your image path */
     background-size: cover;
     background-position: center;
@@ -589,32 +631,32 @@ button#toggle-bg-controls {
     color: red;
 }
 
-/* Style for Send and Mic buttons */
+/* Modern 3D Style for Send Button */
 #send-btn {
     margin-left: 5px;
-    padding: 10px;
-    border-radius: 15px;
-    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.233);
-    background: radial-gradient(circle, #6a11cb 0%, #6b11cbc7 100%);
-    border: 3px solid #6b11cbc7 !important;
-    color: rgb(255, 255, 255);
+    padding: 12px 20px;
+    border-radius: 20px;
+    background: linear-gradient(145deg, rgba(106, 17, 203, 0.8), rgba(130, 45, 250, 0.9));
     border: none;
-    cursor: pointer;
+    color: #fff;
     font-size: 1em;
-    color: white;
-    z-index: 2; /* Ensure buttons are above the wave */
-    position: relative; /* Ensure they stay positioned correctly */
-    transition: all 0.2s ease;
+    font-weight: 500;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 15px rgba(106, 17, 203, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.3);
+    z-index: 2;
 }
 
-/* Hover effect for buttons */
+/* Hover effect for 3D button */
 #send-btn:hover {
-    background: linear-gradient(to right, #ffffff57, #ffffff6e);
-    box-shadow: inset 0 3px 6px #6b11cbc7;
-    border: 3px solid #6b11cbc7;
-    color: #6b11cbc7;
-    border-radius: 8px;
-    transition: all 0.2s ease;
+    background: linear-gradient(145deg, rgba(130, 45, 250, 0.9), rgba(106, 17, 203, 0.8));
+    box-shadow: 0 12px 20px rgba(130, 45, 250, 0.5), inset 0 -2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Active effect for 3D button */
+#send-btn:active {
+    box-shadow: inset 0 6px 10px rgba(0, 0, 0, 0.2);
 }
 
 /* Waves animation container */
@@ -719,21 +761,28 @@ select.voice-select:focus {
     color: #ffffffd5;  /* Optional: color change on hover */
 }
 
-/* 6 */
+/* Modern 3D Button Style */
 .btn-6 {
-    background: radial-gradient(circle, #6a11cb 0%, #6b11cbc7 100%);
-    border: 3px solid #0d6dfd;
+    background: linear-gradient(145deg, rgb(128, 11, 182), rgb(127, 11, 180)) !important;
     line-height: 42px;
-    padding: 0;
-    color: white;
-    border: none;
-    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.233);
-    transition: all 0.2s ease;
-  }
+    padding: 0 20px; /* Add horizontal padding for a fuller look */
+    color: #ffffff;
+    font-weight: 500;
+    box-shadow: 0 8px 15px rgba(107, 17, 203, 0.356), inset 0 2px 5px rgba(255, 255, 255, 0.3) !important;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+/* Hover effect with deeper gradient and lift */
 .btn-6:hover {
-    background: radial-gradient(circle, #6b11cb85 0%, #6b11cb71 100%);
-    color: rgb(255, 255, 255);
-    transition: all 0.2s ease;
+    background: linear-gradient(145deg, rgba(128, 11, 182, 0.877), rgba(126, 11, 180, 0.712)) !important;
+    color: #ffffff;
+    box-shadow: 0 8px 15px rgba(106, 17, 203, 0.5), inset 0 2px 5px rgba(255, 255, 255, 0.3);
+}
+
+/* Active state for "pressed" look */
+.btn-6:active {
+    box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 /* Token Container */
@@ -750,12 +799,13 @@ select.voice-select:focus {
 /* Token Bar */
 #token-bar {
     width: 100%;
-    background: radial-gradient(circle, #6a11cb 0%, #6b11cbc7 100%);
-    box-shadow: inset 0 2px 5px rgb(0 0 0 / 31%);
+    background: linear-gradient(145deg, rgb(128, 11, 182), rgb(127, 11, 180));
+    box-shadow: inset 0 5px 10px rgba(0, 0, 0, 0.3);
     height: 230px;
     /* border: 2px solid #fff; */
     border-radius: 15px;
     transition: width 0.4s ease;
+    box-shadow: 0 8px 15px rgba(106, 17, 203, 0.3), inset 0 4px 8px rgba(255, 255, 255, 0.2);
 }
 
 /* User Badge Styling */
@@ -813,7 +863,32 @@ select.voice-select:focus {
 /* Premium Badge Style */
 .badge.premium {
     background: linear-gradient(135deg, #198754, #0f5937); /* Green gradient */
+    box-shadow: 0 0 15px rgba(11, 216, 4, 0.8), 0 8px 15px rgba(3, 134, 47, 0.6) inset;
     color: #fff;
+}
+
+/* Special Shiny Animation for Gold Badge */
+.badge.premium::after {
+    content: "";
+    position: absolute;
+    top: -50px;
+    left: -50px;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0) 60%);
+    transform: rotate(-45deg);
+    animation: shine 3s infinite linear;
+    pointer-events: none;
+}
+
+/* Shiny effect animation */
+@keyframes shine {
+    0% {
+        transform: rotate(-45deg) translate(-200%, -200%);
+    }
+    100% {
+        transform: rotate(-45deg) translate(200%, 200%);
+    }
 }
 
 /* Gold Member Badge Style */
@@ -933,12 +1008,12 @@ label#image-upload-btn:hover img#image-preview {
 
 label#image-upload-btn {
     cursor: pointer;
-    color: #888;
+    color: rgba(106, 17, 203, 0.8);
     transition: background-color 0.3s ease;
 }
 
 label#image-upload-btn span.material-icons:hover {
-    color: #3b3b3b !important;
+    color: rgba(106, 17, 203, 0.6) !important;
 }
 
 button#remove-image-btn {

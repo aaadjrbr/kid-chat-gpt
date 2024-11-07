@@ -407,6 +407,30 @@ button:hover {
     color: #fff;
 }
 
+/* Special Shiny Animation for Gold Badge */
+.badge.premium::after {
+    content: "";
+    position: absolute;
+    top: -50px;
+    left: -50px;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0) 60%);
+    transform: rotate(-45deg);
+    animation: shine 3s infinite linear;
+    pointer-events: none;
+}
+
+/* Shiny effect animation */
+@keyframes shine {
+    0% {
+        transform: rotate(-45deg) translate(-200%, -200%);
+    }
+    100% {
+        transform: rotate(-45deg) translate(200%, 200%);
+    }
+}
+
 /* Gold Member Badge Style */
 .badge.gold {
     background: linear-gradient(135deg, #ffba00, #ff9f00); /* Bright gold */
