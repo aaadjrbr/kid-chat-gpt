@@ -9,7 +9,7 @@ const kidId = urlParams.get('kidId'); // kidId passed as a URL parameter
 let parentId;
 
 // Placeholder for the default background image
-const originalBgUrl = 'https://firebasestorage.googleapis.com/v0/b/kids-chatgpt.appspot.com/o/static%2Falfie-chat-bg1.webp?alt=media&token=0a58b710-dda6-4eb4-a0d2-3df9b598db9a';
+const originalBgUrl = 'https://firebasestorage.googleapis.com/v0/b/kids-chatgpt.appspot.com/o/static%2Falfie-chat-bg1.webp?alt=media&token=ee5ae5cc-d907-42a7-8f10-6a2eef5360cd';
 const auth = getAuth();
 const storage = getStorage();
 
