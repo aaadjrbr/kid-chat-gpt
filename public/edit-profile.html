@@ -71,13 +71,12 @@
 
                     <label>Kids:</label>
                     <br/>
-                    <div id="kids-container">
-                        <input type="text" name="kid1" placeholder="Kid's name" class="kid-input" /><br><br>
-                    </div>
+                    <input type="text" name="kid1" placeholder="Kid's name" class="kid-input" /><br>
                     <button type="button" id="add-kid-btn">Add Another Kid</button><br><br>
+                    <div id="kids-container"></div><br>
 
                     <button type="submit">Save 💾</button>
-                    <br/><br/><br/><br/>
+                    <br/><br/>
                     <div style="margin-top: 15px;"></div>
                 </form>
             </div>
@@ -88,7 +87,7 @@
         <br/><br/>
         <img src="https://firebasestorage.googleapis.com/v0/b/kids-chatgpt.appspot.com/o/logo-alfie.webp?alt=media&token=92d7d084-ce10-486d-b00d-30c0b2642456" style="width: 120px !important; height: auto !important; text-align: center !important; display: flex !important; margin: auto !important; border: none !important; border-radius: 0px !important; background: none !important; box-shadow: none !important;"> 
         <p style="margin-top: -10px !important; text-align: center; color: #696767; font-size: 0.8em; margin-bottom: 8px; padding: 25px;">
-            We do not sell, share, or use your data without explicit authorization or permission. The sole purpose of collecting profile information is to ensure parents' safety and organization within the parents' community. We may occasionally send updates or promotional offers about Alfie to your email or phone.
+            We do not sell, share, or use your data without explicit authorization or permission. The sole purpose of collecting profile information is to ensure parents' safety and organization within the parents' community. We may occasionally send updates or promotional offers about Alfie AI to your email or phone.
         </p>
         <br/>
     </div>
@@ -107,7 +106,7 @@
                 profileToggle.classList.remove('visible');
                 toggleProfileBtn.textContent = 'Edit Profile';
             } else {
-                profileToggle.style.maxHeight = `${profileToggle.scrollHeight}px`; // Expand dynamically
+                profileToggle.style.maxHeight = '2000px'; // Set a large max-height
                 profileToggle.style.opacity = '1'; // Fade in
                 profileToggle.classList.add('visible');
                 toggleProfileBtn.textContent = 'Hide Profile Edit';
