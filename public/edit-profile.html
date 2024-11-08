@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="https://emojiisland.com/cdn/shop/products/Dog_Emoji_large.png?v=1571606065" type="image/x-icon">
-    <title>Parents' Community - Alfie AI. Chat safely!</title>
+    <title>Parents' Community (Edit Profile) - Alfie AI</title>
     <link rel="stylesheet" href="./styles/edit-profile.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Fredoka:wght@300..700&family=M+PLUS+Rounded+1c:wght@400;500;700;800;900&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Outfit:wght@100..900&display=swap" rel="stylesheet">
 
     <meta name="description" content="Alfie AI for Kids provides a safe, educational AI chatbot experience for children aged 5-12, enhancing learning and growth with parental controls." />
     <meta name="keywords" content="AI for kids, safe AI learning, parental controls, educational AI, chatbots for children, technology in education" />
@@ -34,40 +36,47 @@
     <div class="forgot-pin-container">
         <br/><br/>
         <div style="margin-top: 10px;"></div>
-        <h2>Register User</h2>
+        <h2>Edit Profile (Parent)</h2>
         <h3><a href="./profiles.html">Go back</a></h3>
         
         <!-- New Box with Message and Toggle -->
         <div class="user-box">
-            <p>First, to go to the parents' community, you need to edit your profile. Already did? Go to the <a href="#" id="community-link">Community</a></p>
+            <p class="warning-message">
+                First, to go to the parents' community, you need to edit your profile. Already did?
+                <br/><br/>Go to the 
+                <a href="#" id="community-link">Community</a> 🌍
+            </p>            
             <button type="button" id="toggle-profile-btn">Edit Profile</button>
-            <br/><br/>
-            <div id="profile-toggle" style="display:none;">
+            <br/>
+            <div id="profile-toggle" class="hidden">
+                <p style="font-size: 1.1em; padding: 5px; color: red;">📌 After updating or adding new profile information, scroll down and click the "Save 💾" button to validate your changes.</p>
+                <hr/><br/>
                 <form id="user-form">
                     <label for="profilePicture">Current Profile Picture:</label>
+                    <br/>
                     <div id="profile-picture-container">
                         <img id="profile-img" src="https://firebasestorage.googleapis.com/v0/b/kids-chatgpt.appspot.com/o/default-profile.webp?alt=media&token=8f1f9033-90a1-42c6-9845-aefd87fb6fdd" alt="Profile Picture" />
                         <button type="button" id="delete-btn">Delete Picture</button>
-                    </div>     
-                    <label for="name">Choose a picture:</label><br>               
+                    </div><br/>
+                    <label for="name">Choose a picture:</label><br/>             
                     <input type="file" id="profilePicture" accept="image/*" /><br><br>
-
-                    <label for="name">Name:</label><br>
-                    <input type="text" id="name" required /><br><br>
+                    <label for="name">Parent Name:</label><br>
+                    <input type="text" id="name" placeholder="Your name" required /><br><br>
 
                     <label for="email">Email:</label><br>
-                    <input type="email" id="email" required /><br><br>
+                    <input type="email" id="email" placeholder="Your main email" required /><br><br>
 
                     <label for="phone">Phone:</label><br>
-                    <input type="tel" id="phone" required /><br><br>
+                    <input type="tel" id="phone" placeholder="Your phone number" required /><br><br>
 
                     <label>Kids:</label>
+                    <br/>
                     <div id="kids-container">
                         <input type="text" name="kid1" placeholder="Kid's name" class="kid-input" /><br><br>
                     </div>
                     <button type="button" id="add-kid-btn">Add Another Kid</button><br><br>
 
-                    <button type="submit">Submit</button>
+                    <button type="submit">Save 💾</button>
                     <br/><br/><br/><br/>
                     <div style="margin-top: 15px;"></div>
                 </form>
@@ -75,32 +84,90 @@
         </div>
 
         <p id="status"></p>
+
+        <br/><br/>
+        <img src="https://firebasestorage.googleapis.com/v0/b/kids-chatgpt.appspot.com/o/logo-alfie.webp?alt=media&token=92d7d084-ce10-486d-b00d-30c0b2642456" style="width: 120px !important; height: auto !important; text-align: center !important; display: flex !important; margin: auto !important; border: none !important; border-radius: 0px !important; background: none !important; box-shadow: none !important;"> 
+        <p style="margin-top: -10px !important; text-align: center; color: #696767; font-size: 0.8em; margin-bottom: 8px; padding: 25px;">
+            We do not sell, share, or use your data without explicit authorization or permission. The sole purpose of collecting profile information is to ensure parents' safety and organization within the parents' community. We may occasionally send updates or promotional offers about Alfie to your email or phone.
+        </p>
+        <br/>
     </div>
 
     <script type="module" src="./scripts/edit-profile.js"></script>
 
     <script>
-        // Toggle logic for showing and hiding the profile form
-        const toggleProfileBtn = document.getElementById('toggle-profile-btn');
-        const profileToggle = document.getElementById('profile-toggle');
+    // Toggle logic for showing and hiding the profile form
+    const toggleProfileBtn = document.getElementById('toggle-profile-btn');
+    const profileToggle = document.getElementById('profile-toggle');
 
         toggleProfileBtn.addEventListener('click', () => {
-            if (profileToggle.style.display === 'none') {
-                profileToggle.style.display = 'block';
-                toggleProfileBtn.textContent = 'Hide Profile Edit';
-            } else {
-                profileToggle.style.display = 'none';
+            if (profileToggle.classList.contains('visible')) {
+                profileToggle.style.maxHeight = '0'; // Collapse
+                profileToggle.style.opacity = '0'; // Fade out
+                profileToggle.classList.remove('visible');
                 toggleProfileBtn.textContent = 'Edit Profile';
+            } else {
+                profileToggle.style.maxHeight = `${profileToggle.scrollHeight}px`; // Expand dynamically
+                profileToggle.style.opacity = '1'; // Fade in
+                profileToggle.classList.add('visible');
+                toggleProfileBtn.textContent = 'Hide Profile Edit';
             }
         });
 
-        // Community link action (add your logic for the actual link)
-        const communityLink = document.getElementById('community-link');
+    // Community link action (add your logic for the actual link)
+    const communityLink = document.getElementById('community-link');
         communityLink.addEventListener('click', (e) => {
             e.preventDefault();
-            // Redirect to the community page or add your logic here
-            window.location.href = './community.html';  // Update with actual community URL
-        });
+    // Redirect to the community page or add your logic here
+    window.location.href = './community.html'; // Update with actual community URL
+    });
+
+    //Button Image
+    // Local Storage Key
+    const localStorageKey = 'toggleProfileButtonImage';
+
+    // Image URL
+    const imageUrl = 'https://firebasestorage.googleapis.com/v0/b/kids-chatgpt.appspot.com/o/static%2Falfie-bg-button.webp?alt=media&token=5916041f-c045-494f-8ac8-f13af15b5392';
+
+    // Function to set the image in local storage with an expiration time
+    function setImageInLocalStorage(url) {
+        const expiryTimestamp = Date.now() + 24 * 60 * 60 * 1000; // 24 hours from now
+        const imageData = {
+            url: url,
+            expiry: expiryTimestamp
+        };
+        localStorage.setItem(localStorageKey, JSON.stringify(imageData));
+    }
+
+    // Function to retrieve the image from local storage if valid
+    function getImageFromLocalStorage() {
+        const imageData = localStorage.getItem(localStorageKey);
+        if (imageData) {
+            const parsedData = JSON.parse(imageData);
+            if (Date.now() < parsedData.expiry) {
+                return parsedData.url; // Image is still valid
+            } else {
+                localStorage.removeItem(localStorageKey); // Remove expired data
+            }
+        }
+        return null; // No valid image in local storage
+    }
+
+    // Function to apply the background image
+    function applyButtonImage(buttonId) {
+        const button = document.getElementById(buttonId);
+        const cachedImage = getImageFromLocalStorage();
+
+        if (cachedImage) {
+            button.style.backgroundImage = `url('${cachedImage}')`;
+        } else {
+            button.style.backgroundImage = `url('${imageUrl}')`;
+            setImageInLocalStorage(imageUrl);
+        }
+    }
+
+    // Apply the image to the button on page load
+    applyButtonImage('toggle-profile-btn');
     </script>
 </body>
 </html>

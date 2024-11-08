@@ -257,7 +257,22 @@ userForm.addEventListener('submit', async (e) => {
         const storageRef = ref(storage, `profilePictures/${currentUserUid}`);
         await uploadBytes(storageRef, compressedFile);
         profilePictureUrl = await getDownloadURL(storageRef);
-    }
+    
+        // Update the DOM immediately after successful upload
+        const profileImage = document.createElement('img');
+        profileImage.src = profilePictureUrl;
+        profileImage.alt = "Profile Picture";
+        profileImage.style.width = '150px';
+        profileImage.style.height = '150px';
+        profilePictureContainer.innerHTML = '';
+        profilePictureContainer.appendChild(profileImage);
+    
+        // Optionally, add the delete button back
+        const deletePictureBtn = document.createElement('button');
+        deletePictureBtn.textContent = 'Delete Photo';
+        deletePictureBtn.addEventListener('click', deleteProfilePicture);
+        profilePictureContainer.appendChild(deletePictureBtn);
+    }    
 
     // Fetch existing user profile to ensure we don't overwrite fields like "isPremium", "isGold", and "tokens"
     const userDocRef = doc(db, 'userProfiles', currentUserUid);

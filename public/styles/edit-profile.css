@@ -7,48 +7,291 @@
 }
 
 body {
-    font-family: 'Roboto', sans-serif;
-    background: linear-gradient(135deg, rgba(23, 212, 133, 0.3), rgb(114, 196, 161, 0.2));
+    font-family: 'Outfit', sans-serif;
+    background-color: #dadada; /* Light greyish background for a cleaner look */
     margin: 0;
     text-align: center;
     overflow-x: hidden; /* Prevent horizontal scrolling */
 }
 
-* {
-    font-family: 'Roboto', sans-serif;
+*, p {
+    font-family: 'Outfit', sans-serif;
     box-sizing: border-box; /* Prevent overflow issues with padding/margins */
 }
 
+/* Base Styling for h2 */
 h2 {
-    font-family: 'M PLUS Rounded 1c', sans-serif;
     font-weight: 800 !important;
     margin-top: -10px;
+    font-size: 2em; /* Standout size */
+    color: #333; /* Neutral dark color */
+    text-align: center; /* Centered text for emphasis */
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1); /* Subtle depth effect */
+    transition: all 0.3s ease-in-out;
 }
 
+/* Hover Effect for h2 */
+h2:hover {
+    color: #7b2cbf; /* Eye-catching orange */
+    text-shadow: 0 0 10px #9d4edd41; /* Glowing effect */
+}
+
+/* Gradient Animation with Vendor Prefixes */
+h2.gradient {
+    background: linear-gradient(to bottom right, #7b2cbf, #9d4edd, #5a189a);
+    background-size: 200% 200%; /* Larger background for animation */
+    -webkit-background-clip: text; /* Chrome, Safari, Edge */
+    -moz-background-clip: text; /* Firefox */
+    -ms-background-clip: text; /* Internet Explorer */
+    background-clip: text; /* Standard */
+    -webkit-text-fill-color: transparent; /* Chrome, Safari, Edge */
+    -moz-text-fill-color: transparent; /* Firefox */
+    animation: gradient-move 3s infinite;
+}
+
+/* Gradient Animation */
+@keyframes gradient-move {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* Base Styling for h3 Links */
 h3 a {
-    color: rgb(255, 255, 255);
-    font-size: 0.9em;
-    text-decoration: none;
-    background-color: #ffae00;
-    padding: 8px;
-    border-radius: 15px;
+    color: rgb(255, 255, 255); /* White text color */
+    font-size: 0.8em; /* Slightly larger for better readability */
+    font-weight: 600; /* Bold for emphasis */
+    text-decoration: none; /* No underline */
+    background: linear-gradient(145deg, #ffbf33, #ff9d00); /* Subtle 3D gradient */
+    padding: 8px 14px; /* Better spacing */
+    border: 3px solid transparent; 
+    border-radius: 15px; /* Rounded corners */
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2), -4px -4px 8px rgba(255, 255, 255, 0.3); /* 3D shadow effect */
+    transition: all 0.3s ease; /* Smooth transitions */
+    display: inline-block; /* Makes padding consistent */
+    position: relative; /* For pseudo-elements */
+    overflow: hidden;
 }
 
+/* Hover Effect for h3 Links */
 h3 a:hover {
-    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
-    border: 3px solid #ffffff;
+    background: linear-gradient(145deg, #ffc94d, #ff8a00); /* Brighter hover gradient */
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.3), 0 0 10px rgba(255, 174, 0, 0.7); /* Glow and lift */
+    border: 3px solid #ffffff; /* Border for hover emphasis */
 }
 
+/* Glowing Effect */
+h3 a::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.4), transparent);
+    opacity: 0;
+    transition: opacity 0.4s ease, transform 0.3s ease;
+    border-radius: inherit;
+}
+
+h3 a:hover::before {
+    opacity: 1;
+}
+
+/* Active/Pressed Effect */
+h3 a:active {
+    background: linear-gradient(145deg, #e69500, #cc7a00); /* Darker pressed gradient */
+    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.3), inset -2px -2px 5px rgba(255, 255, 255, 0.2); /* Pressed effect */
+}
+
+/* Warning Message Styling */
+.warning-message {
+    color: #ffffff;
+    background: linear-gradient(to bottom right, #7b2cbf, #9d4edd, #5a189a);
+    padding: 15px 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2), inset 0 -3px 5px rgba(255, 255, 255, 0.1);
+    font-size: 1.3em;
+    font-weight: 500;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Optional subtle sparkle effect for the message */
+.warning-message::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 6%, transparent 4%) repeat;
+    background-size: 25px 25px;
+    pointer-events: none;
+    opacity: 0.2;
+    animation: sparkle-move 10s linear infinite;
+}
+
+@keyframes sparkle-move {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    100% { transform: translate(10px, -10px) rotate(360deg); }
+}
+
+/* Community Link Styling */
+.warning-message a#community-link {
+    color: #ffffff;
+    text-decoration: underline;
+    font-weight: 500;
+    transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+.warning-message a#community-link:hover {
+    color: #ffd900; /* Gold on hover */
+    text-shadow: 0 0 7px rgba(255, 215, 0, 0.2), 0 0 2px rgba(255, 255, 255, 0.5); /* Glowing effect */
+}
+
+/* Hover Interaction for the Warning Message */
+.warning-message:hover {
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3), inset 0 -5px 10px rgba(255, 255, 255, 0.2);
+}
+
+/* Add Kid Button */
 button#add-kid-btn {
-    background-color: #287187 !important;
-    font-size: 0.8em !important;
+    background: linear-gradient(145deg, #3499b3, #1d5e6c); /* Subtle 3D gradient */
+    color: #ffffff; /* White text */
+    font-size: 0.9em; /* Slightly larger for readability */
+    font-weight: bold;
+    border: none;
+    border-radius: 10px; /* Rounded corners */
+    padding: 10px 16px; /* Adequate spacing */
+    cursor: pointer;
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2), -4px -4px 8px rgba(255, 255, 255, 0.3); /* 3D shadow */
+    transition: all 0.3s ease; /* Smooth interactions */
+    position: relative;
 }
 
+/* Hover Effect for Add Kid Button */
+button#add-kid-btn:hover {
+    background: linear-gradient(145deg, #40a7c2, #1e6d7c); /* Lighter hover gradient */
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.3), 0 0 10px rgba(52, 153, 179, 0.5); /* Glow */
+    transform: translateY(-2px) scale(1.03); /* Lift slightly */
+}
+
+/* Pressed Effect for Add Kid Button */
+button#add-kid-btn:active {
+    background: linear-gradient(145deg, #1d5e6c, #16424c); /* Darker pressed gradient */
+    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.3), inset -2px -2px 5px rgba(255, 255, 255, 0.1); /* Pressed shadow */
+    transform: translateY(2px) scale(0.98); /* Press-down effect */
+}
+
+/* Remove Kid Button */
 button.remove-kid-btn {
     margin-top: -10px !important;
     margin-bottom: 12px !important;
-    background-color: #ff6f61 !important;
-    font-size: 0.8em !important;
+    background: linear-gradient(145deg, #ff7a6b, #e65c51); /* Subtle 3D gradient */
+    color: #ffffff; /* White text */
+    font-size: 0.9em; /* Consistent size */
+    font-weight: bold;
+    border: none;
+    border-radius: 10px; /* Rounded corners */
+    padding: 10px 16px;
+    cursor: pointer;
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2), -4px -4px 8px rgba(255, 255, 255, 0.3); /* 3D shadow */
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Hover Effect for Remove Kid Button */
+button.remove-kid-btn:hover {
+    background: linear-gradient(145deg, #ff8c7d, #d65146); /* Lighter hover gradient */
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.3), 0 0 10px rgba(255, 111, 97, 0.5); /* Glow */
+    transform: translateY(-2px) scale(1.03); /* Lift slightly */
+}
+
+/* Pressed Effect for Remove Kid Button */
+button.remove-kid-btn:active {
+    background: linear-gradient(145deg, #e65c51, #c5473e); /* Darker pressed gradient */
+    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.3), inset -2px -2px 5px rgba(255, 255, 255, 0.1); /* Pressed shadow */
+    transform: translateY(2px) scale(0.98); /* Press-down effect */
+}
+
+/* Base styles for smooth transition */
+#profile-toggle {
+    transition: opacity 0.4s ease, max-height 0.4s ease;
+    max-height: 0; /* Start collapsed */
+    opacity: 0; /* Start fully transparent */
+    overflow: hidden; /* Prevent content overflow during the transition */
+}
+
+/* Visible state */
+#profile-toggle.visible {
+    max-height: auto; /* Set a value large enough for your content */
+    opacity: 1; /* Fully visible */
+}
+
+
+/* Base styling for #toggle-profile-btn */
+button#toggle-profile-btn {
+    color: #ffffff;
+    background-image: url('https://firebasestorage.googleapis.com/v0/b/kids-chatgpt.appspot.com/o/static%2Falfie-bg-button.webp?alt=media&token=5916041f-c045-494f-8ac8-f13af15b5392') !important;
+    background-size: cover;
+    background-position: center;
+    border: 2px solid #ffffffd2;
+    padding: 15px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2), inset 0 -3px 5px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    font-weight: 500 !important;
+    font-size: 1em !important;
+    border-radius: 35px !important;
+}
+
+/* Sparkle effect for #toggle-profile-btn */
+button#toggle-profile-btn::before,
+button#toggle-profile-btn::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.61) 6%, transparent 4%) repeat;
+    background-size: 25px 25px;
+    pointer-events: none;
+    opacity: 0.4;
+    animation: moveStars 6s linear infinite;
+    z-index: 1; /* Behind the text */
+}
+
+button#toggle-profile-btn::after {
+    background-size: 15px 15px; /* Slightly different size for variation */
+    opacity: 0.3;
+    animation-duration: 8s; /* Different speed for additional effect */
+}
+
+/* Keyframes for sparkle movement */
+@keyframes moveStars {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    25% { transform: translate(10px, -10px) rotate(45deg); }
+    50% { transform: translate(-15px, 15px) rotate(90deg); }
+    75% { transform: translate(20px, -20px) rotate(135deg); }
+    100% { transform: translate(0, 0) rotate(360deg); }
+}
+
+/* Hover effect for #toggle-profile-btn */
+button#toggle-profile-btn:hover {
+    box-shadow: 
+        0 8px 15px rgba(0, 0, 0, 0.3),      /* Enhanced outer shadow */
+        inset 0 -4px 8px rgba(255, 255, 255, 0.3); /* Inner light highlight for depth */
 }
 
 /* Container for the form */
@@ -72,71 +315,231 @@ button.remove-kid-btn {
     display: none; /* Initially hidden */
 }
 
+/* Profile Image Styling */
 #profile-img, img {
     border-radius: 50%;
     width: 80px !important;
     height: 80px !important;
     margin-top: 10px;
-    object-fit: cover;
     margin-bottom: 10px;
+    object-fit: cover;
+    border: 4px solid #ffffff; /* Add a base for glowing border */
+    background: linear-gradient(145deg, #b5b6b9, #e6e6e6);
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2), -4px -4px 4px rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease, transform 0.2s ease-in-out;
 }
 
+/* Glowing Border on Hover */
+#profile-img:hover, img:hover {
+    border-color: #ffffffce; /* Highlight border */
+    box-shadow: 0 0 15px #7a2cbfb4, 0 0 10px #7a2cbf67;
+}
+
+/* Profile Picture Container */
 #profile-picture-container {
     display: flex;
     flex-direction: column;
-    align-items: center; /* Center the image and button horizontally */
-    margin-bottom: 20px;
+    margin: auto;
+    align-items: center; /* Center image and button horizontally */
+    justify-content: center;
 }
 
-#delete-btn, div#profile-picture-container button {
-    background-color: #ff4b5c !important;
+/* Base 3D Button Styling */
+#delete-btn, 
+div#profile-picture-container button {
+    background: linear-gradient(145deg, #ff5b6c, #e54352); /* Depth with gradient */
     color: white;
     border: none;
-    padding: 8px 16px;
-    border-radius: 10px;
+    padding: 8px 14px; /* Adjusted for better proportions */
+    border-radius: 12px;
     cursor: pointer;
-    font-size: 0.9em !important;
+    font-size: 0.9em;
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2), -4px -4px 10px rgba(255, 255, 255, 0.1);
+    outline: none;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
 }
 
-#delete-btn:hover, div#profile-picture-container button:hover {
-    background-color: #ff1e3a !important;
+/* Hover Effect - Glow and Lift */
+#delete-btn:hover, 
+div#profile-picture-container button:hover {
+    background: linear-gradient(145deg, #ff1e3a, #e00f25); /* Brighter gradient */
+    box-shadow: 0 0 20px rgba(255, 30, 58, 0.3), 0 0 6px rgba(255, 30, 58, 0.3);
+    transform: translateY(-3px) scale(1.05);
 }
 
-/* Input field styling */
+/* Pressed/Active Effect */
+#delete-btn:active, 
+div#profile-picture-container button:active {
+    background: linear-gradient(145deg, #d10c20, #b80a1b); /* Darker pressed state */
+    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.3), inset -2px -2px 5px rgba(255, 255, 255, 0.1);
+    transform: translateY(2px) scale(0.98);
+}
+
+/* Animated Border Glow */
+#delete-btn::before, 
+div#profile-picture-container button::before {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    border-radius: 15px;
+    border: 2px solid transparent;
+    background: linear-gradient(90deg, rgba(255, 30, 58, 0.5), rgba(255, 255, 255, 0.5));
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+#delete-btn:hover::before, 
+div#profile-picture-container button:hover::before {
+    opacity: 1;
+    animation: glow-spin 2s linear infinite;
+}
+
+/* Glowing Animation */
+@keyframes glow-spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Label styling - 3D and animated */
+.forgot-pin-container label {
+    display: block;
+    margin-bottom: -10px !important;
+    font-size: 1.2em;
+    font-weight: 600;
+    color: #6a5acd; /* Soft purple color */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 1;
+    cursor: pointer;
+}
+
+/* Hover effect for the label */
+.forgot-pin-container label:hover {
+    color: #8a2be2;
+    text-shadow: 0 0 10px #8a2be2, 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Input field styling - 3D and animated */
 .forgot-pin-container input[type="text"],
 .forgot-pin-container input[type="email"],
 .forgot-pin-container input[type="tel"],
 .forgot-pin-container input[type="file"] {
-    font-family: 'M PLUS Rounded 1c', sans-serif;
-    width: 80%; /* Make sure inputs take up full width on small screens */
+    font-family: 'Outfit', sans-serif;
+    width: 80%;
     max-width: 500px;
-    padding: 10px;
+    padding: 12px 15px;
     margin-bottom: 20px;
-    border: 1px solid #d0d0d0;
-    border-radius: 8px;
-    font-size: 0.9em; 
-    background-color: #fdfdfd;
-    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05);
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    font-size: 1em;
+    background: linear-gradient(145deg, #ffffff, #e6e6e6);
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.1), -4px -4px 8px rgba(255, 255, 255, 0.7);
     outline: none;
-    transition: border-color 0.3s ease;
+    transition: all 0.4s ease;
+    position: relative;
+    z-index: 1;
 }
 
+.forgot-pin-container input[type="text"]:hover,
+.forgot-pin-container input[type="email"]:hover,
+.forgot-pin-container input[type="tel"]:hover,
+.forgot-pin-container input[type="file"]:hover {
+    border-color: #6a5acd;
+    box-shadow: 0 0 15px #6a5acd, 4px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.forgot-pin-container input[type="text"]:focus,
+.forgot-pin-container input[type="email"]:focus,
+.forgot-pin-container input[type="tel"]:focus,
+.forgot-pin-container input[type="file"]:focus {
+    border-color: #8a2be2;
+    box-shadow: 0 0 20px #8a2be2, 0 0 5px rgba(0, 0, 0, 0.2);
+    background: radial-gradient(circle, #fdfdfd, #f3f3f3);
+    animation: pulse 1s infinite;
+}
+
+/* Animation effect for focus */
+@keyframes pulse {
+    0%, 100% {
+        box-shadow: 0 0 20px #8a2be2, 0 0 5px rgba(0, 0, 0, 0.2);
+    }
+    50% {
+        box-shadow: 0 0 25px #b19cd9, 0 0 8px rgba(0, 0, 0, 0.3);
+    }
+}
+
+/* Base 3D Button Styling */
 .forgot-pin-container button {
-    background-color: #ffa726;
+    background: linear-gradient(145deg, #ffb74d, #f57c00); /* 3D gradient look */
     color: #fff;
-    font-weight: 500;
+    font-weight: 600;
     border: none;
-    border-radius: 10px;
-    padding: 10px 20px;
+    border-radius: 12px;
+    padding: 12px 24px; /* More padding for a premium feel */
     font-size: 1em;
     cursor: pointer;
-    margin: 5px;
-    transition: background-color 0.3s;
+    margin: 8px;
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2), -4px -4px 10px rgba(255, 255, 255, 0.5);
+    outline: none;
+    transition: all 0.3s ease, transform 0.2s ease-in-out;
+    position: relative;
+    overflow: hidden;
 }
 
+/* Hover Glow Effect */
 .forgot-pin-container button:hover {
-    background-color: #ff8a50;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(145deg, #ff9d40, #e66a00); /* Brighter gradient */
+    box-shadow: 0 0 20px rgba(255, 154, 71, 0.6), 4px 4px 10px rgba(0, 0, 0, 0.3);
+    transform: translateY(-3px) scale(1.05); /* Lift and slight zoom */
+}
+
+/* Active/Pressed Effect */
+.forgot-pin-container button:active {
+    background: linear-gradient(145deg, #e66a00, #c05700); /* Darker pressed state */
+    box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.3), inset -2px -2px 5px rgba(255, 255, 255, 0.1);
+    transform: translateY(2px) scale(0.98); /* Pressed-down effect */
+}
+
+/* Optional Animated Glow Border */
+.forgot-pin-container button::before {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    border-radius: 14px;
+    border: 2px solid transparent;
+    background: linear-gradient(90deg, rgba(255, 154, 71, 0.6), rgba(255, 255, 255, 0.5));
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.forgot-pin-container button:hover::before {
+    opacity: 1;
+    animation: spin-glow 2s linear infinite;
+}
+
+/* Glow Border Animation */
+@keyframes spin-glow {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 div.user-box p {
@@ -156,7 +559,7 @@ div.user-box p {
     }
 
     .forgot-pin-container h2 {
-        font-size: 1.2em;
+        font-size: 1.6em;
     }
 
     .forgot-pin-container button {
