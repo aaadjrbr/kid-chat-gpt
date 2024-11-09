@@ -4,43 +4,44 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Forgot My PIN - Alfie AI</title>
+    <link rel="icon" href="./alfie-ai.ico" type="image/x-icon">
     <link rel="stylesheet" href="styles/forgot-pin.css">
     <link href="https://fonts.googleapis.com/css2?family=Protest+Strike&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Fredoka:wght@300..700&family=M+PLUS+Rounded+1c:wght@400;500;700;800;900&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Outfit:wght@100..900&display=swap" rel="stylesheet">
     
     <meta name="description" content="Alfie AI for Kids provides a safe, educational AI chatbot experience for children aged 5-12, enhancing learning and growth with parental controls." />
     <meta name="keywords" content="AI for kids, safe AI learning, parental controls, educational AI, chatbots for children, technology in education" />
     <link rel="canonical" href="https://www.alfieaiforkids.fun/" />
     <meta property="og:title" content="Alfie AI for Kids - Safe AI Learning for Children" />
-  
     <meta property="og:description" content="Enhance your child's learning experience with Alfie AI, a safe, educational AI chatbot designed for kids aged 5-12 with parental controls." />
     <meta property="og:image" content="https://firebasestorage.googleapis.com/v0/b/kids-chatgpt.appspot.com/o/logo-alfie.webp?alt=media&token=92d7d084-ce10-486d-b00d-30c0b2642456" />
     <meta property="og:url" content="https://www.alfieaiforkids.fun/" />
     <meta property="og:type" content="website" />
-  
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Alfie AI for Kids - Safe AI Learning for Children" />
     <meta name="twitter:description" content="A safe and educational chatbot experience for children aged 5-12, with parental control features to ensure peace of mind." />
     <meta name="twitter:image" content="https://firebasestorage.googleapis.com/v0/b/kids-chatgpt.appspot.com/o/logo-alfie.webp?alt=media&token=92d7d084-ce10-486d-b00d-30c0b2642456" />
-  
     <meta name="robots" content="index, follow" />
-
 </head>
 <!-- Google tag (gtag.js) --> 
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-WYMRF4LKM1"></script>
-<script> window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-WYMRF4LKM1');
+<script> 
+    window.dataLayer = window.dataLayer || []; 
+    function gtag(){dataLayer.push(arguments);} 
+    gtag('js', new Date()); 
+    gtag('config', 'G-WYMRF4LKM1');
 </script>
 
 <body>
     <div class="forgot-pin-container">
         <h2>Reset Your PIN 🔑</h2>
         <h3><a href="./profiles.html">Go back</a></h3>
-        <a href="#" id="toggleBox">What is a PIN?</a>
+        <a href="#" id="toggleBox" aria-expanded="false">What is a PIN? 🤔</a>
         <div id="contentBox" class="hidden">
-        <p>
-            You can use your PIN to create, delete, or edit profiles. If you forget your PIN, you can reset it by answering the 'Best friend' security question. After three failed attempts, the current PIN will be deleted, and you will be prompted to create a new one by returning to the profiles page. But first you will be redirected to the login page.
-        </p>
+            <p>
+                You can use your PIN to create, delete, or edit profiles. If you forget your PIN, you can reset it by answering the 'Best friend' security question. After three failed attempts, the current PIN will be deleted, and you will be prompted to create a new one by returning to the profiles page. But first, you will be redirected to the login page.
+            </p>
         </div>
-        <br/><br/>
         <form id="forgot-pin-form">
             <label for="new-pin">Enter New 4-Digit PIN:</label><br>
             <input type="number" id="new-pin" maxlength="4" placeholder="New PIN" required><br>
@@ -50,13 +51,17 @@
 
             <label for="security-answer">Who was your best friend during childhood?</label><br>
             <input type="text" id="security-answer" placeholder="Best friend" required><br>
-
+            <p id="status-message" class="status-message"></p>
             <button type="submit">Reset PIN</button>
         </form>
-        <p id="status-message" class="status-message"></p>
-    </div>
 
+        <br/><br/>
+        <img src="https://firebasestorage.googleapis.com/v0/b/kids-chatgpt.appspot.com/o/logo-alfie.webp?alt=media&token=92d7d084-ce10-486d-b00d-30c0b2642456" style="width: 120px !important; height: auto !important; text-align: center !important; display: flex !important; margin: auto !important; border: none !important; border-radius: 0px !important; background: none !important; box-shadow: none !important;"> 
+        <p style="margin-top: -10px !important; text-align: center; color: #696767; font-size: 0.8em; margin-bottom: 8px; padding: 25px;">
+            The primary purpose of a PIN is to ensure that children cannot delete, create, or modify their profiles without parental authorization. This feature provides parents with full control over their children's accounts, allowing them to review chat history or manage account-related activities as needed.
+        </p>
+    </div>
     <script src="scripts/firebase-config.js" type="module"></script>
-    <script src="scripts/forgot-pin.js" type="module"></script>
+    <script type="module" src="scripts/forgot-pin.js"></script>
 </body>
 </html>

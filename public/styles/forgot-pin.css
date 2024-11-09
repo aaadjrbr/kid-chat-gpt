@@ -6,65 +6,135 @@
     --color-bg2: rgb(103, 162, 235);
   }
 
-  body {
-    font-family: 'Roboto', sans-serif;
-    background: radial-gradient(circle, var(--color-bg1) 0%, var(--color-bg2) 100%);
-    height: 100vh;
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    font-family: 'Outfit', sans-serif;
+    background: linear-gradient(135deg, rgba(23, 212, 133, 0.3), rgb(114, 196, 161, 0.2));
     margin: 0;
-    text-align: center; /* Center horizontally */
+    text-align: center;
+    overflow-x: hidden;
+    padding: 10px; /* Add padding for mobile devices */
 }
 
 * {
-    font-family: 'M PLUS Rounded 1c', sans-serif;
+    font-family: 'Outfit', sans-serif;
 }
 
 h2 {
-    font-family: 'M PLUS Rounded 1c', sans-serif;
+    font-family: 'Outfit', sans-serif;
     font-weight: 800 !important;
     margin-top: -10px;
 }
 
 h3 a {
-    color: rgb(255, 255, 255);
+    color: #ffffff;
     font-size: 0.9em;
     text-decoration: none;
-    background-color: #ffae00;
-    padding: 8px;
+    background: linear-gradient(135deg, #ffae00, #ff6f00);
+    padding: 10px 15px;
     border-radius: 15px;
+    position: relative;
+    display: inline-block;
+    box-shadow: 
+        0 4px 6px rgba(0, 0, 0, 0.2),
+        inset 0 2px 5px rgba(255, 255, 255, 0.2); /* Inner shine */
+    transition: all 0.3s ease-in-out;
+    font-weight: bold;
 }
 
+/* 3D effect */
+h3 a::after {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    right: -3px;
+    bottom: -3px;
+    background: linear-gradient(135deg, #ffae00, #ff6f00);
+    z-index: -1;
+    border-radius: 15px;
+    filter: blur(5px); /* Glow effect */
+    transition: all 0.3s ease-in-out;
+}
+
+/* Hover effect */
 h3 a:hover {
-    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
-    border: 3px solid #ffffff;
+    color: #fff;
+    background: linear-gradient(135deg, #ff6f00, #ffae00); /* Reverse gradient */
+    box-shadow: 
+        0 8px 12px rgba(0, 0, 0, 0.3),
+        0 0 20px rgba(255, 111, 0, 0.6),
+        0 0 40px rgba(255, 174, 0, 0.8); /* Outer glow */
 }
 
-/* Container for the form */
+/* Hover glow intensifies */
+h3 a:hover::after {
+    filter: blur(10px); /* Stronger glow */
+    opacity: 0.9;
+}
+
+/* Default hidden state */
+#contentBox {
+    opacity: 0;
+    transform: scaleY(0); /* Collapse vertically */
+    transform-origin: top; /* Expand from the top edge */
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    max-height: 0; /* Ensures the box doesn't take space when hidden */
+    overflow: hidden; /* Prevent content spillover */
+}
+
+/* When visible */
+#contentBox.visible {
+    opacity: 1;
+    transform: scaleY(1); /* Fully expand */
+    max-height: 1000px; /* Large enough to fit the content (arbitrary limit) */
+    overflow: visible; /* Allow content to display */
+}
+
+/* Add some animation to the toggle link */
+#toggleBox {
+    display: inline-block;
+    cursor: pointer;
+    text-decoration: none;
+    color: #f57c00;
+    transition: color 0.3s ease;
+}
+
+#toggleBox:hover {
+    color: #fbc02d;
+    text-shadow: 0 0 10px rgba(255, 183, 94, 0.8);
+}
+
+/* Ensure spacing for inputs and buttons */
+.forgot-pin-container form {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+/* Center the container with flexbox */
 .forgot-pin-container {
-    background-color: #fff8e1;
+    margin: auto;
+    text-align: center;
+    background: linear-gradient(135deg, #fff8e1, #ffd54f);
     border: 3px solid #fbc02d;
     border-radius: 15px;
     padding: 20px;
-    width: 65% !important;
-    text-align: center;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-    position: absolute;
-    top: 20%; /* Adjusted top value */
-    left: 50%;
-    transform: translate(-50%, -20%);
-    z-index: 1000;
-    font-family: 'M PLUS Rounded 1c', sans-serif;
-    max-height: 90vh;
-    overflow-y: auto;
+    box-shadow: 
+        0 6px 8px rgba(0, 0, 0, 0.2),
+        0 2px 6px rgba(0, 0, 0, 0.1),
+        0 0 10px rgba(255, 183, 94, 0.6),
+        0 0 20px rgba(255, 107, 129, 0.8);
+    position: relative;
+    overflow: visible;
+    max-width: 1000px; /* Restrict width for better readability */
+    width: 80%; /* Ensure it adjusts dynamically */
 }
 
 /* Adjustments for mobile */
 @media (max-width: 600px) {
-    .forgot-pin-container {
-        width: 80%;
-        top: 10%; /* Move closer to the top on small screens */
-        transform: translate(-50%, -10%); /* Adjust the transform to match the top */
-    }
-
     .forgot-pin-container h2 {
         font-size: 1.5em;
     }
@@ -83,75 +153,117 @@ h3 a:hover {
 
 /* Label styling */
 .forgot-pin-container label {
-    font-family: 'M PLUS Rounded 1c', sans-serif; /* Rounded, cute font */
-    font-size: 1em;
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.1em;
     color: #ff6f61; /* Soft red for heading */
-    font-weight: 400;
+    font-weight: 500;
     text-align: left;
     display: block;
     text-align: center !important;
-    margin-bottom: -5px;
+    margin-bottom: -10px;
 }
 
 /* Input field styling */
 .forgot-pin-container input[type="number"],
 .forgot-pin-container input[type="text"] {
-    font-family: 'M PLUS Rounded 1c', sans-serif;
+    font-family: 'Outfit', sans-serif;
     font-weight: 400;
-    width: 80%;
-    padding: 8px;
+    width: calc(100% - 20px); /* Responsive width */
+    max-width: 400px; /* Restrict maximum width */
+    padding: 12px 15px; /* Add more padding for a solid look */
     margin-bottom: 20px;
-    border: 1px solid #d0d0d0;
-    border-radius: 8px;
+    border: none;
+    border-radius: 10px;
     font-size: 1em;
-    background-color: #fdfdfd;
-    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05);
+    background: linear-gradient(145deg, #ffffff, #e6e6e6); /* Subtle gradient for depth */
+    box-shadow: 
+        inset 3px 3px 5px rgba(0, 0, 0, 0.1), /* Inner shadow for depth */
+        4px 4px 6px rgba(0, 0, 0, 0.1), /* Outer shadow for 3D look */
+        -4px -4px 6px rgba(255, 255, 255, 0.7); /* Light source shadow */
     outline: none;
-    transition: border-color 0.3s ease;
+    transition: all 0.3s ease;
 }
 
-/* Focused input field border effect */
+/* Focused input field with glowing effect */
 .forgot-pin-container input[type="number"]:focus,
 .forgot-pin-container input[type="text"]:focus {
-    border-color: #0057d9;
+    border: none; /* Remove any visible borders */
+    background: linear-gradient(145deg, #e3f2fd, #bbdefb); /* Soft blue gradient on focus */
+    box-shadow: 
+        inset 3px 3px 5px rgba(0, 0, 0, 0.1), /* Maintain inner shadow */
+        0 0 10px rgba(0, 87, 217, 0.5), /* Glow effect */
+        0 0 20px rgba(0, 87, 217, 0.7); /* Spread glow */
+}
+
+/* Placeholder styling for a cool touch */
+.forgot-pin-container input[type="number"]::placeholder,
+.forgot-pin-container input[type="text"]::placeholder {
+    color: #999;
+    font-size: 1em;
+    opacity: 0.8;
+}
+
+/* Add hover effect for interactivity */
+.forgot-pin-container input[type="number"]:hover,
+.forgot-pin-container input[type="text"]:hover {
+    box-shadow: 
+        inset 3px 3px 5px rgba(0, 0, 0, 0.1),
+        4px 4px 10px rgba(0, 87, 217, 0.2), /* Subtle blue outer glow */
+        -4px -4px 10px rgba(255, 255, 255, 0.8); /* Highlight effect */
 }
 
 /* Button styling */
 .forgot-pin-container button {
-    background-color: #ffa726; /* Darker orange on hover */
+    background: linear-gradient(135deg, #ffa726, #ff6f00); /* Vibrant gradient */
     color: #fff;
-    font-weight: 500;
+    font-weight: 600; /* Slightly bolder text for prominence */
     border: none;
-    border-radius: 10px;
-    padding: 10px 20px;
-    font-size: 1em;
+    border-radius: 12px; /* Softer corners */
+    padding: 12px 25px; /* Slightly larger for better visual impact */
+    font-size: 1.1em;
     cursor: pointer;
-    margin: 5px;
-    transition: background-color 0.3s;
+    margin: 10px 5px; /* Adjusted spacing for balance */
+    box-shadow: 
+        0 4px 6px rgba(0, 0, 0, 0.2), /* Outer shadow for depth */
+        inset 2px 2px 4px rgba(255, 255, 255, 0.5); /* Inner shine */
+    transition: all 0.3s ease-in-out; /* Smooth transitions */
+    text-transform: uppercase; /* Makes the text stand out */
+    letter-spacing: 0.5px; /* Adds a modern touch */
 }
 
 /* Hover effect for the button */
 .forgot-pin-container button:hover {
+    background: linear-gradient(135deg, #ff6f00, #ffa726); /* Reverse gradient */
     color: #fff;
-    background-color: #ffa826e7; /* Darker orange on hover */
-    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    transform: translateY(-3px); /* Slight lift */
+    box-shadow: 
+        0 8px 12px rgba(0, 0, 0, 0.3), /* Enhanced outer shadow */
+        0 0 10px rgba(255, 111, 0, 0.6), /* Outer glow */
+        inset 0 2px 5px rgba(255, 255, 255, 0.6); /* Stronger inner shine */
+}
+
+/* Active/pressed effect */
+.forgot-pin-container button:active {
+    transform: translateY(2px); /* Slight press-down effect */
+    box-shadow: 
+        0 3px 6px rgba(0, 0, 0, 0.2),
+        inset 2px 2px 4px rgba(0, 0, 0, 0.2); /* Darkened inner shadow */
 }
 
 /* Status message styling */
 .status-message {
-    font-size: 1em;
-    margin-top: 10px;
-    font-family: 'Roboto', sans-serif;
-    color: red;
-    font-weight: bold;
+    font-size: 1.2em; /* Slightly larger for emphasis */
+    margin-top: 15px;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 600;
+    color: #f44336; /* Make text white for better contrast */
+    text-align: center;
 }
 
 /* Adjustments for mobile */
 @media (max-width: 600px) {
     .forgot-pin-container {
-        width: 70%;
-
+        width: 95%;
     }
 
     .forgot-pin-container h2 {
@@ -164,27 +276,57 @@ h3 a:hover {
 }
 
 a#toggleBox {
-    font-family: 'M PLUS Rounded 1c', sans-serif;
+    font-family: 'Outfit', sans-serif;
     color: #2575fc;
+    text-decoration: none; /* Remove underline for cleaner look */
+    font-weight: bold; /* Make the link stand out */
+    border: 2px solid transparent; /* Add room for hover border effect */
+    padding: 5px 10px; /* Add padding for clickable area */
+    border-radius: 5px; /* Smooth edges for modern design */
+    transition: all 0.3s ease; /* Smooth transition for hover effects */
 }
 
+/* Hover effect */
 a#toggleBox:hover {
-    color: #2574fcd0;
+    color: #ffffff; /* Change text color on hover */
+    background: linear-gradient(135deg, #2575fc, #66a3ff); /* Gradient background on hover */
+    text-shadow: 0 0 10px rgba(37, 117, 252, 0.8); /* Glow effect */
+    border: 2px solid #2575fc; /* Add a border to match the glow */
+    transform: scale(1.05); /* Slight zoom-in for interactivity */
+    box-shadow: 0 4px 8px rgba(37, 117, 252, 0.2); /* Subtle shadow for depth */
 }
 
 #contentBox {
-    display: none;
-    opacity: 0;
+    display: none; /* Hidden by default */
+    opacity: 0; /* Invisible when hidden */
     margin-top: 10px;
     font-weight: 400;
-    transition: opacity 0.5s ease-in-out;
-    padding: 10px;
-    border-radius: 8px;
-    background-color: #f4f4f4; /* Light background for cancel button */
+    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out; /* Smooth fade and slide */
+    padding: 15px; /* Add more padding for better readability */
+    border-radius: 10px; /* Softer corners for a modern look */
+    background: linear-gradient(135deg, #ffffff, #f4f4f4); /* Subtle gradient for depth */
     color: #555;
-    border: 2px solid #ddd; /* Subtle border */
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05);
+    border: 2px solid #ddd;
+    box-shadow: 
+        0 4px 8px rgba(0, 0, 0, 0.1), 
+        0 0 10px rgba(255, 255, 255, 0.4) inset; /* Outer and inner shadows for polish */
+    transform: translateY(-10px); /* Start slightly off-screen */
+}
+
+/* When visible */
+#contentBox.visible {
+    display: block; /* Make it visible */
+    opacity: 1; /* Fully visible */
+    transform: translateY(0); /* Slide into place */
+    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out; /* Smooth entrance */
+}
+
+/* Add hover effect */
+#contentBox:hover {
+    background: linear-gradient(135deg, #f9f9f9, #f4f4f4); /* Highlight gradient */
+    box-shadow: 
+        0 6px 12px rgba(0, 0, 0, 0.2), 
+        0 0 15px rgba(255, 255, 255, 0.5) inset; /* Enhanced hover effect */
 }
 
 #contentBox.visible {
