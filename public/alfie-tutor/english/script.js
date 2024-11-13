@@ -240,25 +240,34 @@ function updateUserBadge(isGold, isPremium) {
 }
 
 // Function to call the English Tutor for syllable breakdown and pronunciation
+let wordToPronounce = ''; // Add a global variable to store the word for pronunciation
+
 async function callEnglishTutor() {
     const wordInputElement = document.getElementById("word-input");
-    const wordInput = wordInputElement.value;
+    const wordInput = wordInputElement.value.trim(); // Trim input to remove extra spaces
     const englishOutput = document.getElementById("english-output");
     const playTutorFeedbackButton = document.getElementById("play-tutor-feedback");
     const playPronunciationFeedbackButton = document.getElementById("play-pronunciation-feedback");
+    const playWordPronunciationButton = document.getElementById("play-word-pronunciation");
+
+    // Validate input
+    if (!wordInput) {
+        englishOutput.textContent = "Please enter a word or phrase to analyze.";
+        console.warn("Input is empty. Cannot proceed with analysis.");
+        return;
+    }
 
     // Check if there are tokens available
     if (userTokens <= 0) {
-        // Calculate the time left if tokens are depleted
         const userProfileRef = doc(db, `userProfiles/${parentId}`);
         const userProfileSnapshot = await getDoc(userProfileRef);
-        const tokensDepletedTimestamp = userProfileSnapshot.data().tokensDepletedTimestamp;
-        
+        const tokensDepletedTimestamp = userProfileSnapshot.data()?.tokensDepletedTimestamp;
+
         if (tokensDepletedTimestamp) {
             const elapsedTime = Date.now() - tokensDepletedTimestamp.toMillis();
             const refillInterval = 60 * 60 * 1000; // 1 hour
             const timeLeft = refillInterval - elapsedTime;
-            
+
             const minutes = Math.floor(timeLeft / 60000);
             const seconds = Math.floor((timeLeft % 60000) / 1000);
             englishOutput.textContent = `🌟 Out of tokens! Come back in ${minutes} minutes and ${seconds} seconds or upgrade for more tokens.`;
@@ -271,34 +280,93 @@ async function callEnglishTutor() {
     // Deduct a token
     await deductToken();
 
-    // Reset the output and button visibility
+    // Reset outputs and buttons
     englishOutput.textContent = "⏳ Loading...";
     playTutorFeedbackButton.classList.add("hidden");
     playPronunciationFeedbackButton.classList.add("hidden");
+    playWordPronunciationButton.classList.add("hidden");
     isProcessing = true;
 
     const getEnglishTutorResponse = httpsCallable(functions, 'getEnglishTutorResponse');
     try {
         const response = await getEnglishTutorResponse({ wordPrompt: wordInput });
-        englishOutput.textContent = response.data.message;
+        console.log("Response from English Tutor:", response.data); // Debugging log
 
-        // Store the text based on the feedback type
+        // Introduce a slight delay to ensure the response is processed before updating UI
+        await new Promise((resolve) => setTimeout(resolve, 300)); // 300ms delay
+
+        // Set the output text
+        englishOutput.textContent = response.data.message || "No response received.";
+
+        // Extract the first word (entire word from AI response)
+        const matches = response.data.message?.match(/The word: ["']([^"']+)["']/);
+        wordToPronounce = matches ? matches[1] : null;
+
+        if (wordToPronounce) {
+            console.log("Extracted word to pronounce:", wordToPronounce); // Debugging log
+            playWordPronunciationButton.classList.remove("hidden");
+        }
+
+        // Show appropriate feedback buttons based on response type
         if (response.data.isGrammarFeedback) {
-            tutorFeedbackText = response.data.plainTextSyllables;
-            playTutorFeedbackButton.classList.remove("hidden");  // Show only the Tutor Feedback button
-        } else {
-            pronunciationFeedbackText = response.data.message; // <-- Change here to set pronunciation to answer
-            playPronunciationFeedbackButton.classList.remove("hidden");  // Show only the Pronunciation Feedback button
+            tutorFeedbackText = response.data.message;
+            console.log("Tutor Feedback Text Set:", tutorFeedbackText); // Debugging log
+            playTutorFeedbackButton.classList.remove("hidden");
+        } else if (response.data.plainTextSyllables) {
+            pronunciationFeedbackText = response.data.plainTextSyllables;
+            console.log("Pronunciation Feedback Text Set:", pronunciationFeedbackText); // Debugging log
+            playPronunciationFeedbackButton.classList.remove("hidden");
         }
     } catch (error) {
         console.error("Error calling English Tutor:", error);
-        englishOutput.textContent = "Error: Could not fetch syllable breakdown.";
+
+        // Handle specific errors
+        if (error.message.includes("wordPrompt is missing")) {
+            englishOutput.textContent = "Error: The input was not sent correctly. Please try again.";
+        } else {
+            englishOutput.textContent = "Error: Could not fetch syllable breakdown.";
+        }
     } finally {
         isProcessing = false;
-        wordInputElement.value = "";  // Clear the input field after processing
+        wordInputElement.value = ""; // Clear input field
     }
 }
 
+async function playWordPronunciation() {
+    if (!wordToPronounce) return;
+
+    const generatePronunciationFeedback = httpsCallable(functions, 'generatePronunciationFeedback');
+    try {
+        const audioResponse = await generatePronunciationFeedback({ text: wordToPronounce });
+        const audio = new Audio(audioResponse.data);
+        audio.play();
+    } catch (error) {
+        console.error("Error playing word pronunciation:", error);
+    }
+}
+
+async function makeItSimpler() {
+    const englishOutput = document.getElementById("english-output");
+    const existingFeedback = englishOutput.textContent;
+
+    // If there's no feedback yet, do nothing
+    if (!existingFeedback || existingFeedback === "⏳ Loading...") {
+        englishOutput.textContent = "Please get an answer first before simplifying.";
+        return;
+    }
+
+    // Call the function to simplify the feedback
+    const simplifyResponse = httpsCallable(functions, 'getEnglishTutorResponse');
+    try {
+        const response = await simplifyResponse({
+            wordPrompt: `Make this simpler: ${existingFeedback}`
+        });
+        englishOutput.textContent = response.data.message;
+    } catch (error) {
+        console.error("Error simplifying feedback:", error);
+        englishOutput.textContent = "Error: Could not simplify the feedback.";
+    }
+}
 
 // Countdown function for recording
 function showCountdown(callback) {
@@ -551,3 +619,5 @@ window.playPronunciationFeedback = playPronunciationFeedback;
 window.startSpeechRecognition = startSpeechRecognition;
 window.pausePronunciationFeedback = pausePronunciationFeedback;
 window.pauseTutorFeedback = pauseTutorFeedback;
+window.playWordPronunciation = playWordPronunciation;
+window.makeItSimpler = makeItSimpler;
