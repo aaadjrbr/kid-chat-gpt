@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Alfie AI - English Tutor 🔠</title>
-    <link rel="icon" href="https://emojiisland.com/cdn/shop/products/Dog_Emoji_large.png?v=1571606065" type="image/x-icon">
+    <link rel="icon" href="./alfie-ai.ico" type="image/x-icon">
     <link rel="stylesheet" href="alfie-tutor/english/styles.css">
     <!-- Google Material Icons -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -74,8 +74,11 @@
         <div class="tutor-section">
             <h2>Ask Your English Tutor</h2>
             <p style="color: #727171;">
-                <em>Examples:</em><br/><span style="font-weight: bold;">Grammar:</span> What is the verb 'to be'?<br/>
-            <span style="font-weight: bold;">Pronunciation:</span> Pronunciation of strawberry</p>
+                <em>Examples:</em><br/>
+                <span style="font-weight: bold;">Grammar:</span> "What is the verb 'to be'?"<br/>
+                <span style="font-weight: bold;">Pronunciation:</span> "How do you pronounce strawberry?" or simply type "strawberry" (Alfie will understand you’re asking for its pronunciation).<br/>
+                <span style="font-weight: bold;">💡 Tips:</span> You can also type a phrase to check if it’s correct. Alfie will suggest the proper version and provide helpful feedback!
+            </p>            
             <div class="input-wrapper">
                 <textarea id="word-input" placeholder="Ask away..." rows="1"></textarea>
                 <span id="input-mic-icon" class="material-icons" onclick="startSpeechRecognition()">mic</span>
@@ -100,8 +103,12 @@
                 <br/>
             </div>
 
-            <button onclick="makeItSimpler()">Make it Simpler 🌟</button><br/><br/>
+            <button onclick="makeItSimpler()">Make it Simpler ⚡</button>
             <div id="english-output" class="output"></div>
+            <br/>
+            <p style="color: #727171;">
+                <span style="font-weight: bold;">Important:</span> Audio responses may take a few seconds to load because Alfie needs time to process and read them. Thank you for your patience!
+            </p>            
 
             <button id="play-word-pronunciation" class="hidden" onclick="playWordPronunciation()">
                 <span class="material-icons">volume_up</span> Pronounce Word

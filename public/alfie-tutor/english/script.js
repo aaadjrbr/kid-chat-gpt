@@ -30,6 +30,7 @@ let isProcessing = false; // Flag to check if processing is in progress
 let mediaStream; // Define a global variable for the stream
 let tutorFeedbackText = '';  // Add a variable to store the feedback text
 let pronunciationFeedbackText = '';
+let pronunciationAudio = null; // Store the pronunciation audio object
 
 // Session state and default token values
 let sessionMessages = [];
@@ -257,6 +258,18 @@ async function callEnglishTutor() {
         return;
     }
 
+    // Clear previous feedback and audio data
+    pronunciationFeedbackText = '';
+    pronunciationFeedbackAudioUrl = '';
+    tutorFeedbackText = '';
+    wordToPronounce = '';
+    isPlaying = false;
+
+    // Hide buttons for outdated feedback
+    playTutorFeedbackButton.classList.add("hidden");
+    playPronunciationFeedbackButton.classList.add("hidden");
+    playWordPronunciationButton.classList.add("hidden");
+
     // Check if there are tokens available
     if (userTokens <= 0) {
         const userProfileRef = doc(db, `userProfiles/${parentId}`);
@@ -282,15 +295,12 @@ async function callEnglishTutor() {
 
     // Reset outputs and buttons
     englishOutput.textContent = "⏳ Loading...";
-    playTutorFeedbackButton.classList.add("hidden");
-    playPronunciationFeedbackButton.classList.add("hidden");
-    playWordPronunciationButton.classList.add("hidden");
     isProcessing = true;
 
     const getEnglishTutorResponse = httpsCallable(functions, 'getEnglishTutorResponse');
     try {
         const response = await getEnglishTutorResponse({ wordPrompt: wordInput });
-        console.log("Response from English Tutor:", response.data); // Debugging log
+        console.log("Response from English Tutor:", response.data);
 
         // Introduce a slight delay to ensure the response is processed before updating UI
         await new Promise((resolve) => setTimeout(resolve, 300)); // 300ms delay
@@ -303,18 +313,18 @@ async function callEnglishTutor() {
         wordToPronounce = matches ? matches[1] : null;
 
         if (wordToPronounce) {
-            console.log("Extracted word to pronounce:", wordToPronounce); // Debugging log
+            console.log("Extracted word to pronounce:", wordToPronounce);
             playWordPronunciationButton.classList.remove("hidden");
         }
 
         // Show appropriate feedback buttons based on response type
         if (response.data.isGrammarFeedback) {
             tutorFeedbackText = response.data.message;
-            console.log("Tutor Feedback Text Set:", tutorFeedbackText); // Debugging log
+            console.log("Tutor Feedback Text Set:", tutorFeedbackText);
             playTutorFeedbackButton.classList.remove("hidden");
         } else if (response.data.plainTextSyllables) {
             pronunciationFeedbackText = response.data.plainTextSyllables;
-            console.log("Pronunciation Feedback Text Set:", pronunciationFeedbackText); // Debugging log
+            console.log("Pronunciation Feedback Text Set:", pronunciationFeedbackText);
             playPronunciationFeedbackButton.classList.remove("hidden");
         }
     } catch (error) {
@@ -332,16 +342,33 @@ async function callEnglishTutor() {
     }
 }
 
+let isPlayingPronunciation = false; // Flag to check if audio is playing
+
 async function playWordPronunciation() {
     if (!wordToPronounce) return;
 
+    if (isPlayingPronunciation) {
+        console.warn("Audio is already playing.");
+        return; // Prevent replay if the audio is already playing
+    }
+
     const generatePronunciationFeedback = httpsCallable(functions, 'generatePronunciationFeedback');
     try {
-        const audioResponse = await generatePronunciationFeedback({ text: wordToPronounce });
-        const audio = new Audio(audioResponse.data);
-        audio.play();
+        // Remove irrelevant prefixes before sending to the audio generator
+        let cleanText = wordToPronounce.replace(/^(Pronunciation guide:|Grammar suggestion:)\s*/i, "").trim();
+
+        const audioResponse = await generatePronunciationFeedback({ text: cleanText });
+        pronunciationAudio = new Audio(audioResponse.data);
+
+        // Set the flag and add an event listener to reset it when playback ends
+        isPlayingPronunciation = true;
+        pronunciationAudio.play();
+        pronunciationAudio.onended = () => {
+            isPlayingPronunciation = false; // Reset flag when audio finishes playing
+        };
     } catch (error) {
         console.error("Error playing word pronunciation:", error);
+        isPlayingPronunciation = false; // Reset flag on error
     }
 }
 
@@ -361,7 +388,20 @@ async function makeItSimpler() {
         const response = await simplifyResponse({
             wordPrompt: `Make this simpler: ${existingFeedback}`
         });
-        englishOutput.textContent = response.data.message;
+
+        const simplifiedText = response.data.message;
+
+        // Update the UI with the simplified text
+        englishOutput.textContent = simplifiedText;
+
+        // Update the relevant text variables for audio playback
+        if (pronunciationFeedbackText.includes(existingFeedback)) {
+            pronunciationFeedbackText = simplifiedText;
+        } else if (tutorFeedbackText.includes(existingFeedback)) {
+            tutorFeedbackText = simplifiedText;
+        }
+
+        console.log("Text simplified and updated for playback:", simplifiedText);
     } catch (error) {
         console.error("Error simplifying feedback:", error);
         englishOutput.textContent = "Error: Could not simplify the feedback.";
@@ -423,7 +463,7 @@ function getMimeType() {
 }
 
 // Function to stop recording and release microphone
-function stopRecording() {
+async function stopRecording() {
     if (!mediaRecorder) return;
 
     mediaRecorder.stop();
@@ -435,27 +475,36 @@ function stopRecording() {
         // Stop all tracks to release the microphone
         mediaStream.getTracks().forEach(track => track.stop());
 
+        // Combine the audio chunks into a Blob
         let audioBlob = audioChunks.length > 0 && audioChunks[0].type === "audio/webm"
             ? new Blob(audioChunks, { type: "audio/webm" })
             : new Blob(audioChunks, { type: "audio/mp4" });
 
+        // Convert the Blob to Base64 for processing
         const audioBase64 = await convertBlobToBase64(audioBlob);
         const wordInput = document.getElementById("word-input").value;
+
         const whisperTranscription = httpsCallable(functions, 'generatePronunciationPractice');
 
         try {
+            // Send the recording to the backend for processing
             const response = await whisperTranscription({ word: wordInput, userAudioBase64: audioBase64 });
+
+            // Update the output with feedback text
             document.getElementById("english-output").textContent = response.data.feedback;
 
+            // Fetch the audio URL for pronunciation feedback
             const generatePronunciationFeedback = httpsCallable(functions, 'generatePronunciationFeedback');
-            const pronunciationAudioResponse = await generatePronunciationFeedback({ text: wordInput });
+            const pronunciationAudioResponse = await generatePronunciationFeedback({ text: response.data.feedback });
+            
+            // Update the global audio URL for playback
             pronunciationFeedbackAudioUrl = pronunciationAudioResponse.data;
 
+            // Make the "Listen" button visible
             document.getElementById("play-pronunciation-feedback").classList.remove("hidden");
-            document.getElementById("play-tutor-feedback").classList.add("hidden");
         } catch (error) {
-            console.error("Error transcribing audio:", error);
-            document.getElementById("english-output").textContent = "Error: Could not transcribe audio.";
+            console.error("Error processing recording:", error);
+            document.getElementById("english-output").textContent = "Error: Could not process your recording.";
         } finally {
             isProcessing = false;
         }
@@ -520,55 +569,32 @@ function startSpeechRecognition() {
     }
 }
 
-let pronunciationAudio = null; // Store the pronunciation audio object
 let tutorAudio = null; // Store the tutor feedback audio object
 
 // Function to play the tutor feedback audio with a pause/stop option
 async function playTutorFeedback() {
-    if (tutorFeedbackText && !isPlaying) {
-        isPlaying = true;
-        const generateSpeechFunction = httpsCallable(functions, 'generateSlowSpeech');
-        try {
-            const audioResponse = await generateSpeechFunction({ text: tutorFeedbackText });
-            tutorAudio = new Audio(audioResponse.data);
-            tutorAudio.play();
-            tutorAudio.onended = () => { 
-                isPlaying = false;
-                document.getElementById("pause-tutor-feedback").classList.add("hidden");
-            };
-            document.getElementById("pause-tutor-feedback").classList.remove("hidden");
-        } catch (error) {
-            console.error("Error generating tutor feedback audio:", error);
-        }
-    }
-}
+    if (!tutorFeedbackText || isPlaying) return;
 
-// Function to play the pronunciation feedback audio with a pause/stop option
-async function playPronunciationFeedback() {
-    if (pronunciationFeedbackText && !isPlaying) {
-        isPlaying = true;
-        const generatePronunciationFeedback = httpsCallable(functions, 'generatePronunciationFeedback');
-        try {
-            const audioResponse = await generatePronunciationFeedback({ text: pronunciationFeedbackText });
-            pronunciationAudio = new Audio(audioResponse.data);
-            pronunciationAudio.play();
-            pronunciationAudio.onended = () => { 
-                isPlaying = false;
-                document.getElementById("pause-pronunciation-feedback").classList.add("hidden");
-            };
-            document.getElementById("pause-pronunciation-feedback").classList.remove("hidden");
-        } catch (error) {
-            console.error("Error generating pronunciation feedback audio:", error);
-        }
-    }
-}
+    const generateSpeechFunction = httpsCallable(functions, 'generateSlowSpeech');
+    try {
+        // Clean text by removing irrelevant prefixes
+        let cleanText = tutorFeedbackText.replace(/^(Pronunciation guide:|Grammar suggestion:)\s*/i, "").trim();
 
-// Function to pause or stop the pronunciation feedback
-function pausePronunciationFeedback() {
-    if (pronunciationAudio && !pronunciationAudio.paused) {
-        pronunciationAudio.pause();
-        isPlaying = false;
-        document.getElementById("pause-pronunciation-feedback").classList.add("hidden");
+        const audioResponse = await generateSpeechFunction({ text: cleanText });
+        tutorAudio = new Audio(audioResponse.data);
+
+        // Set the flag and show the pause button
+        isPlaying = true;
+        document.getElementById("pause-tutor-feedback").classList.remove("hidden");
+
+        tutorAudio.play();
+        tutorAudio.onended = () => {
+            isPlaying = false; // Reset flag when audio finishes playing
+            document.getElementById("pause-tutor-feedback").classList.add("hidden");
+        };
+    } catch (error) {
+        console.error("Error generating tutor feedback audio:", error);
+        isPlaying = false; // Reset flag on error
     }
 }
 
@@ -578,6 +604,62 @@ function pauseTutorFeedback() {
         tutorAudio.pause();
         isPlaying = false;
         document.getElementById("pause-tutor-feedback").classList.add("hidden");
+    }
+}
+
+// Function to play the pronunciation feedback audio with a pause/stop option
+async function playPronunciationFeedback() {
+    if ((!pronunciationFeedbackText && !pronunciationFeedbackAudioUrl) || isPlaying) return;
+
+    try {
+        // If `pronunciationFeedbackAudioUrl` exists, play the user-generated audio
+        if (pronunciationFeedbackAudioUrl) {
+            pronunciationAudio = new Audio(pronunciationFeedbackAudioUrl);
+
+            // Set the flag and show the pause button
+            isPlaying = true;
+            document.getElementById("pause-pronunciation-feedback").classList.remove("hidden");
+
+            pronunciationAudio.play();
+            pronunciationAudio.onended = () => {
+                isPlaying = false; // Reset flag when audio finishes playing
+                document.getElementById("pause-pronunciation-feedback").classList.add("hidden");
+            };
+
+            console.log("Playing user-generated pronunciation feedback audio.");
+            return;
+        }
+
+        // If no URL but `pronunciationFeedbackText` exists, generate audio dynamically
+        const generatePronunciationFeedback = httpsCallable(functions, 'generatePronunciationFeedback');
+        let cleanText = pronunciationFeedbackText.replace(/^(Pronunciation guide:|Grammar suggestion:)\s*/i, "").trim();
+
+        const audioResponse = await generatePronunciationFeedback({ text: cleanText });
+        pronunciationAudio = new Audio(audioResponse.data);
+
+        // Set the flag and show the pause button
+        isPlaying = true;
+        document.getElementById("pause-pronunciation-feedback").classList.remove("hidden");
+
+        pronunciationAudio.play();
+        pronunciationAudio.onended = () => {
+            isPlaying = false; // Reset flag when audio finishes playing
+            document.getElementById("pause-pronunciation-feedback").classList.add("hidden");
+        };
+
+        console.log("Playing dynamically generated pronunciation feedback audio.");
+    } catch (error) {
+        console.error("Error playing pronunciation feedback audio:", error);
+        isPlaying = false; // Reset flag on error
+    }
+}
+
+// Function to pause or stop the pronunciation feedback
+function pausePronunciationFeedback() {
+    if (pronunciationAudio && !pronunciationAudio.paused) {
+        pronunciationAudio.pause();
+        isPlaying = false;
+        document.getElementById("pause-pronunciation-feedback").classList.add("hidden");
     }
 }
 
