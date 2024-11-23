@@ -9,7 +9,7 @@ const kidId = urlParams.get('kidId'); // kidId passed as a URL parameter
 let parentId;
 
 // Placeholder for the default background image
-const originalBgUrl = 'https://firebasestorage.googleapis.com/v0/b/kids-chatgpt.appspot.com/o/static%2Falfie-chat-bg1.webp?alt=media&token=ee5ae5cc-d907-42a7-8f10-6a2eef5360cd';
+const originalBgUrl = 'https://firebasestorage.googleapis.com/v0/b/kids-chatgpt.appspot.com/o/static%2Falfie-chat-bg.webp?alt=media&token=e5d798fe-c1b3-4d64-9397-ae6fde9b81bb';
 const auth = getAuth();
 const storage = getStorage();
 
@@ -147,9 +147,14 @@ document.getElementById('delete-bg').addEventListener('click', async () => {
             }
         }
 
+        // Update Firestore to set the default background
         await updateDoc(doc(db, `/parents/${parentId}/kids/${kidId}`), { 'chat-bg': originalBgUrl });
-        loadCachedBg(kidId, originalBgUrl);
-        updateBackgroundImage(kidId, originalBgUrl);
+
+        // Clear cache for this kid's background
+        delete bgCache[`customBg_${kidId}`];
+
+        // Update the background to the default immediately
+        document.getElementById('messages').style.backgroundImage = `url(${originalBgUrl})`;
     }
 });
 
