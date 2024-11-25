@@ -1,7 +1,7 @@
 // Import Firebase and necessary functions
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
 import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-functions.js";
-import { getFirestore, doc, getDoc, updateDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
+import { getFirestore, doc, getDoc, updateDoc, setDoc, serverTimestamp, runTransaction } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js";
 
 // Firebase configuration
@@ -109,24 +109,67 @@ async function fetchUserTokens() {
 }
 
 // Deduct tokens and update in Firestore
+let isProcessingDeduction = false; // Prevent simultaneous deductions
+
 async function deductToken() {
-    if (userTokens > 0) {
-        userTokens -= 1;
-        await updateDoc(doc(db, `userProfiles/${parentId}`), { tokens: userTokens });
-        updateTokenBar();
+    if (isProcessingDeduction) {
+        console.warn("Token deduction is already in progress.");
+        return;
     }
 
-    // Set the timestamp once when tokens hit zero
-    if (userTokens === 0) {
-        const userProfileRef = doc(db, `userProfiles/${parentId}`);
-        const userProfileSnapshot = await getDoc(userProfileRef);
+    if (!parentId) {
+        console.error("Parent ID is not available. Cannot deduct tokens.");
+        return;
+    }
 
-        // Only set the timestamp if it hasn't been set yet
-        if (!userProfileSnapshot.data().tokensDepletedTimestamp) {
-            console.warn("User has run out of tokens, setting depletion timestamp.");
-            await updateDoc(userProfileRef, { tokensDepletedTimestamp: serverTimestamp() });
-            displayTokenRefillCountdown(60 * 60 * 1000); // Start a 1-hour countdown
-        }
+    isProcessingDeduction = true; // Lock to prevent simultaneous calls
+    const userProfileRef = doc(db, `userProfiles/${parentId}`);
+
+    try {
+        await runTransaction(db, async (transaction) => {
+            const userProfileSnapshot = await transaction.get(userProfileRef);
+
+            if (!userProfileSnapshot.exists()) {
+                throw "User profile does not exist!";
+            }
+
+            const userData = userProfileSnapshot.data();
+            const maxTokens = isPremium
+                ? TOKEN_LIMITS.premium
+                : isGold
+                ? TOKEN_LIMITS.gold
+                : TOKEN_LIMITS.free;
+
+            // Validate current tokens
+            if (userData.tokens > 0) {
+                const updatedTokens = userData.tokens - 1;
+
+                transaction.update(userProfileRef, {
+                    tokens: updatedTokens,
+                });
+
+                console.log(`Token deducted. Remaining tokens: ${updatedTokens}`);
+                userTokens = updatedTokens; // Update local state
+                updateTokenBar(); // Update the UI
+            } else {
+                throw "Insufficient tokens!";
+            }
+
+            // Handle token depletion
+            if (userData.tokens === 1) {
+                if (!userData.tokensDepletedTimestamp) {
+                    console.warn("Tokens depleted. Setting depletion timestamp.");
+                    transaction.update(userProfileRef, {
+                        tokensDepletedTimestamp: serverTimestamp(),
+                    });
+                }
+                displayTokenRefillCountdown(60 * 60 * 1000); // Start a 1-hour countdown
+            }
+        });
+    } catch (error) {
+        console.error("Failed to deduct token:", error);
+    } finally {
+        isProcessingDeduction = false; // Unlock after completion
     }
 }
 
@@ -228,30 +271,37 @@ function updateUserBadge(isGold, isPremium) {
 }
 
 // Main function for sending math explanation requests
-export async function getMathTutorExplanation() {
+export async function getMathTutorExplanation(deductTokenFlag = true) {
     const mathPrompt = document.getElementById('mathPrompt').value;
     const outputContainer = document.getElementById('outputContainer');
 
-    if (userTokens <= 0) {
+    if (deductTokenFlag && userTokens <= 0) {
         outputContainer.innerHTML = "🌟 Oops! You're out of tokens! Wait for them to refill soon! 😊";
         return;
     }
 
-    // Deduct token and update state
-    await deductToken();
+    // Deduct token only if `deductTokenFlag` is true
+    if (deductTokenFlag) {
+        await deductToken();
+    }
+
     outputContainer.innerHTML = "⏳ Loading explanation...";
 
     // Scroll to outputContainer
     outputContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
     // Modify math prompt to handle square root symbol
-    const processedPrompt = mathPrompt.replace(/√(\d+)/g, 'Math.sqrt($1)'); 
+    const processedPrompt = mathPrompt.replace(/√(\d+)/g, 'Math.sqrt($1)');
 
     // Send message to session memory
     sessionMessages.push({ role: "user", content: processedPrompt });
 
     try {
-        const response = await getMathTutorResponse({ mathPrompt: processedPrompt, messages: sessionMessages });
+        const response = await getMathTutorResponse({
+            mathPrompt: processedPrompt,
+            messages: sessionMessages,
+        });
+
         if (response.data && response.data.message) {
             sessionMessages.push({ role: "assistant", content: response.data.message });
             displayExplanation(response.data.message);
@@ -368,9 +418,18 @@ export async function requestSimplerExplanation() {
         document.getElementById('outputContainer').innerHTML = "🌟 Out of tokens! Wait for refill 😊";
         return;
     }
-    sessionMessages.push({ role: "user", content: "Could you explain it more simply in steps? Yet keeping the steps of how to achieve the result without simply telliing me the answer. The 'why' and 'how' I get to the result is important." });
+
+    // Deduct token for the "make it simpler" request
     await deductToken();
-    await getMathTutorExplanation();
+
+    // Add a simpler explanation request to session messages
+    sessionMessages.push({
+        role: "user",
+        content: "Could you explain it more simply in steps? Yet keeping the steps of how to achieve the result without simply telling me the answer. The 'why' and 'how' I get to the result is important."
+    });
+
+    // Call the tutor explanation logic but without deducting a token
+    await getMathTutorExplanation(false);
 }
 
 // Ask follow-up question with memory
