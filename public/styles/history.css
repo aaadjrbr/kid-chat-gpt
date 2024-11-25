@@ -6,7 +6,7 @@
 /* General styling */
 body {
     font-family: "Fredoka", sans-serif;
-    background-color: #e3e3e9; /* Light greyish background for a cleaner look */
+    background: linear-gradient(135deg, rgba(23, 212, 133, 0.3), rgb(114, 196, 161, 0.2));
     margin: 0;
     padding: 20px;
     color: #333;
@@ -22,35 +22,72 @@ h2 {
 }
 
 h3 {
-    font-family: "Fredoka", sans-serif;
+    font-family: 'Outfit', sans-serif;
     font-size: 1.4em;
     text-align: center;
 }
 
 h3#current-month-title {
+    font-weight: 500;
     color: #fff;
 }
 
 .bot-name {
     font-family: "Fredoka", sans-serif;
-    font-weight: 600 !important;
-    background: #fff;
-    padding: 1px;
-    border-radius: 8px;
-    margin-right: 3px;
-    color: #6a11cb;
+    font-weight: 500 !important;
+    background: linear-gradient(145deg, #ffffff, #f0f0f0); /* Subtle gradient for depth */
+    padding: 3px 3px; /* More padding for better readability */
+    border-radius: 12px; /* Smooth, modern rounding */
+    margin-right: 6px; /* Adjust spacing for better alignment */
+    color: #6a11cb; /* Keep the vibrant purple */
+    font-size: 0.9em; /* Slightly refined font size for balance */
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1), 
+                -2px -2px 5px rgba(255, 255, 255, 0.6); /* Add subtle 3D shadows */
+    transition: all 0.3s ease; /* Smooth transition for hover effects */
+}
+
+.bot-name:hover {
+    background: linear-gradient(145deg, #f0f0f0, #ffffff); /* Reverse gradient on hover */
+    color: #5a0fb8; /* Slightly darker purple for interaction feedback */
+    transform: translateY(-2px); /* Subtle lift effect */
+    box-shadow: 3px 3px 7px rgba(0, 0, 0, 0.15), 
+                -3px -3px 7px rgba(255, 255, 255, 0.7); /* More pronounced shadows on hover */
+}
+
+.bot-name:active {
+    transform: translateY(1px); /* Pressed-down effect */
+    box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.1), 
+                inset -2px -2px 4px rgba(255, 255, 255, 0.5); /* Inset shadows for pressed state */
 }
 
 li.user-message span {
     font-weight: bold;
-    background: #ffffffde;
-    padding: 3px;
-    border-radius: 8px;
-    margin-right: 6px;
-    color: #e24545;
+    background: linear-gradient(145deg, #ffffff, #e6e6e6); /* Soft gradient for depth */
+    padding: 3px 3px; /* More padding for a comfortable appearance */
+    border-radius: 12px; /* Increased rounding for a modern pill-like shape */
+    margin-right: 8px; /* Slightly larger spacing between elements */
+    color: #e24545; /* Keep the bold red color for contrast */
     font-family: "Fredoka", sans-serif;
-    font-weight: 600 !important;
+    font-weight: 500 !important;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1), 
+                -2px -2px 5px rgba(255, 255, 255, 0.5); /* Add subtle shadows for 3D effect */
+    transition: all 0.3s ease; /* Smooth transitions for hover effects */
 }
+
+li.user-message span:hover {
+    background: linear-gradient(145deg, #e6e6e6, #ffffff); /* Reverse gradient for hover effect */
+    color: #d12f2f; /* Slightly darker red on hover */
+    box-shadow: 3px 3px 7px rgba(0, 0, 0, 0.15), 
+                -3px -3px 7px rgba(255, 255, 255, 0.6); /* More pronounced shadow on hover */
+    transform: translateY(-2px); /* Subtle lift effect */
+}
+
+li.user-message span:active {
+    transform: translateY(1px); /* Pressed-down effect */
+    box-shadow: inset 2px 2px 4px rgba(0, 0, 0, 0.1), 
+                inset -2px -2px 4px rgba(255, 255, 255, 0.5); /* Inset shadows for pressed effect */
+}
+
 
 /* Calendar styling */
 #month-picker {
@@ -66,38 +103,56 @@ li.user-message span {
     display: grid;
     grid-template-columns: repeat(7, 1fr); /* 7 columns for days of the week */
     gap: 5px;
-    max-width: 80%;
-    margin: 20px auto;
+    max-width: 80%; /* Adjust the width as needed */
+    margin: 0 auto; /* Center horizontally */
+    justify-items: center; /* Center content horizontally in each grid cell */
+    align-items: center; /* Center content vertically in each grid cell */
+}
+
+.parent-container {
+    display: flex; /* Flexbox for centering */
+    justify-content: center; /* Horizontal centering */
+    align-items: center; /* Vertical centering */
 }
 
 /* Styling for individual day buttons in the calendar */
 .day-button {
-    background: #ffa726;
-    border: 3px solid #ffa826b0;
-    color: rgb(43, 43, 43);
+    background: rgb(255 255 255 / 91%);
+    border: none; /* Cleaner look without a border */
+    color: #000000; /* Slightly darker text for contrast */
     padding: 12px;
-    width: 60px;
-    height: 60px;
-    font-size: 1.2em;
-    font-weight: 700;
+    width: 70px; /* Slightly larger for a more modern feel */
+    height: 70px;
+    font-size: 1.3em;
+    font-weight: 600;
     cursor: pointer;
-    border-radius: 50%;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 50%; /* Keep the round shape */
     box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.233);
     text-align: center;
     margin: 5px;
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
 }
 
+/* Hover effect */
 .day-button:hover {
-    border: 3px solid #ffa826 !important;
-    background-image: linear-gradient(to right, #ffffff57, #ffffff6e);
-    transition: all 0.2s ease;
+    background: linear-gradient(to bottom right, #7a2cbfa2, #9d4eddb6, #59189a80);
+    border: 4px solid #ffffff;
+    color: #ffffff; /* Slightly darker text for contrast */
+    transform: scale(1.05) translateY(-5px); /* Slight lift on hover */
+
+    /* Enhanced shadow on hover */
+    box-shadow: 
+        10px 10px 20px rgba(0, 0, 0, 0.3), 
+        -5px -5px 10px rgba(255, 255, 255, 0.4),
+        inset 0 5px 8px rgba(0, 0, 0, 0.15), 
+        inset -3px -3px 6px rgba(255, 255, 255, 0.25);
 }
 
+/* Active (pressed) effect */
 .day-button:active {
-    transform: scale(0.95);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transform: translateY(2px) scale(0.95); /* Pressed down effect */
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2), 
+                -1px -1px 4px rgba(255, 255, 255, 0.5); /* Subtle shadows */
 }
 
 @media (max-width: 600px) {
@@ -122,7 +177,36 @@ li.user-message span {
     margin-top: 20px; /* Optional: add some spacing from the top */
 }
 
-.button-go-back, div.pagination-container button {
+.button-go-back {
+    background: linear-gradient(145deg, #ffa726, #ff8c00); /* Subtle gradient for depth */
+    border: none; /* Remove border for a cleaner look */
+    cursor: pointer;
+    margin-top: 8px;
+    margin-right: 8px;
+    border-radius: 15px;
+    padding: 12px 20px; /* More balanced padding for a modern look */
+    color: #fff; /* Contrast text */
+    font-size: 1em; /* Slightly larger for readability */
+    font-weight: 600; /* Emphasize text */
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2), 
+                -3px -3px 6px rgba(255, 255, 255, 0.5); /* 3D effect with shadows */
+    transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.button-go-back:hover {
+    background: linear-gradient(145deg, #ff8c00, #ffa726); /* Reverse gradient on hover */
+    transform: translateY(-3px); /* Slight lift on hover */
+    box-shadow: 6px 6px 12px rgba(0, 0, 0, 0.3), 
+                -4px -4px 8px rgba(255, 255, 255, 0.6); /* More pronounced shadows */
+}
+
+.button-go-back:active {
+    transform: translateY(2px); /* Pressed-down effect */
+    box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.2), 
+                -2px -2px 4px rgba(255, 255, 255, 0.4); /* Subtle pressed shadow */
+}
+
+div.pagination-container button {
     background-color: #ffa726;
     border: none;
     cursor: pointer;
@@ -134,7 +218,7 @@ li.user-message span {
     transition: background-color 0.3s, transform 0.2s;
 }
 
-.button-go-back:hover, div.pagination-container button:hover {
+div.pagination-container button:hover {
     background-color: #fb8c00;
     transform: translateY(-2px);
 }
@@ -145,8 +229,8 @@ li.user-message span {
     width: 90%;
     margin: 10px auto; /* Centers the container horizontally */
     border-radius: 20px;
-    background: linear-gradient(135deg, #6a0dad, #4a4de7);
-    border: 4px solid #4a4de7;
+    background: linear-gradient(to bottom right, #7b2cbf, #9d4edd, #5a189a);
+    border: 4px solid #ffffff;
     padding: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.233);
@@ -158,11 +242,11 @@ li.user-message span {
     width: 90%;
     margin: 10px auto; /* Centers the container horizontally */
     border-radius: 20px;
-    background: #0d6dfdec;
-    border: 3px solid #0d6dfd;
+    background: linear-gradient(135deg, rgba(231, 228, 241, 0.9), rgba(255, 255, 255, 0.5)); /* Soft gradient for glassy effect */
+    backdrop-filter: blur(10px) saturate(150%); /* Glass effect */
+    box-shadow: 0 8px 20px rgba(138, 43, 226, 0.3), 0 0 20px rgba(138, 43, 226, 0.5); /* Neon outer glow */
+    border: 1px solid rgba(255, 255, 255, 0.2); /* Soft border */
     padding: 10px;
-    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.233) !important;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.041); /* Subtle shadow for depth */
 }
 
 /* Chat history container styling */
@@ -246,28 +330,32 @@ div.sessions-container ul li {
 }
 
 li {
-    background: #ffa726;
-    border: 3px solid #ffa826b0;
-    padding: 15px;
-    margin-bottom: 8px;
+    background: linear-gradient(145deg, #ffa726, #ff8c00); /* Add a gradient for depth */
+    border: none; /* Remove border for a cleaner appearance */
+    padding: 15px 20px; /* Slightly adjust padding for better spacing */
+    margin-bottom: 12px; /* Increase spacing for a cleaner layout */
     border-radius: 25px;
     color: #000;
     cursor: pointer;
-    transition: background-color 0.3s;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-    transition: all 0.2s ease;
+    font-size: 1em; /* Adjust font size for a more modern look */
+    font-weight: 500;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2), 
+                -3px -3px 6px rgba(255, 255, 255, 0.5); /* Add 3D shadows */
+    transition: all 0.3s ease; /* Smooth transition for hover effects */
 }
 
 div.sessions-container ul li:hover {
-    background: #ffa726;
-    border: 3px solid #ffa826b0;
-    transition: all 0.2s ease;
+    background: linear-gradient(145deg, #ff8c00, #ffa726); /* Reverse gradient on hover */
+    color: #222; /* Slightly darker text for better contrast */
+    box-shadow: 7px 7px 14px rgba(0, 0, 0, 0.3), 
+                -5px -5px 10px rgba(255, 255, 255, 0.6); /* Pronounced hover shadows */
+    transform: translateY(-3px); /* Slight lift on hover */
 }
 
-li:hover {
-    background: #ffffff3b;
-    border: 3px solid #4a4de7 !important;
-    color: #000000;
+li:active {
+    transform: translateY(2px); /* Pressed-down effect */
+    box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.2), 
+                -2px -2px 4px rgba(255, 255, 255, 0.4); /* Subtle pressed shadow */
 }
 
 /* User message styling */
@@ -281,14 +369,14 @@ li:hover {
     float: right;
     clear: both;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Adds a subtle shadow for a 3D effect */
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Outfit', sans-serif;
     max-width: 70%; /* Limits the width for a better, contained look */
     word-wrap: break-word; /* Ensures text wraps within the balloon */
 }
 
 /* Bot message styling */
 .bot-message {
-    background: linear-gradient(135deg, #6a82fb, #6a82fbb9); /* Green gradient for a fresh, vibrant look */
+    background: linear-gradient(135deg, #8234ff, #f722ffb9);
     padding: 12px;
     margin-bottom: 10px;
     border: 3px solid #ffffff !important;
@@ -297,7 +385,7 @@ li:hover {
     float: left;
     clear: both;
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Outfit', sans-serif;
     max-width: 70%; /* Keeps the message balloon contained */
     word-wrap: break-word; /* Ensures text wraps within the balloon */
 }
@@ -368,35 +456,64 @@ li:hover {
 }
 
 .kid-name-display {
-    font-size: 1.8em;
+    font-size: 2em;
+    font-family: 'Fredoka', Helvetica;
+    font-weight: 600;
     text-align: center;
-    font-weight: 700;
-    letter-spacing: 1px;
-    background: radial-gradient(circle, rgb(238, 237, 237) 0%, rgb(103, 216, 245) 100%);
-    color: rgb(255, 255, 255);
+    background: linear-gradient(to bottom right, #7b2cbf, #9d4edd, #5a189a);
     -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent; /* Makes the text fill transparent to show the gradient */
-    background-clip: text; /* This will still ensure the background gradient clips to the text */
+    background-clip: text;
+    color: transparent;
+    margin-top: 15px;
+    position: relative;
+    text-shadow: 2px 2px 4px rgb(0 0 0 / 7%),
+    4px 4px 13px rgb(0 0 0 / 0%);
+}
+
+.kid-name-display::after {
+    content: ''; /* Empty content to create a highlight layer */
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to bottom right, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    pointer-events: none; /* Prevent interaction */
+    opacity: 0.7;
 }
 
 /* Go Back button styling */
 .go-back-button {
     display: block;
-    background-color: #ffa726;
+    background: linear-gradient(145deg, #ffa726, #ff8c00); /* Subtle gradient for depth */
     color: #fff;
-    padding: 12px 18px;
-    margin: 20px 0;
-    border: none;
-    border-radius: 25px;
-    font-size: 16px;
+    padding: 12px 18px; /* Keep the same padding */
+    margin: 20px 0; /* Keep the same margin */
+    border: none; /* Clean look without a border */
+    border-radius: 25px; /* Smooth, modern rounding */
+    font-size: 16px; /* Keep the same font size */
     cursor: pointer;
     text-align: center;
-    transition: background-color 0.3s, transform 0.2s;
+    font-weight: 600; /* Slight emphasis for text */
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2), 
+                -3px -3px 6px rgba(255, 255, 255, 0.6); /* Add 3D shadows */
+    transition: all 0.3s ease; /* Smooth transitions for hover and active effects */
 }
 
 .go-back-button:hover {
-    background-color: #fb8c00;
-    transform: translateY(-2px);
+    background: linear-gradient(145deg, #ff8c00, #ffa726); /* Reverse gradient on hover */
+    transform: translateY(-3px); /* Slight lift effect */
+    box-shadow: 6px 6px 12px rgba(0, 0, 0, 0.3), 
+                -4px -4px 8px rgba(255, 255, 255, 0.7); /* Enhanced shadows on hover */
+}
+
+.go-back-button:active {
+    transform: translateY(1px); /* Pressed-down effect */
+    box-shadow: inset 3px 3px 6px rgba(0, 0, 0, 0.2), 
+                inset -2px -2px 4px rgba(255, 255, 255, 0.5); /* Inset shadows for pressed state */
 }
 
 /* Adding animations */

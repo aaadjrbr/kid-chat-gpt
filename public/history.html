@@ -4,10 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat History - Alfie AI</title>
-    <link rel="icon" href="https://emojiisland.com/cdn/shop/products/Dog_Emoji_large.png?v=1571606065" type="image/x-icon">
+    <link rel="icon" href="./alfie-ai.ico" type="image/x-icon">
     <link rel="stylesheet" href="styles/history.css">
     <link href="https://fonts.googleapis.com/css2?family=Kiwi+Maru:wght@300;400;500&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Fredoka:wght@300..700&family=M+PLUS+Rounded+1c:wght@400;500;700;800;900&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Outfit:wght@100..900&display=swap" rel="stylesheet">
 
     <meta name="description" content="Alfie AI for Kids provides a safe, educational AI chatbot experience for children aged 5-12, enhancing learning and growth with parental controls." />
     <meta name="keywords" content="AI for kids, safe AI learning, parental controls, educational AI, chatbots for children, technology in education" />
@@ -34,24 +35,33 @@
 
 <body>
 <div class="title-container">
-    <h2 class="kid-name-display">Chat History for <span id="kid-name"></span></h2>
+    <h2 class="kid-name-display">💬 Chat History for <span id="kid-name"></span></h2>
     <div class="button-go-back-container">
         <a class="button-go-back" style="text-align: center; text-decoration: none;" href="./profiles.html">
             <span>Go back</span>
         </a>
     </div>
     <br/>
-    <h3 style="font-size: 1em; color: #fff; font-weight: 500; padding: 10px;">
+    <h3 style="font-size: 1em; color: #7b2cbf; font-weight: 500; padding: 10px; margin-top: -10px;">
         ⚠️ Images are automatically deleted every 24 hours. If a user sends an image that no longer appears and displays as an empty space, this is the reason. However, you can still view the description or response provided by Alfie regarding the image that was sent.</h3>
 </div>
 
 <div class="month-container">
     <h3 id="current-month-title"></h3>
+    <div class="parent-container">
     <div id="day-picker-container"></div>
+    </div>
     <div id="history-container">
         <br/><br/>
     </div>
 </div>
+
+<br/>
+<img src="https://firebasestorage.googleapis.com/v0/b/kids-chatgpt.appspot.com/o/logo-alfie.webp?alt=media&token=92d7d084-ce10-486d-b00d-30c0b2642456" style="width: 120px; height: auto; text-align: center; display: flex; margin: auto;"> 
+<p style="text-align: center; color: #696767; font-size: 0.8em; margin-bottom: 8px;">
+    As with any system, errors may occur, and chat history could be lost. We are unable to guarantee the availability of chat history beyond one month. For important information, we recommend taking a screenshot or printing it for your records. More info: <a href="./contact.html">Contact us</a>
+</p>
+<br/>
 
     <!-- Include Firebase and history.js -->
     <script src="scripts/firebase-config.js" type="module"></script>
@@ -88,7 +98,7 @@
                         "January", "February", "March", "April", "May", "June", 
                         "July", "August", "September", "October", "November", "December"
                     ];
-                    document.getElementById('current-month-title').textContent = `Chat history for ${monthNames[month]} ${year}`;
+                    document.getElementById('current-month-title').innerHTML = `Chat history for ${monthNames[month]} ${year}<br><br>🔎🐶 Pick a day to check history:`;
 
                     // Display the days for the current month
                     displayDaysForMonth(year, month + 1, parentId);
