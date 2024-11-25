@@ -1,7 +1,7 @@
 import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-functions.js";
 // Import Firebase and necessary functions
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js";
-import { getFirestore, doc, getDoc, updateDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
+import { getFirestore, doc, getDoc, updateDoc, setDoc, serverTimestamp, runTransaction } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js";
 
 // Firebase configuration
@@ -122,24 +122,68 @@ async function fetchUserTokens() {
 }
 
 // Deduct tokens and update in Firestore
+let isProcessingDeduction = false; // Lock to prevent simultaneous deductions
+
 async function deductToken() {
-    if (userTokens > 0) {
-        userTokens -= 1;
-        await updateDoc(doc(db, `userProfiles/${parentId}`), { tokens: userTokens });
-        updateTokenBar();
+    if (isProcessingDeduction) {
+        console.warn("Token deduction already in progress.");
+        return;
     }
 
-    // Set the timestamp once when tokens hit zero
-    if (userTokens === 0) {
-        const userProfileRef = doc(db, `userProfiles/${parentId}`);
-        const userProfileSnapshot = await getDoc(userProfileRef);
+    if (!parentId) {
+        console.error("Parent ID is not available. Cannot deduct tokens.");
+        return;
+    }
 
-        // Only set the timestamp if it hasn't been set yet
-        if (!userProfileSnapshot.data().tokensDepletedTimestamp) {
-            console.warn("User has run out of tokens, setting depletion timestamp.");
-            await updateDoc(userProfileRef, { tokensDepletedTimestamp: serverTimestamp() });
-            displayTokenRefillCountdown(60 * 60 * 1000); // Start a 1-hour countdown
-        }
+    isProcessingDeduction = true; // Lock deduction process
+    const userProfileRef = doc(db, `userProfiles/${parentId}`);
+
+    try {
+        await runTransaction(db, async (transaction) => {
+            const userProfileSnapshot = await transaction.get(userProfileRef);
+
+            if (!userProfileSnapshot.exists()) {
+                throw "User profile does not exist!";
+            }
+
+            const userData = userProfileSnapshot.data();
+            const maxTokens = isPremium
+                ? TOKEN_LIMITS.premium
+                : isGold
+                ? TOKEN_LIMITS.gold
+                : TOKEN_LIMITS.free;
+
+            // Validate current token count
+            if (userData.tokens > 0) {
+                const updatedTokens = userData.tokens - 1;
+
+                // Update tokens in Firestore
+                transaction.update(userProfileRef, {
+                    tokens: updatedTokens,
+                });
+
+                console.log(`Token deducted. Remaining tokens: ${updatedTokens}`);
+                userTokens = updatedTokens; // Update the local variable
+                updateTokenBar(); // Reflect changes in UI
+            } else {
+                throw "Insufficient tokens!";
+            }
+
+            // Handle token depletion timestamp
+            if (userData.tokens === 1) {
+                if (!userData.tokensDepletedTimestamp) {
+                    console.warn("Tokens depleted. Setting depletion timestamp.");
+                    transaction.update(userProfileRef, {
+                        tokensDepletedTimestamp: serverTimestamp(),
+                    });
+                }
+                displayTokenRefillCountdown(60 * 60 * 1000); // Start a 1-hour countdown
+            }
+        });
+    } catch (error) {
+        console.error("Failed to deduct token:", error);
+    } finally {
+        isProcessingDeduction = false; // Release the lock
     }
 }
 
