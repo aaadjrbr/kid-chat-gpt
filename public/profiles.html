@@ -53,27 +53,28 @@
     </div>
 </section>
 
-    <br/><br/>
-    <br/>
-    <!-- Comparison Section -->
+<br/><br/><br/>
+
+<!-- Comparison Section -->
 <section id="comparison" class="comparison-section" data-aos="fade-up">
     <h2 class="section-title2"><i class="fas fa-robot"></i> AI Homework Helpers</h2>
+    <p style="text-align: center; font-size: 1.3em; color: #ffffff;">
+        Boost your learning with the power of advanced AI! Math and English tutors are ready to help you excel:
+    </p>
     <div class="centered-container2">
-    <div class="math-tutor highlight">
+    <div class="math-tutor highlight" data-type="math">
         <!--<h3>Improve Your Math</h3>-->
         <a href="math-tutor.html">
             <img src="https://firebasestorage.googleapis.com/v0/b/kids-chatgpt.appspot.com/o/static%2FAlfie.webp?alt=media&token=65cb9863-983d-462b-b169-039854ccbba6" alt="Math Tutor Logo" class="logo">
         </a>
     </div>
-    <div class="english-tutor">
+    <div class="english-tutor" data-type="english">
        <!--<h3>Improve Your English</h3>-->
         <a href="english-tutor.html">
             <img class="english-tutor-img" src="https://firebasestorage.googleapis.com/v0/b/kids-chatgpt.appspot.com/o/static%2Fenglish-math.webp?alt=media&token=37dec3eb-be56-47a6-9c53-b78f95c3254b" alt="English Tutor Logo" class="logo">
         </a>
     </div>
-    </div>        
-    <p style="text-align: center; font-size: 1em; color: #ffffff;">✨🚀 Exclusive access to tutors will soon be available to <strong>Premium members</strong> only. <a style="color: #fff;" href="./checkout.html">Subscribe</a> today to enjoy uninterrupted access!
-    </p>
+    </div>
 </section>
 
 <br/>
@@ -130,8 +131,12 @@
     <script src="scripts/firebase-config.js" type="module"></script>
     <script type="module">
         import { loadProfiles, addProfile, viewChatHistory, startNewChat, setupImageGallery, deleteProfileHandler, verifyUserPin, toggleOptionsWithPin } from './scripts/profiles.js';
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
         import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js";
     
+        // Initialize Firestore
+        const db = getFirestore();
+
         window.viewChatHistory = viewChatHistory;
         window.startNewChat = startNewChat;
     
@@ -215,6 +220,80 @@
     
         // Use deleteProfileHandler for handling profile deletion
         document.getElementById('delete-profile-button').addEventListener('click', deleteProfileHandler);
+    
+    // Function to check user profile and apply blur
+    async function applyBlurIfNecessary(userId) {
+    try {
+        const userProfileRef = doc(db, `userProfiles/${userId}`);
+        const userProfileSnapshot = await getDoc(userProfileRef);
+
+        if (userProfileSnapshot.exists()) {
+            const userProfile = userProfileSnapshot.data();
+
+            // Check if the user is Premium
+            const isPremium = userProfile.isPremium || false;
+
+            // Select the section and apply blur if the user is not Premium
+            const comparisonSection = document.querySelector('#comparison .centered-container2');
+            if (!isPremium && comparisonSection) {
+                comparisonSection.querySelectorAll('[data-type]').forEach((element) => {
+                    const tutorType = element.getAttribute('data-type');
+
+                    // Wrap each element in a blurred-wrapper and add overlay
+                    const wrapper = document.createElement('div');
+                    wrapper.classList.add('blurred-wrapper');
+
+                    // Clone the current element and add blur
+                    const clonedElement = element.cloneNode(true);
+                    clonedElement.classList.add('blurred');
+
+                    // Add the overlay message with tutor-specific text
+                    const overlay = document.createElement('div');
+                    overlay.classList.add('overlay-message');
+
+                    if (tutorType === 'math') {
+                        overlay.innerHTML = `
+                            🧮 Math Tutor AI is exclusively available to Premium users:<br><br>
+                            <a href="https://alfieaikids.fun/checkout" target="_blank" style="color: #edff35; text-decoration: underline;">
+                                Subscribe/Upgrade
+                            </a>
+                        `;
+                    } else if (tutorType === 'english') {
+                        overlay.innerHTML = `
+                            📝 English Tutor AI is exclusively available to Premium users:<br><br>
+                            <a href="https://alfieaikids.fun/checkout" target="_blank" style="color: #edff35; text-decoration: underline;">
+                                Subscribe/Upgrade
+                            </a>
+                        `;
+                    }
+
+                    // Append cloned element and overlay to the wrapper
+                    wrapper.appendChild(clonedElement);
+                    wrapper.appendChild(overlay);
+
+                    // Replace the original element with the wrapper
+                    element.parentNode.replaceChild(wrapper, element);
+                });
+            }
+        } else {
+            console.error("User profile does not exist!");
+        }
+    } catch (error) {
+        console.error("Error fetching user profile:", error);
+    }
+}
+
+// Wait for DOM to load and fetch user profile dynamically
+document.addEventListener("DOMContentLoaded", () => {
+    const auth = getAuth();
+    auth.onAuthStateChanged((user) => {
+        if (user) {
+            applyBlurIfNecessary(user.uid);
+        } else {
+            console.error("No user is logged in.");
+        }
+    });
+});
     </script>    
         
 </body>
