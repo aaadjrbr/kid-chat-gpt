@@ -61,16 +61,19 @@
     <p style="text-align: center; font-size: 1.3em; color: #ffffff;">
         Boost your learning with the power of advanced AI! Math and English tutors are ready to help you excel:
     </p>
+    <p id="trial-counter" style="text-align: center; font-size: 1.2em; color: #edff35; padding: 5px; border-radius: 8px;">
+        <!-- Free trial status will appear here -->
+    </p>
     <div class="centered-container2">
     <div class="math-tutor highlight" data-type="math">
         <!--<h3>Improve Your Math</h3>-->
-        <a href="math-tutor.html">
+        <a href="math-tutor.html" id="math-tutor-link">
             <img src="https://firebasestorage.googleapis.com/v0/b/kids-chatgpt.appspot.com/o/static%2FAlfie.webp?alt=media&token=65cb9863-983d-462b-b169-039854ccbba6" alt="Math Tutor Logo" class="logo">
         </a>
     </div>
     <div class="english-tutor" data-type="english">
        <!--<h3>Improve Your English</h3>-->
-        <a href="english-tutor.html">
+        <a href="english-tutor.html" id="english-tutor-link">
             <img class="english-tutor-img" src="https://firebasestorage.googleapis.com/v0/b/kids-chatgpt.appspot.com/o/static%2Fenglish-math.webp?alt=media&token=37dec3eb-be56-47a6-9c53-b78f95c3254b" alt="English Tutor Logo" class="logo">
         </a>
     </div>
@@ -131,7 +134,7 @@
     <script src="scripts/firebase-config.js" type="module"></script>
     <script type="module">
         import { loadProfiles, addProfile, viewChatHistory, startNewChat, setupImageGallery, deleteProfileHandler, verifyUserPin, toggleOptionsWithPin } from './scripts/profiles.js';
-        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
         import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js";
     
         // Initialize Firestore
@@ -221,8 +224,8 @@
         // Use deleteProfileHandler for handling profile deletion
         document.getElementById('delete-profile-button').addEventListener('click', deleteProfileHandler);
     
-    // Function to check user profile and apply blur
-    async function applyBlurIfNecessary(userId) {
+// Function to check user profile and apply blur
+async function applyBlurIfNecessary(userId) {
     try {
         const userProfileRef = doc(db, `userProfiles/${userId}`);
         const userProfileSnapshot = await getDoc(userProfileRef);
@@ -233,53 +236,127 @@
             // Check if the user is Premium
             const isPremium = userProfile.isPremium || false;
 
-            // Select the section and apply blur if the user is not Premium
-            const comparisonSection = document.querySelector('#comparison .centered-container2');
-            if (!isPremium && comparisonSection) {
-                comparisonSection.querySelectorAll('[data-type]').forEach((element) => {
-                    const tutorType = element.getAttribute('data-type');
+            // Select the trial-counter div
+            const trialCounter = document.getElementById('trial-counter');
 
-                    // Wrap each element in a blurred-wrapper and add overlay
-                    const wrapper = document.createElement('div');
-                    wrapper.classList.add('blurred-wrapper');
+            // Add 'freeTrial' field if it doesn't exist
+            if (!isPremium) {
+                if (userProfile.freeTrial === undefined) {
+                    await updateDoc(userProfileRef, { freeTrial: 15 });
+                    console.log("Free trial initialized with 15 sessions.");
+                }
 
-                    // Clone the current element and add blur
-                    const clonedElement = element.cloneNode(true);
-                    clonedElement.classList.add('blurred');
+                // Update the trial counter UI
+                const freeTrial = userProfile.freeTrial !== undefined ? userProfile.freeTrial : 15;
+                if (trialCounter) {
+                    trialCounter.textContent = `🎉 You have ${freeTrial} free sessions left!`;
+                }
 
-                    // Add the overlay message with tutor-specific text
-                    const overlay = document.createElement('div');
-                    overlay.classList.add('overlay-message');
+                // Blur the section if freeTrial is 0
+                if (freeTrial === 0) {
+                    const comparisonSection = document.querySelector('#comparison .centered-container2');
+                    if (comparisonSection) {
+                        comparisonSection.querySelectorAll('[data-type]').forEach((element) => {
+                            const tutorType = element.getAttribute('data-type');
 
-                    if (tutorType === 'math') {
-                        overlay.innerHTML = `
-                            🧮 Math Tutor AI is exclusively available to Premium users:<br><br>
-                            <a href="https://alfieaikids.fun/checkout" target="_blank" style="color: #edff35; text-decoration: underline;">
-                                Subscribe/Upgrade
-                            </a>
-                        `;
-                    } else if (tutorType === 'english') {
-                        overlay.innerHTML = `
-                            📝 English Tutor AI is exclusively available to Premium users:<br><br>
-                            <a href="https://alfieaikids.fun/checkout" target="_blank" style="color: #edff35; text-decoration: underline;">
-                                Subscribe/Upgrade
-                            </a>
-                        `;
+                            // Wrap each element in a blurred-wrapper and add overlay
+                            const wrapper = document.createElement('div');
+                            wrapper.classList.add('blurred-wrapper');
+
+                            // Clone the current element and add blur
+                            const clonedElement = element.cloneNode(true);
+                            clonedElement.classList.add('blurred');
+
+                            // Add the overlay message with tutor-specific text
+                            const overlay = document.createElement('div');
+                            overlay.classList.add('overlay-message');
+
+                            if (tutorType === 'math') {
+                                overlay.innerHTML = `
+                                    🧮 Math Tutor AI is exclusively available to Premium users:<br><br>
+                                    <a href="https://alfieaikids.fun/checkout" target="_blank" style="color: #edff35; text-decoration: underline;">
+                                        Subscribe/Upgrade
+                                    </a>
+                                `;
+                            } else if (tutorType === 'english') {
+                                overlay.innerHTML = `
+                                    📝 English Tutor AI is exclusively available to Premium users:<br><br>
+                                    <a href="https://alfieaikids.fun/checkout" target="_blank" style="color: #edff35; text-decoration: underline;">
+                                        Subscribe/Upgrade
+                                    </a>
+                                `;
+                            }
+
+                            // Append cloned element and overlay to the wrapper
+                            wrapper.appendChild(clonedElement);
+                            wrapper.appendChild(overlay);
+
+                            // Replace the original element with the wrapper
+                            element.parentNode.replaceChild(wrapper, element);
+                        });
+
+                        // Update trial counter when freeTrial is 0
+                        if (trialCounter) {
+                            trialCounter.textContent = `🚨 Your free trial has ended. Please subscribe/upgrade to continue!`;
+                        }
                     }
-
-                    // Append cloned element and overlay to the wrapper
-                    wrapper.appendChild(clonedElement);
-                    wrapper.appendChild(overlay);
-
-                    // Replace the original element with the wrapper
-                    element.parentNode.replaceChild(wrapper, element);
-                });
+                }
             }
         } else {
             console.error("User profile does not exist!");
         }
     } catch (error) {
         console.error("Error fetching user profile:", error);
+    }
+}
+
+// Handle link click events for Math and English tutors
+document.addEventListener("DOMContentLoaded", () => {
+    const mathLink = document.getElementById('math-tutor-link');
+    const englishLink = document.getElementById('english-tutor-link');
+
+    const auth = getAuth();
+    auth.onAuthStateChanged((user) => {
+        if (user) {
+            mathLink.addEventListener('click', (event) => {
+                event.preventDefault();
+                handleTutorAccess(user.uid, 'math-tutor.html');
+            });
+
+            englishLink.addEventListener('click', (event) => {
+                event.preventDefault();
+                handleTutorAccess(user.uid, 'english-tutor.html');
+            });
+        }
+    });
+});
+
+// Handle tutor access logic
+async function handleTutorAccess(userId, redirectUrl) {
+    const userProfileRef = doc(db, `userProfiles/${userId}`);
+    const userProfileSnapshot = await getDoc(userProfileRef);
+
+    if (userProfileSnapshot.exists()) {
+        const userProfile = userProfileSnapshot.data();
+        const isPremium = userProfile.isPremium || false;
+
+        if (isPremium) {
+            // Navigate directly for Premium users
+            window.location.href = redirectUrl;
+        } else {
+            // Handle free trial logic
+            const freeTrial = userProfile.freeTrial !== undefined ? userProfile.freeTrial : 0;
+
+            if (freeTrial > 0) {
+                await updateDoc(userProfileRef, { freeTrial: freeTrial - 1 });
+                console.log(`🎉 You have ${freeTrial - 1} free sessions left!`); // Changed alert to console.log
+                window.location.href = redirectUrl;
+            } else {
+                console.log("🚨 Your free trial has ended. Please subscribe to continue!"); // Changed alert to console.log
+            }
+        }
+    } else {
+        console.error("User profile does not exist!");
     }
 }
 
@@ -294,7 +371,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 });
-    </script>    
+</script>    
         
 </body>
 </html>
