@@ -348,11 +348,24 @@ async function handleTutorAccess(userId, redirectUrl) {
             const freeTrial = userProfile.freeTrial !== undefined ? userProfile.freeTrial : 0;
 
             if (freeTrial > 0) {
+                // Deduct a free trial and update Firestore
                 await updateDoc(userProfileRef, { freeTrial: freeTrial - 1 });
-                console.log(`🎉 You have ${freeTrial - 1} free sessions left!`); // Changed alert to console.log
+
+                // Update the trial counter on the page
+                const trialCounter = document.getElementById('trial-counter');
+                if (trialCounter) {
+                    trialCounter.textContent = `🎉 You have ${freeTrial - 1} free sessions left!`;
+                }
+
+                // Navigate to the tutor page
                 window.location.href = redirectUrl;
             } else {
-                console.log("🚨 Your free trial has ended. Please subscribe to continue!"); // Changed alert to console.log
+                // Display message when free trial ends
+                const trialCounter = document.getElementById('trial-counter');
+                if (trialCounter) {
+                    trialCounter.textContent = `🚨 Your free trial has ended. Please subscribe to continue!`;
+                }
+                console.log("🚨 Your free trial has ended. Please subscribe to continue!");
             }
         }
     } else {
