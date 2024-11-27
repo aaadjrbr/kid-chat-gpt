@@ -669,6 +669,7 @@ document.addEventListener("DOMContentLoaded", () => {
 async function sendMessage() {
     const message = userInput.value.trim(); // Get user input text
     const imagePreview = document.getElementById('image-preview'); // Check if an image is uploaded
+    const micBtn = document.getElementById('mic-btn'); // Microphone button reference
 
     // Log for message and image status
     console.log("Message:", message, "Image uploaded:", !!imagePreview.src);
@@ -679,6 +680,7 @@ async function sendMessage() {
     // Disable input and send button to prevent multiple submissions
     userInput.disabled = true;
     sendBtn.disabled = true;
+    micBtn.disabled = true;
 
     // If no chat session is active, start a new chat session
     if (!currentChatSessionRef) {
@@ -740,8 +742,10 @@ async function sendMessage() {
             console.error("Error uploading or processing image:", error);
             displayMessage("Sorry, there was an error uploading the image.", 'bot');
         } finally {
-            // Re-enable the input and button after the image is processed
+            // Re-enable input, send button, and microphone after processing text
+            userInput.disabled = false;
             sendBtn.disabled = false;
+            micBtn.disabled = false;
         }
     }
 
