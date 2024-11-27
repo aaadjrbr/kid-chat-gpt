@@ -157,6 +157,11 @@ button, input {
     border-radius: 0 0 15px 15px;
 }
 
+textarea#user-input.disabled {
+    border: 2px solid rgb(255 0 0 / 55%);
+    background: rgb(255 0 0 / 19%);
+}
+
 textarea#user-input {
     width: 100%;
     padding-right: 75px;
@@ -300,6 +305,7 @@ input#user-input:hover {
     background: radial-gradient(circle, #6a11cb 0%, #6b11cbc7 100%);
     padding: 16px;
     margin-bottom: 15px;
+    margin-top: 15px;
     color: white;
     border-radius: 20px 20px 20px 0;
     float: left;

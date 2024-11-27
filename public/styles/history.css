@@ -360,7 +360,7 @@ li:active {
 
 /* User message styling */
 .user-message {
-    background: linear-gradient(135deg, #6a82fb, #fc5c7d); /* Blue gradient with a slight pinkish tint for a modern look */
+    background: linear-gradient(135deg, #34b8d1, #3616e5);
     padding: 12px;
     margin-bottom: 10px;
     border: 3px solid #ffffff !important;
@@ -376,7 +376,7 @@ li:active {
 
 /* Bot message styling */
 .bot-message {
-    background: linear-gradient(135deg, #8234ff, #f722ffb9);
+    background: radial-gradient(circle, #6a11cb 0%, #6b11cbc7 100%);
     padding: 12px;
     margin-bottom: 10px;
     border: 3px solid #ffffff !important;

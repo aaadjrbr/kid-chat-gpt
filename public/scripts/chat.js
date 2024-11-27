@@ -431,8 +431,8 @@ document.getElementById('image-upload').addEventListener('change', async functio
         reader.readAsDataURL(compressedImageBlob);
 
         isImageUploaded = true;
-        userInput.disabled = true;
-        displayMessage("🖼️ Oopsie! You need to send the picture first before we can chat! 📸😊", "bot");
+        userInput.disabled = true; // Allow user to add a prompt after selecting an image
+        displayMessage("You need to send the picture first before we can chat! 🖼️📸😊", "bot");
     }
 });
 
