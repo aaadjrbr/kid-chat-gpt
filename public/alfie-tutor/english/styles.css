@@ -219,10 +219,13 @@ button:hover {
     border-radius: 8px;
     border: 2px solid #dfe6e9;
     background-color: #ffffff;
-    resize: none; /* Disable manual resizing by the user */
-    overflow-y: hidden; /* Hidden until max height is reached */
-    transition: border-color 0.3s ease;
+    resize: none; /* Prevent manual resizing */
+    overflow-y: hidden; /* Hide scrollbar until necessary */
+    transition: border-color 0.3s ease, height 0.2s ease; /* Smooth height adjustments */
     padding-right: 60px;
+    min-height: 40px; /* Set a minimum height */
+    max-height: 200px; /* Optional: Limit the maximum height */
+    box-sizing: border-box; /* Include padding in height calculations */
 }
 
 #word-input:focus {

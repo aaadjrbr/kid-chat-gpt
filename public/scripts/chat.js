@@ -4,7 +4,7 @@ import { db } from './firebase-config.js';
 import { collection, addDoc, getDocs, setDoc, doc, serverTimestamp, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js";
 import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-functions.js";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-storage.js";
+import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-storage.js";
 
 const messagesContainer = document.getElementById('messages');
 const userInput = document.getElementById('user-input');
@@ -411,15 +411,28 @@ document.getElementById('remove-image-btn').addEventListener('click', function()
 
 // Function to upload image to Firebase Storage (or another service)
 let compressedImageBlob = null; // Store compressed image blob globally
+let uploadedImagePath = null; // To store the image path in Firebase Storage
 
 document.getElementById('image-upload').addEventListener('change', async function(event) {
     const imageFile = event.target.files[0];
     const imagePreview = document.getElementById('image-preview');
     const removeImageButton = document.getElementById('remove-image-btn');
+    const micBtn = document.getElementById('mic-btn'); // Microphone button
 
     if (imageFile) {
         // Compress the image and store it globally
         compressedImageBlob = await compressImage(imageFile, 800, 800, 0.6);
+
+        // Upload the compressed image to Firebase Storage
+        const storage = getStorage();
+        const storageRef = ref(storage, `images/${Date.now()}.jpg`); // Unique path for the image
+        await uploadBytes(storageRef, compressedImageBlob);
+        console.log("Compressed image uploaded successfully!");
+
+        // Get the URL of the uploaded image
+        const downloadURL = await getDownloadURL(storageRef);
+        uploadedImagePath = storageRef.fullPath; // Save the full path of the uploaded image
+        console.log("Uploaded image path:", uploadedImagePath);
 
         // Display compressed image preview
         const reader = new FileReader();
@@ -431,7 +444,8 @@ document.getElementById('image-upload').addEventListener('change', async functio
         reader.readAsDataURL(compressedImageBlob);
 
         isImageUploaded = true;
-        userInput.disabled = true; // Allow user to add a prompt after selecting an image
+        userInput.disabled = true; // Disable the input field
+        micBtn.disabled = true; // Disable the microphone button
         displayMessage("You need to send the picture first before we can chat! 🖼️📸😊", "bot");
     }
 });
@@ -557,10 +571,29 @@ function stopMicAnimation() {
 let isImageUploaded = false; // Flag to check if an image has been uploaded
 
 // Event listener for removing the image
-document.getElementById('remove-image-btn').addEventListener('click', function() {
+document.getElementById('remove-image-btn').addEventListener('click', async function() {
+    const imagePreview = document.getElementById('image-preview');
+    const removeImageButton = document.getElementById('remove-image-btn');
+    const micBtn = document.getElementById('mic-btn'); // Microphone button
+
+    if (uploadedImagePath) {
+        try {
+            const storage = getStorage();
+            const imageRef = ref(storage, uploadedImagePath); // Reference to the uploaded image
+            await deleteObject(imageRef); // Delete the image from Firebase Storage
+            console.log("Image successfully deleted from Firebase Storage!");
+
+            uploadedImagePath = null; // Clear the saved path after deletion
+        } catch (error) {
+            console.error("Error deleting image from Firebase:", error);
+        }
+    }
+
+    // Clear the image preview and reset input
     clearImagePreview();
     isImageUploaded = false; // Reset the flag
-    userInput.disabled = false; // Re-enable text input when image is removed
+    userInput.disabled = false; // Re-enable text input
+    micBtn.disabled = false; // Re-enable the microphone button
 });
 
 // Function to clear the image preview and reset input
@@ -568,12 +601,11 @@ function clearImagePreview() {
     const imagePreview = document.getElementById('image-preview');
     const imageUpload = document.getElementById('image-upload');
     const removeImageButton = document.getElementById('remove-image-btn');
-    
+
     imagePreview.src = ''; // Clear the image preview
     imagePreview.style.display = 'none'; // Hide the preview
     imageUpload.value = ''; // Clear the file input
     removeImageButton.style.display = 'none'; // Hide the remove button
-    userInput.disabled = false; // Re-enable the input field again
 }
 
 function showTypingIndicator() {

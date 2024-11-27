@@ -155,21 +155,32 @@
 
         //Bubbles
         function setPhrase(phrase) {
-            document.getElementById('word-input').value = phrase;
+            const textarea = document.getElementById('word-input');
+            textarea.value = phrase;
+
+            // Manually trigger the height adjustment logic
+            textarea.style.height = 'auto'; // Reset height
+            const maxHeight = 150; // Match the same max height
+            const newHeight = Math.min(textarea.scrollHeight, maxHeight);
+            textarea.style.height = `${newHeight}px`;
+            textarea.style.overflowY = textarea.scrollHeight > maxHeight ? 'scroll' : 'hidden';
         }
 
         //Input content
         const textarea = document.getElementById('word-input');
 
-            textarea.addEventListener('input', function () {
-        // Reset height to shrink on backspace or when clearing text
-            this.style.height = 'auto';
+        textarea.addEventListener('input', function () {
+        // Reset the height to allow for shrinking
+        this.style.height = 'auto';
 
-        // Set height based on scrollHeight to auto-grow vertically
-        const maxHeight = 150; // Max height before scrollbar appears
-            this.style.height = `${Math.min(this.scrollHeight, maxHeight)}px`;
-            this.style.overflowY = this.scrollHeight > maxHeight ? 'scroll' : 'hidden';
-        });
+        // Dynamically adjust height based on content
+        const maxHeight = 150; // Maximum height in pixels
+        const newHeight = Math.min(this.scrollHeight, maxHeight);
+        this.style.height = `${newHeight}px`;
+
+        // Set overflow based on whether content exceeds max height
+        this.style.overflowY = this.scrollHeight > maxHeight ? 'scroll' : 'hidden';
+    });
     </script>
 </body>
 </html>
