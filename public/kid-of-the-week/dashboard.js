@@ -37,16 +37,21 @@ closeBtn.addEventListener("click", () => {
 
 // Monitor authentication state
 onAuthStateChanged(auth, (user) => {
-    if (user) {
-      console.log(`User logged in: ${user.uid}`);
-      loginButton.style.display = "none"; // Hide login button
-      logoutButton.style.display = "inline-block"; // Show logout button
-    } else {
-      console.log("No user logged in");
-      loginButton.style.display = "inline-block"; // Show login button
-      logoutButton.style.display = "none"; // Hide logout button
-    }
-  });
+  if (user) {
+    console.log(`User logged in: ${user.uid}`);
+    loginButton.style.display = "none"; // Hide login button
+    logoutButton.style.display = "inline-block"; // Show logout button
+    fetchKids(); // Fetch kids for the logged-in user
+    fetchGoals(); // Fetch goals
+    fetchWeekEnd(); // Fetch week end date
+  } else {
+    console.log("No user logged in");
+    loginButton.style.display = "inline-block"; // Show login button
+    logoutButton.style.display = "none"; // Hide logout button
+    kidSelect.innerHTML = `<option value="" disabled selected>No kids available</option>`;
+    removeKidSelect.innerHTML = `<option value="" disabled selected>No kids available</option>`;
+  }
+});
   
   // Show the login modal
   loginButton.addEventListener("click", () => {
@@ -100,15 +105,31 @@ window.addEventListener("click", (e) => {
 
 // Fetch and populate the kid dropdowns
 async function fetchKids() {
-  const kidsSnapshot = await getDocs(collection(db, "kids"));
-  kidSelect.innerHTML = `<option value="" disabled selected>Select a kid</option>`;
-  removeKidSelect.innerHTML = `<option value="" disabled selected>Select a kid</option>`;
+  const user = auth.currentUser;
+  if (!user) {
+    console.log("User not logged in");
+    return;
+  }
 
-  kidsSnapshot.forEach((docSnap) => {
-    const kid = docSnap.id;
-    kidSelect.innerHTML += `<option value="${kid}">${kid}</option>`;
-    removeKidSelect.innerHTML += `<option value="${kid}">${kid}</option>`;
-  });
+  try {
+    const kidsCollectionRef = collection(db, `Kids/${user.uid}/kids`);
+    const kidsSnapshot = await getDocs(kidsCollectionRef);
+
+    // Reset the dropdowns
+    kidSelect.innerHTML = `<option value="" disabled selected>Select a kid</option>`;
+    removeKidSelect.innerHTML = `<option value="" disabled selected>Select a kid</option>`;
+
+    // Populate dropdowns with kid names
+    kidsSnapshot.forEach((docSnap) => {
+      const kid = docSnap.id;
+      kidSelect.innerHTML += `<option value="${kid}">${kid}</option>`;
+      removeKidSelect.innerHTML += `<option value="${kid}">${kid}</option>`;
+    });
+
+    console.log("Kids loaded successfully.");
+  } catch (error) {
+    console.error("Error fetching kids:", error.message);
+  }
 }
 
 // Add a new kid
@@ -120,16 +141,27 @@ async function addKid() {
     return;
   }
 
-  const kidRef = doc(db, "kids", kidName);
-  const docSnap = await getDoc(kidRef);
+  const user = auth.currentUser;
+  if (!user) {
+    alert("You need to be logged in to add a kid.");
+    return;
+  }
 
-  if (docSnap.exists()) {
-    alert("This kid already exists.");
-  } else {
-    await setDoc(kidRef, { weeklyPoints: 0, totalPoints: 0 });
-    alert(`Kid "${kidName}" added successfully.`);
-    document.getElementById("newKidName").value = "";
-    fetchKids();
+  try {
+    const kidRef = doc(db, `Kids/${user.uid}/kids/${kidName}`);
+    const docSnap = await getDoc(kidRef);
+
+    if (docSnap.exists()) {
+      alert("This kid already exists.");
+    } else {
+      await setDoc(kidRef, { weeklyPoints: 0, totalPoints: 0 });
+      alert(`Kid "${kidName}" added successfully.`);
+      document.getElementById("newKidName").value = ""; // Clear the input
+      fetchKids(); // Refresh the dropdowns immediately
+    }
+  } catch (error) {
+    console.error("Error adding kid:", error.message);
+    alert("Failed to add kid. Please try again.");
   }
 }
 
@@ -143,7 +175,13 @@ async function addPoints() {
     return;
   }
 
-  const kidRef = doc(db, "kids", kidName);
+  const user = auth.currentUser;
+  if (!user) {
+    alert("You need to be logged in to add points.");
+    return;
+  }
+
+  const kidRef = doc(db, `Kids/${user.uid}/kids/${kidName}`);
   const docSnap = await getDoc(kidRef);
 
   if (docSnap.exists()) {
@@ -161,35 +199,39 @@ async function addPoints() {
 
 // Deduct points from the selected kid
 async function deductPoints() {
-    const kidName = kidSelect.value;
-    const points = parseInt(document.getElementById("points").value);
-  
-    if (!kidName || isNaN(points)) {
-      alert("Please select a kid and enter valid points.");
-      return;
-    }
-  
-    const kidRef = doc(db, "kids", kidName);
-    const docSnap = await getDoc(kidRef);
-  
-    if (docSnap.exists()) {
-      const data = docSnap.data();
-  
-      // Deduct points but ensure it doesn't go below zero
-      const newWeeklyPoints = Math.max((data.weeklyPoints || 0) - points, 0);
-      const newTotalPoints = Math.max((data.totalPoints || 0) - points, 0);
-  
-      await updateDoc(kidRef, {
-        weeklyPoints: newWeeklyPoints,
-        totalPoints: newTotalPoints,
-      });
-  
-      alert(`Deducted ${points} points from ${kidName}`);
-      fetchKids();
-    } else {
-      alert("Kid not found.");
-    }
-  }  
+  const kidName = kidSelect.value;
+  const points = parseInt(document.getElementById("points").value);
+
+  if (!kidName || isNaN(points)) {
+    alert("Please select a kid and enter valid points.");
+    return;
+  }
+
+  const user = auth.currentUser;
+  if (!user) {
+    alert("You need to be logged in to deduct points.");
+    return;
+  }
+
+  const kidRef = doc(db, `Kids/${user.uid}/kids/${kidName}`);
+  const docSnap = await getDoc(kidRef);
+
+  if (docSnap.exists()) {
+    const data = docSnap.data();
+    const newWeeklyPoints = Math.max((data.weeklyPoints || 0) - points, 0);
+    const newTotalPoints = Math.max((data.totalPoints || 0) - points, 0);
+
+    await updateDoc(kidRef, {
+      weeklyPoints: newWeeklyPoints,
+      totalPoints: newTotalPoints,
+    });
+
+    alert(`Deducted ${points} points from ${kidName}`);
+    fetchKids();
+  } else {
+    alert("Kid not found.");
+  }
+}
 
 // Remove a kid
 async function removeKid() {
@@ -200,10 +242,70 @@ async function removeKid() {
     return;
   }
 
-  const kidRef = doc(db, "kids", kidName);
-  await deleteDoc(kidRef);
-  alert(`Kid "${kidName}" removed successfully.`);
-  fetchKids();
+  const user = auth.currentUser;
+  if (!user) {
+    alert("You need to be logged in to remove a kid.");
+    return;
+  }
+
+  // Confirm deletion
+  const confirmDelete = confirm(`Are you sure you want to remove "${kidName}"? This action cannot be undone.`);
+  if (!confirmDelete) {
+    // Exit the function if the user cancels
+    return;
+  }
+
+  try {
+    const kidRef = doc(db, `Kids/${user.uid}/kids/${kidName}`);
+    await deleteDoc(kidRef);
+    alert(`Kid "${kidName}" removed successfully.`);
+    fetchKids(); // Refresh the kid list
+  } catch (error) {
+    console.error("Error removing kid:", error.message);
+    alert("Failed to remove the kid. Please try again.");
+  }
+}
+
+// Fetch and display goals for the logged-in user without using onSnapshot
+async function fetchGoals() {
+  const user = auth.currentUser;
+  if (!user) {
+    console.log("User not logged in");
+    return;
+  }
+
+  try {
+    const goalCollectionRef = collection(db, `Goals/${user.uid}/userGoals`);
+    const goalSnapshot = await getDocs(goalCollectionRef); // Fetch goals once
+
+    // Prepare goals for rendering
+    const goals = [];
+    goalSnapshot.forEach((doc) => {
+      goals.push({ id: doc.id, ...doc.data() });
+    });
+
+    renderGoals(goals); // Render the fetched goals
+  } catch (error) {
+    console.error("Error fetching goals:", error.message);
+  }
+}
+
+// Render the goals to the UI
+function renderGoals(goals) {
+  goalList.innerHTML = "<h3>Current Goals:</h3>";
+
+  if (goals.length === 0) {
+    goalList.innerHTML += `<p>Your parents have not set any goals yet.</p>`;
+  } else {
+    goals.forEach((goal) => {
+      goalList.innerHTML += `
+        <div>
+          <p><strong>${goal.id}:</strong> ${goal.goalPoints} points</p>
+          <button onclick="editGoal('${goal.id}', ${goal.goalPoints})">Edit</button>
+          <button onclick="removeGoal('${goal.id}')">Remove</button>
+        </div>`;
+    });
+  }
 }
 
 // Add a goal
@@ -216,103 +318,170 @@ async function addGoal() {
     return;
   }
 
-  const goalRef = doc(db, "goals", goalName);
-  await setDoc(goalRef, { goalPoints });
+  const user = auth.currentUser;
+  if (!user) {
+    alert("You need to be logged in to add a goal.");
+    return;
+  }
 
-  alert(`Goal "${goalName}" with ${goalPoints} points added.`);
-  document.getElementById("goalName").value = "";
-  document.getElementById("goalPoints").value = "";
-  fetchGoals();
-}
+  try {
+    const goalRef = doc(db, `Goals/${user.uid}/userGoals/${goalName}`);
+    const docSnap = await getDoc(goalRef);
 
-// Edit or remove goals dynamically
-function fetchGoals() {
-  const goalRef = collection(db, "goals");
-
-  onSnapshot(goalRef, (snapshot) => {
-    goalList.innerHTML = "<h3>Current Goals:</h3>";
-    snapshot.forEach((doc) => {
-      const data = doc.data();
-      goalList.innerHTML += `
-        <div>
-          <p><strong>${doc.id}:</strong> ${data.goalPoints} points</p>
-          <button onclick="editGoal('${doc.id}', ${data.goalPoints})">Edit</button>
-          <button onclick="removeGoal('${doc.id}')">Remove</button>
-        </div>`;
-    });
-  });
+    if (docSnap.exists()) {
+      alert("This goal already exists.");
+    } else {
+      await setDoc(goalRef, { goalPoints });
+      alert(`Goal "${goalName}" with ${goalPoints} points added.`);
+      document.getElementById("goalName").value = ""; // Clear the input
+      document.getElementById("goalPoints").value = ""; // Clear the input
+    }
+  } catch (error) {
+    console.error("Error adding goal:", error.message);
+    alert("Failed to add goal. Please try again.");
+  }
 }
 
 // Edit a goal
 async function editGoal(goalName, currentPoints) {
   const newPoints = prompt(`Edit points for "${goalName}"`, currentPoints);
-  if (newPoints && !isNaN(newPoints)) {
-    const goalRef = doc(db, "goals", goalName);
+
+  if (!newPoints || isNaN(newPoints)) {
+    alert("Please enter valid points.");
+    return;
+  }
+
+  const user = auth.currentUser;
+  if (!user) {
+    alert("You need to be logged in to edit a goal.");
+    return;
+  }
+
+  try {
+    const goalRef = doc(db, `Goals/${user.uid}/userGoals/${goalName}`);
     await updateDoc(goalRef, { goalPoints: parseInt(newPoints) });
     alert(`Goal "${goalName}" updated.`);
+  } catch (error) {
+    console.error("Error updating goal:", error.message);
+    alert("Failed to update goal. Please try again.");
   }
 }
 
 // Remove a goal
 async function removeGoal(goalName) {
-  const goalRef = doc(db, "goals", goalName);
-  await deleteDoc(goalRef);
-  alert(`Goal "${goalName}" removed.`);
+  const user = auth.currentUser;
+  if (!user) {
+    alert("You need to be logged in to remove a goal.");
+    return;
+  }
+
+  try {
+    const goalRef = doc(db, `Goals/${user.uid}/userGoals/${goalName}`);
+    await deleteDoc(goalRef);
+    alert(`Goal "${goalName}" removed.`);
+  } catch (error) {
+    console.error("Error removing goal:", error.message);
+    alert("Failed to remove goal. Please try again.");
+  }
 }
 
 // Set week end date
 async function setWeekEnd() {
   const weekEndDate = document.getElementById("weekEndDate").value;
+
   if (!weekEndDate) {
     alert("Please select a valid date.");
     return;
   }
 
-  const weekEndRef = doc(db, "settings", "weekEnd");
-  await setDoc(weekEndRef, { date: weekEndDate });
-  alert(`Week end date set to ${weekEndDate}`);
-  fetchWeekEnd();
+  const user = auth.currentUser;
+  if (!user) {
+    alert("You need to be logged in to set the week end date.");
+    return;
+  }
+
+  try {
+    const weekEndRef = doc(db, `WeekSettings/${user.uid}`);
+    await setDoc(weekEndRef, { date: weekEndDate });
+    alert(`Week end date set to ${weekEndDate}`);
+    fetchWeekEnd(); // Refresh the displayed week end date
+  } catch (error) {
+    console.error("Error setting week end date:", error.message);
+    alert("Failed to set week end date. Please try again.");
+  }
 }
 
 // Fetch and display week end date
 async function fetchWeekEnd() {
-  const weekEndRef = doc(db, "settings", "weekEnd");
-  const weekEndSnap = await getDoc(weekEndRef);
-
-  if (weekEndSnap.exists()) {
-    const data = weekEndSnap.data();
-    weekEndDisplay.innerText = `Week ends on: ${data.date}`;
-  } else {
+  const user = auth.currentUser;
+  if (!user) {
+    console.log("User not logged in");
     weekEndDisplay.innerText = "No week end date set.";
+    return;
+  }
+
+  try {
+    const weekEndRef = doc(db, `WeekSettings/${user.uid}`);
+    const weekEndSnap = await getDoc(weekEndRef);
+
+    if (weekEndSnap.exists()) {
+      const data = weekEndSnap.data();
+      weekEndDisplay.innerText = `Week ends on: ${data.date}`;
+    } else {
+      weekEndDisplay.innerText = "No week end date set.";
+    }
+  } catch (error) {
+    console.error("Error fetching week end date:", error.message);
+    weekEndDisplay.innerText = "Error loading week end date.";
   }
 }
 
 // Reset weekly points
 async function resetWeeklyPoints() {
-  const kidsSnapshot = await getDocs(collection(db, "kids"));
+  const user = auth.currentUser;
+  if (!user) {
+    alert("You need to be logged in to reset weekly points.");
+    return;
+  }
 
-  kidsSnapshot.forEach(async (docSnap) => {
-    const kidRef = doc(db, "kids", docSnap.id);
-    await updateDoc(kidRef, { weeklyPoints: 0 });
-  });
+  try {
+    const kidsCollectionRef = collection(db, `Kids/${user.uid}/kids`);
+    const kidsSnapshot = await getDocs(kidsCollectionRef);
 
-  alert("All weekly points have been reset to zero.");
+    kidsSnapshot.forEach(async (docSnap) => {
+      const kidRef = doc(db, `Kids/${user.uid}/kids/${docSnap.id}`);
+      await updateDoc(kidRef, { weeklyPoints: 0 });
+    });
+
+    alert("All weekly points have been reset to zero.");
+  } catch (error) {
+    console.error("Error resetting weekly points:", error.message);
+    alert("Failed to reset weekly points. Please try again.");
+  }
 }
 
 // Reset total points for all kids
 async function resetTotalPoints() {
-  try {
-    const kidsSnapshot = await getDocs(collection(db, "kids"));
+  const user = auth.currentUser;
+  if (!user) {
+    alert("You need to be logged in to reset total points.");
+    return;
+  }
 
+  try {
+    const kidsCollectionRef = collection(db, `Kids/${user.uid}/kids`);
+    const kidsSnapshot = await getDocs(kidsCollectionRef);
+
+    // Loop through each kid and reset their total points
     kidsSnapshot.forEach(async (docSnap) => {
-      const kidRef = doc(db, "kids", docSnap.id);
+      const kidRef = doc(db, `Kids/${user.uid}/kids/${docSnap.id}`);
       await updateDoc(kidRef, { totalPoints: 0 });
     });
 
     alert("All total points have been reset to zero.");
     fetchKids(); // Refresh the kid list
   } catch (error) {
-    console.error("Error resetting total points:", error);
+    console.error("Error resetting total points:", error.message);
     alert("Failed to reset total points. Please try again.");
   }
 }

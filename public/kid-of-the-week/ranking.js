@@ -27,6 +27,12 @@ function initApp() {
 
 // Fetch and display rankings with caching
 async function fetchRankings(forceRefresh = false) {
+  const user = auth.currentUser;
+  if (!user) {
+    console.log("User not logged in.");
+    return;
+  }
+
   if (!forceRefresh) {
     const cachedRankings = sessionStorage.getItem("rankings");
     if (cachedRankings) {
@@ -39,7 +45,8 @@ async function fetchRankings(forceRefresh = false) {
 
   console.log("Fetching rankings from Firestore.");
   try {
-    const kidsSnapshot = await getDocs(collection(db, "kids"));
+    const kidsCollectionRef = collection(db, `Kids/${user.uid}/kids`);
+    const kidsSnapshot = await getDocs(kidsCollectionRef);
     const kids = [];
 
     kidsSnapshot.forEach((doc) => {
@@ -66,7 +73,13 @@ async function fetchRankings(forceRefresh = false) {
 }
 
 // Fetch and display goals with caching
-function fetchGoals(forceRefresh = false) {
+async function fetchGoals(forceRefresh = false) {
+  const user = auth.currentUser;
+  if (!user) {
+    console.log("User not logged in.");
+    return;
+  }
+
   if (!forceRefresh) {
     const cachedGoals = sessionStorage.getItem("goals");
     if (cachedGoals) {
@@ -78,19 +91,18 @@ function fetchGoals(forceRefresh = false) {
 
   console.log("Fetching goals from Firestore.");
   try {
-    const goalRef = collection(db, "goals");
+    const goalCollectionRef = collection(db, `Goals/${user.uid}/userGoals`);
+    const goalSnapshot = await getDocs(goalCollectionRef);
+    const goals = [];
 
-    onSnapshot(goalRef, (snapshot) => {
-      const goals = [];
-      snapshot.forEach((doc) => {
-        goals.push({ id: doc.id, ...doc.data() });
-      });
-
-      // Cache the data
-      sessionStorage.setItem("goals", JSON.stringify(goals));
-
-      renderGoals(goals);
+    goalSnapshot.forEach((doc) => {
+      goals.push({ id: doc.id, ...doc.data() });
     });
+
+    // Cache the data
+    sessionStorage.setItem("goals", JSON.stringify(goals));
+
+    renderGoals(goals);
   } catch (error) {
     console.error("Error fetching goals:", error);
   }
@@ -98,6 +110,13 @@ function fetchGoals(forceRefresh = false) {
 
 // Fetch and display week end date with caching
 async function fetchWeekEnd(forceRefresh = false) {
+  const user = auth.currentUser;
+  if (!user) {
+    console.log("User not logged in.");
+    weekEndDisplay.innerText = "No week end date set.";
+    return;
+  }
+
   if (!forceRefresh) {
     const cachedWeekEnd = sessionStorage.getItem("weekEnd");
     if (cachedWeekEnd) {
@@ -109,7 +128,7 @@ async function fetchWeekEnd(forceRefresh = false) {
 
   console.log("Fetching week end date from Firestore.");
   try {
-    const weekEndRef = doc(db, "settings", "weekEnd");
+    const weekEndRef = doc(db, `WeekSettings/${user.uid}`);
     const weekEndSnap = await getDoc(weekEndRef);
 
     if (weekEndSnap.exists()) {
@@ -121,6 +140,7 @@ async function fetchWeekEnd(forceRefresh = false) {
     }
   } catch (error) {
     console.error("Error fetching week end date:", error);
+    weekEndDisplay.innerText = "Error loading week end date.";
   }
 }
 
@@ -183,11 +203,6 @@ refreshButton.addEventListener("click", () => {
   fetchGoals(true);
   fetchWeekEnd(true);
 });
-
-// Initialize the rankings and goals
-fetchRankings();
-fetchGoals();
-fetchWeekEnd();
 
 // Initialize the app
 initApp();

@@ -12,7 +12,7 @@ import {
 import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
 
 // Firestore references
-const bankRef = collection(db, "bank");
+let bankRef; // Use let to allow reassignment
 
 // DOM Elements
 const balancesList = document.getElementById("balances-list");
@@ -35,7 +35,7 @@ function ensureAuthenticated() {
 // Fetch kids and update UI
 async function fetchKids() {
   ensureAuthenticated();
-  const snapshot = await getDocs(bankRef);
+  const snapshot = await getDocs(bankRef); // bankRef includes user's `uid`
   const kids = [];
   snapshot.forEach((doc) => {
     kids.push({ id: doc.id, ...doc.data() });
@@ -105,8 +105,8 @@ document.getElementById("rename-kid-btn").addEventListener("click", async () => 
   const selectedKid = editKidSelect.value;
   const newName = newKidNameInput.value;
   if (selectedKid && newName) {
-    const kidDoc = doc(db, "bank", selectedKid);
-    await updateDoc(kidDoc, { name: newName });
+    const kidDoc = doc(db, `bank/${auth.currentUser.uid}/kids/${selectedKid}`);
+    await updateDoc(kidDoc, { name: newName });    
     alert(`Renamed kid to ${newName}`);
     fetchKids();
     newKidNameInput.value = '';
@@ -122,7 +122,8 @@ document.getElementById("remove-kid-btn").addEventListener("click", async () => 
   if (selectedKid) {
     const confirmDelete = confirm("Are you sure you want to remove this kid? This action cannot be undone.");
     if (confirmDelete) {
-      const kidDoc = doc(db, "bank", selectedKid);
+      const kidDoc = doc(db, `bank/${auth.currentUser.uid}/kids/${selectedKid}`);
+      await deleteDoc(kidDoc);
       try {
         await deleteDoc(kidDoc);
         alert("Kid removed successfully.");
@@ -144,7 +145,7 @@ document.getElementById("set-balance-btn").addEventListener("click", async () =>
   const newBalance = parseFloat(newBalanceInput.value);
 
   if (selectedKid && !isNaN(newBalance)) {
-    const kidDoc = doc(db, "bank", selectedKid);
+    const kidDoc = doc(db, `bank/${auth.currentUser.uid}/kids/${selectedKid}`);
     const kidSnapshot = await getDoc(kidDoc);
     const kidData = kidSnapshot.exists() ? kidSnapshot.data() : {}; // Ensure kidData exists
     const priorBalance = kidData.balance ?? 0; // Default to 0 if balance is missing
@@ -198,78 +199,91 @@ document.getElementById("set-balance-btn").addEventListener("click", async () =>
 
 // Populate month and year dropdowns
 function populateDateFilters() {
-  const currentYear = new Date().getFullYear();
-  const currentMonth = new Date().getMonth() + 1; // Month is zero-indexed
+  const yearDropdown = document.getElementById("filter-year");
+  const monthDropdown = document.getElementById("filter-month");
 
-  // Populate years (last 10 years including current year)
+  if (!yearDropdown || !monthDropdown) {
+    console.error("Year or month dropdown not found in DOM.");
+    return;
+  }
+
+  // Clear existing options
+  yearDropdown.innerHTML = "";
+  monthDropdown.innerHTML = "";
+
+  const currentYear = new Date().getFullYear();
+  const currentMonth = new Date().getMonth() + 1;
+
+  // Populate years
   for (let year = currentYear; year >= currentYear - 10; year--) {
     const option = document.createElement("option");
     option.value = year;
     option.textContent = year;
-    document.getElementById("filter-year").appendChild(option);
+    yearDropdown.appendChild(option);
 
-    // Set the current year as the default selection
     if (year === currentYear) {
       option.selected = true;
     }
   }
 
-  // Populate months (1–12)
+  // Populate months
   const months = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
   ];
   months.forEach((month, index) => {
     const option = document.createElement("option");
     option.value = index + 1; // Month value (1-12)
     option.textContent = month;
-    document.getElementById("filter-month").appendChild(option);
+    monthDropdown.appendChild(option);
 
-    // Set the current month as the default selection
     if (index + 1 === currentMonth) {
       option.selected = true;
     }
   });
 }
 
-// Event listener for selecting a kid
-document.getElementById("kid-select").addEventListener("change", async () => {
+// Event listener for selecting a kid or updating filters
+document.getElementById("kid-select").addEventListener("change", fetchAndDisplayHistory);
+document.getElementById("filter-year").addEventListener("change", fetchAndDisplayHistory);
+document.getElementById("filter-month").addEventListener("change", fetchAndDisplayHistory);
+
+// Fetch and display transactions based on filters
+async function fetchAndDisplayHistory() {
   const selectedKid = kidSelect.value;
+  const selectedYear = document.getElementById("filter-year").value;
+  const selectedMonth = document.getElementById("filter-month").value;
 
-  // Get selected year and month
-  const selectedYear = parseInt(document.getElementById("filter-year").value);
-  const selectedMonth = parseInt(document.getElementById("filter-month").value);
+  if (!selectedKid) {
+    alert("Please select a kid to view their transaction history.");
+    return;
+  }
 
-  if (selectedKid) {
-    const kidDoc = doc(db, "bank", selectedKid);
+  try {
+    // Fetch kid's document
+    const kidDoc = doc(db, `bank/${auth.currentUser.uid}/kids/${selectedKid}`);
     const kidSnapshot = await getDoc(kidDoc);
 
     if (kidSnapshot.exists()) {
       const kidData = kidSnapshot.data();
-
-      // Get transactions for the selected year and month
       const history = kidData.history || {};
       const monthlyHistory = history[selectedYear]?.[selectedMonth] || [];
 
       // Display transactions
       historyList.innerHTML = '';
       if (monthlyHistory.length === 0) {
-        historyList.innerHTML = "<li>No transactions for this period.</li>";
+        historyList.innerHTML = "<li>No transactions for this month.</li>";
       } else {
-        // Reverse the array to display the most recent first
-        monthlyHistory.slice().reverse().forEach((entry) => {
+        // Sort transactions by timestamp (most recent first)
+        const sortedHistory = [...monthlyHistory].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+        sortedHistory.forEach((entry) => {
+          const entryDate = new Date(entry.timestamp);
+          const formattedDate = entryDate.toLocaleDateString();
+          const formattedTime = entryDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
           const listItem = document.createElement("li");
-          listItem.textContent = `${new Date(entry.timestamp).toLocaleString()}: ${
+          listItem.textContent = `${formattedDate} ${formattedTime}: ${
             entry.type === "add" ? "+" : "-"
           }$${entry.change} (Prior: $${entry.priorBalance})`;
           historyList.appendChild(listItem);
@@ -277,10 +291,13 @@ document.getElementById("kid-select").addEventListener("change", async () => {
       }
     } else {
       console.error("Kid document not found.");
-      alert("Selected kid data not found!");
+      alert("No data found for the selected kid.");
     }
+  } catch (error) {
+    console.error("Error fetching history:", error);
+    alert("Failed to fetch transaction history. Please try again.");
   }
-});
+}
 
 // Sign In Example
 document.getElementById("sign-in-btn")?.addEventListener("click", async () => {
@@ -306,17 +323,13 @@ document.getElementById("sign-out-btn")?.addEventListener("click", async () => {
 });
 
 // Initial Auth Check
-// Initial Auth Check
 onAuthStateChanged(auth, (user) => {
   if (user) {
-    console.log("User signed in:", user.email);
-
-    // Populate dropdowns for filters
-    populateDateFilters();
-
-    // Fetch kids to display
-    fetchKids();
+    bankRef = collection(db, `bank/${user.uid}/kids`);
+    populateDateFilters(); // Ensure filters are populated after login
+    fetchKids(); // Fetch kids for the authenticated user
   } else {
     console.log("User signed out.");
+    bankRef = null;
   }
 });
