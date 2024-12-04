@@ -86,23 +86,23 @@
     <p style="text-align: center; font-size: 1.3em; color: #ffffff;">
         Help around the house and get points:
     </p>
+    <!--
     <p class="trial-counter" style="text-align: center; font-size: 1.2em; color: #edff35; padding: 5px; border-radius: 8px;">
-        <!-- Free trial status will appear here -->
-    </p>
+    </p>-->
 <div class="centered-container3">
-    <div class="" data-type="dashboard">
+    <div class="" > <!-- data-type="dashboard" -->
         <!--<h3>Improve Your English</h3>-->
-         <a href="./kid-of-the-week/dashboard.html">
+         <a href="javascript:void(0);" id="dashboard-link"> <!--Change to this bakc when premium: href="./kid-of-the-week/dashboard.html" -->
              <img class="parents-dashboard-img" src="https://firebasestorage.googleapis.com/v0/b/kids-chatgpt.appspot.com/o/static%2Fultilities%2Fparents-dashboard.webp?alt=media&token=6c1e4602-80e2-4113-a1de-465aace8d0a6" alt="Parents Dashboard Logo" class="logo">
          </a>
      </div>
-     <div class="" data-type="ranking">
+     <div class=""> <!-- data-type="ranking" -->
         <!--<h3>Improve Your English</h3>-->
          <a href="./kid-of-the-week/ranking.html">
              <img class="ranking-img" src="https://firebasestorage.googleapis.com/v0/b/kids-chatgpt.appspot.com/o/static%2Fultilities%2Franking.webp?alt=media&token=7ac7c540-03dd-4e7d-9cd1-da33f066f275" alt="Ranking Logo" class="logo">
          </a>
      </div>
-     <div class="" data-type="bank">
+     <div class=""> <!-- data-type="bank" -->
         <!--<h3>Improve Your English</h3>-->
          <a href="./kid-of-the-week/bank/alfie-central-bank.html">
              <img class="bank-img" src="https://firebasestorage.googleapis.com/v0/b/kids-chatgpt.appspot.com/o/static%2Fultilities%2Fbank.webp?alt=media&token=f377c43d-ec91-45fe-9410-7816bb9e66ab" alt="Alfie Central Bank Logo" class="logo">
@@ -386,9 +386,9 @@ function blurRestrictedSections() {
     const sectionsToRestrict = [
         { selector: '.math-tutor', message: 'Math Tutor AI' },
         { selector: '.english-tutor', message: 'English Tutor AI' },
-        { selector: '.parents-dashboard-img', message: 'Parent Dashboard' },
-        { selector: '.ranking-img', message: 'Ranking' },
-        { selector: '.bank-img', message: 'Alfie Central Bank' },
+        //{ selector: '.parents-dashboard-img', message: 'Parent Dashboard' },
+        //{ selector: '.ranking-img', message: 'Ranking' },
+        //{ selector: '.bank-img', message: 'Alfie Central Bank' },
     ];
 
     sectionsToRestrict.forEach(({ selector, message }) => {
@@ -479,6 +479,22 @@ async function handleTutorAccess(userId, redirectUrl) {
         console.error("User profile does not exist!");
     }
 }
+
+//Calls the verify PIN for Dashboard Parent (Can delete later to avoid Conflict when Premium Only)
+document.addEventListener('DOMContentLoaded', () => {
+    const dashboardLink = document.getElementById('dashboard-link');
+
+    dashboardLink.addEventListener('click', async (event) => {
+        event.preventDefault(); // Prevent default link behavior
+
+        // Call the existing PIN verification logic
+        await verifyUserPin(() => {
+            // If the PIN is verified, redirect to the dashboard
+            window.location.href = './kid-of-the-week/dashboard.html';
+        });
+    });
+});
+
 
 // Wait for DOM to load and fetch user profile dynamically
 document.addEventListener("DOMContentLoaded", () => {
