@@ -1,0 +1,308 @@
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+/* Import Material Icons */
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+
+/* General Styles */
+body {
+  font-family: 'Roboto', sans-serif;
+  background: black; /* Base background color */
+  color: #ffffff;
+  margin: 0;
+  padding: 0;
+  position: relative;
+  min-height: 100vh; /* Ensures body takes up full height */
+}
+
+/* Infinite Space-Time Grid Effect */
+body::before {
+  content: '';
+  position: fixed; /* Ensures the grid stays in the background */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at center, #6a11cb 0%, transparent 70%), 
+              repeating-linear-gradient(0deg, transparent, transparent 14px, #6a11cb 15px), 
+              repeating-linear-gradient(90deg, transparent, transparent 14px, #6a11cb 15px);
+  background-size: 200px 200px;
+  animation: gridScroll 10s linear infinite, glowPulse 3s ease-in-out infinite;
+  z-index: -1; /* Keeps the grid behind the content */
+}
+
+/* Grid Scroll Animation */
+@keyframes gridScroll {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: -200px -200px; /* Moves diagonally for infinite scrolling effect */
+  }
+}
+
+/* Glow Pulse Animation */
+@keyframes glowPulse {
+  0%, 100% {
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+
+.container {
+  width: 80%;
+  max-width: 800px;
+  margin: 30px auto;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.8); /* Slight transparency for depth */
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.btn-container {
+  display: flex;
+  justify-content: center; /* Centers horizontally */
+  align-items: center;    /* Centers vertically */
+  margin: 0 auto;         /* Ensures the container itself is centered */
+}
+
+/* General Button Styles */
+button {
+  display: inline-block;
+  font-family: 'Passion One', sans-serif;
+  font-size: 1.1em;
+  font-weight: 400;
+  padding: 10px 20px;
+  margin: 10px 0;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+/* Refresh Button Style */
+button.blue {
+  background-color: #6a11cb;
+  color: #ffffff;
+  box-shadow: 0 4px 6px rgba(0, 123, 255, 0.3);
+}
+
+button.blue:hover {
+  background-color: #6a11cb;
+  box-shadow: 0 6px 8px rgba(183, 0, 255, 0.5);
+  transform: translateY(-2px);
+}
+
+button.blue:active {
+  background-color: #6a11cb;
+  box-shadow: 0 2px 4px rgba(255, 0, 212, 0.2);
+  transform: translateY(2px);
+}
+
+h1 {
+  font-family: "Passion One", serif;
+  font-weight: 500;
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #ffffff;
+  text-shadow: 0 0 18px #c300ff, 0 0 1px #00cccc, 0 0 8px #00aaaa;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+h1::after {
+  content: '';
+  display: block;
+  width: 50px;
+  height: 3px;
+  background: #c300ff;
+  margin: 10px auto;
+  border-radius: 2px;
+}
+
+h2 {
+  font-family: "Passion One", serif;
+  font-size: 1.5rem;
+  font-weight: 400;
+  color: #ffffff;
+  text-shadow: 0 0 18px #c300ff, 0 0 1px #00cccc, 0 0 8px #00aaaa;
+  margin-top: 30px;
+  margin-bottom: 15px;
+  position: relative;
+}
+
+h2::before {
+  content: 'star';
+  font-family: 'Material Icons';
+  font-size: 1.2rem;
+  color: #ffffff;
+  margin-right: 5px;
+  vertical-align: middle;
+}
+
+p {
+  margin: 5px 0;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+/* Week End Display */
+#weekEndDisplay {
+    text-align: center;
+    font-size: 1.3rem;
+    font-family: "Passion One", serif;
+    font-weight: 400; /* Increase font weight for a bold 3D look */
+    background: linear-gradient(45deg, #ff00ff, #00ffff);
+    border-radius: 40px;
+    padding: 15px;
+    color: #000000;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 2px rgba(255, 255, 255, 0.1); /* Shadow for a 3D illusion */
+    transition: transform 0.2s ease, box-shadow 0.2s ease; /* Smooth hover animation */
+  }
+  
+  /* Hover Effect for 3D Interaction */
+  #weekEndDisplay:hover {
+    transform: translateY(-5px); /* Lift the element slightly */
+    box-shadow: 6px 6px 15px rgba(0, 0, 0, 0.5), 
+                -4px -4px 8px rgba(255, 255, 255, 0.3); /* Enhanced shadows on hover */
+  }
+  
+  /* Active Effect (Pressing Down) */
+  #weekEndDisplay:active {
+    transform: translateY(2px); /* Pressed-in effect */
+    box-shadow: inset 3px 3px 6px rgba(0, 0, 0, 0.5),
+                inset -2px -2px 4px rgba(255, 255, 255, 0.3); /* Inner shadow for pressed look */
+  }  
+
+/* Rankings Section */
+#weeklyRanking, #totalRanking, #goalList {
+  margin-top: 20px;
+}
+
+#weeklyRanking p, #totalRanking p {
+  display: flex;
+  align-items: center;
+  font-size: 1rem;
+  margin: 10px 0;
+  background: #fafafa;
+  color: #000000;
+  padding: 10px 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+#weeklyRanking p:hover, #totalRanking p:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+#weeklyRanking strong, #totalRanking strong {
+  font-weight: 700;
+  color: #000000;
+  margin-right: 10px;
+}
+
+#weeklyRanking p::before, #totalRanking p::before {
+  content: 'emoji_events';
+  font-family: 'Material Icons';
+  font-size: 1.5rem;
+  color: #ff7300;
+  margin-right: 10px;
+}
+
+/* Goals Section */
+#goalList p {
+  display: flex;
+  align-items: center;
+  font-size: 1rem;
+  margin: 10px 0;
+  color: #000000;
+  font-weight: 600;
+  background: #e3f2fd;
+  padding: 10px 15px;
+  border-radius: 8px;
+  border: 1px solid #bbdefb;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+#goalList p:hover {
+  background-color: #c95afd;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#goalList p strong {
+  font-weight: 700;
+  color: #6a11cb;
+  margin-right: 10px;
+}
+
+#goalList p::before {
+  content: 'check_circle';
+  font-family: 'Material Icons';
+  font-size: 1.5rem;
+  color: #6a11cb;
+  margin-right: 10px;
+}
+
+/* Media Queries for Responsiveness */
+@media (max-width: 600px) {
+  h1 {
+    font-size: 2rem;
+  }
+
+  h2 {
+    font-size: 1.25rem;
+  }
+
+  p {
+    font-size: 0.95rem;
+  }
+
+  #weeklyRanking p, #totalRanking p, #goalList p {
+    font-size: 0.9rem;
+  }
+}
+
+/* Special Style for First Place */
+.first-place {
+    font-family: "Passion One", serif;
+    background: linear-gradient(145deg, #ffcc00, #ff9900); /* Golden gradient */
+    color: #000000 !important;
+    font-weight: 400 !important;
+    font-size: 1.2em !important;
+    border: 2px solid #ffd700;
+    box-shadow: 0 4px 8px rgba(255, 223, 0, 0.6), 
+                0 0 20px rgba(255, 223, 0, 0.8); /* Glowing effect */
+    animation: pulse 1.5s infinite; /* Subtle pulsing animation */
+    transform: scale(1.04); /* Slightly larger for emphasis */
+  }
+  
+  .first-place:hover {
+    transform: scale(1.1); /* Slightly larger on hover */
+  }
+  
+  /* Rank Icon for Numbers or Trophy */
+  .rank-icon {
+    display: inline-block;
+    font-size: 1.5rem;
+    margin-right: 10px;
+    color: #ffcc00;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+  }
+  
+  /* Pulse Animation for Glow */
+  @keyframes pulse {
+    0%, 100% {
+      box-shadow: 0 4px 8px rgba(255, 223, 0, 0.6), 
+                  0 0 20px rgba(255, 223, 0, 0.8);
+    }
+    50% {
+      box-shadow: 0 6px 12px rgba(255, 223, 0, 0.8), 
+                  0 0 30px rgba(255, 223, 0, 1);
+    }
+  }  

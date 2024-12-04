@@ -61,7 +61,7 @@
     <p style="text-align: center; font-size: 1.3em; color: #ffffff;">
         Boost your learning with the power of advanced AI! Math and English tutors are ready to help you excel:
     </p>
-    <p id="trial-counter" style="text-align: center; font-size: 1.2em; color: #edff35; padding: 5px; border-radius: 8px;">
+    <p class="trial-counter" style="text-align: center; font-size: 1.2em; color: #edff35; padding: 5px; border-radius: 8px;">
         <!-- Free trial status will appear here -->
     </p>
     <div class="centered-container2">
@@ -78,6 +78,37 @@
         </a>
     </div>
     </div>
+</section>
+
+<!-- Comparison Section -->
+<section id="comparison" class="comparison-section" data-aos="fade-up">
+    <h2 class="section-title2">Utilities</h2>
+    <p style="text-align: center; font-size: 1.3em; color: #ffffff;">
+        Help around the house and get points:
+    </p>
+    <p class="trial-counter" style="text-align: center; font-size: 1.2em; color: #edff35; padding: 5px; border-radius: 8px;">
+        <!-- Free trial status will appear here -->
+    </p>
+<div class="centered-container3">
+    <div class="" data-type="dashboard">
+        <!--<h3>Improve Your English</h3>-->
+         <a href="./kid-of-the-week/dashboard.html">
+             <img class="parents-dashboard-img" src="https://firebasestorage.googleapis.com/v0/b/kids-chatgpt.appspot.com/o/static%2Fultilities%2Fparents-dashboard.webp?alt=media&token=6c1e4602-80e2-4113-a1de-465aace8d0a6" alt="Parents Dashboard Logo" class="logo">
+         </a>
+     </div>
+     <div class="" data-type="ranking">
+        <!--<h3>Improve Your English</h3>-->
+         <a href="./kid-of-the-week/ranking.html">
+             <img class="ranking-img" src="https://firebasestorage.googleapis.com/v0/b/kids-chatgpt.appspot.com/o/static%2Fultilities%2Franking.webp?alt=media&token=7ac7c540-03dd-4e7d-9cd1-da33f066f275" alt="Ranking Logo" class="logo">
+         </a>
+     </div>
+     <div class="" data-type="bank">
+        <!--<h3>Improve Your English</h3>-->
+         <a href="./kid-of-the-week/bank/alfie-central-bank.html">
+             <img class="bank-img" src="https://firebasestorage.googleapis.com/v0/b/kids-chatgpt.appspot.com/o/static%2Fultilities%2Fbank.webp?alt=media&token=f377c43d-ec91-45fe-9410-7816bb9e66ab" alt="Alfie Central Bank Logo" class="logo">
+         </a>
+     </div>
+</div>
 </section>
 
 <br/>
@@ -232,82 +263,158 @@ async function applyBlurIfNecessary(userId) {
 
         if (userProfileSnapshot.exists()) {
             const userProfile = userProfileSnapshot.data();
-
-            // Check if the user is Premium
             const isPremium = userProfile.isPremium || false;
 
-            // Select the trial-counter div
-            const trialCounter = document.getElementById('trial-counter');
-
-            // Add 'freeTrial' field if it doesn't exist
             if (!isPremium) {
+                let freeTrial = userProfile.freeTrial !== undefined ? userProfile.freeTrial : 15;
+
+                // Initialize freeTrial field if not set
                 if (userProfile.freeTrial === undefined) {
                     await updateDoc(userProfileRef, { freeTrial: 15 });
-                    console.log("Free trial initialized with 15 sessions.");
+                    freeTrial = 15;
                 }
 
-                // Update the trial counter UI
-                const freeTrial = userProfile.freeTrial !== undefined ? userProfile.freeTrial : 15;
-                if (trialCounter) {
-                    trialCounter.textContent = `🎉 You have ${freeTrial} free sessions left!`;
-                }
+                // Update trial counter using the new function
+                updateTrialCounter(freeTrial);
 
-                // Blur the section if freeTrial is 0
+                // Apply blur logic if freeTrial is 0
                 if (freeTrial === 0) {
-                    const comparisonSection = document.querySelector('#comparison .centered-container2');
-                    if (comparisonSection) {
-                        comparisonSection.querySelectorAll('[data-type]').forEach((element) => {
-                            const tutorType = element.getAttribute('data-type');
-
-                            // Wrap each element in a blurred-wrapper and add overlay
-                            const wrapper = document.createElement('div');
-                            wrapper.classList.add('blurred-wrapper');
-
-                            // Clone the current element and add blur
-                            const clonedElement = element.cloneNode(true);
-                            clonedElement.classList.add('blurred');
-
-                            // Add the overlay message with tutor-specific text
-                            const overlay = document.createElement('div');
-                            overlay.classList.add('overlay-message');
-
-                            if (tutorType === 'math') {
-                                overlay.innerHTML = `
-                                    🧮 Math Tutor AI is exclusively available to Premium users:<br><br>
-                                    <a href="https://alfieaikids.fun/checkout" target="_blank" style="color: #edff35; text-decoration: underline;">
-                                        Subscribe/Upgrade
-                                    </a>
-                                `;
-                            } else if (tutorType === 'english') {
-                                overlay.innerHTML = `
-                                    📝 English Tutor AI is exclusively available to Premium users:<br><br>
-                                    <a href="https://alfieaikids.fun/checkout" target="_blank" style="color: #edff35; text-decoration: underline;">
-                                        Subscribe/Upgrade
-                                    </a>
-                                `;
-                            }
-
-                            // Append cloned element and overlay to the wrapper
-                            wrapper.appendChild(clonedElement);
-                            wrapper.appendChild(overlay);
-
-                            // Replace the original element with the wrapper
-                            element.parentNode.replaceChild(wrapper, element);
-                        });
-
-                        // Update trial counter when freeTrial is 0
-                        if (trialCounter) {
-                            trialCounter.textContent = `🚨 Your free trial has ended. Please subscribe/upgrade to continue!`;
-                        }
-                    }
+                    blurRestrictedSections();
                 }
+
+                // Attach click listeners to restricted features
+                attachFeatureClickListeners(userId, freeTrial);
+            } else {
+                // If Premium, show unlimited access message
+                updateTrialCounter(Infinity); // Passing Infinity for Premium users
             }
         } else {
             console.error("User profile does not exist!");
         }
     } catch (error) {
-        console.error("Error fetching user profile:", error);
+        console.error("Error applying blur logic:", error);
     }
+}
+
+function attachFeatureClickListeners(userId, freeTrial) {
+    const features = document.querySelectorAll('[data-type]');
+    features.forEach((feature) => {
+        feature.addEventListener('click', async (event) => {
+            event.preventDefault(); // Prevent default behavior
+
+            const link = feature.querySelector('a'); // Get the link inside the feature
+            const redirectUrl = link ? link.href : null;
+            const featureType = feature.getAttribute('data-type'); // Get the feature type
+
+            if (featureType === 'dashboard') {
+                try {
+                    await verifyUserPin(async () => {
+                        console.log('Dashboard PIN verified successfully.');
+
+                        // Deduct a trial after PIN verification
+                        if (freeTrial > 0) {
+                            await decreaseFreeTrial(userId);
+                            freeTrial--; // Update local state
+                            updateTrialCounter(freeTrial); // Update the UI
+                        }
+
+                        // Redirect to Dashboard after PIN verification
+                        if (redirectUrl) {
+                            window.location.href = redirectUrl;
+                        }
+                    });
+                } catch (error) {
+                    console.error('PIN verification failed:', error);
+                }
+                return; // Exit further logic for the Dashboard
+            }
+
+            // Logic for other features (Bank, Ranking, etc.)
+            if (freeTrial > 0) {
+                await decreaseFreeTrial(userId);
+                freeTrial--; // Decrease the local freeTrial variable
+                updateTrialCounter(freeTrial); // Update the UI
+
+                if (redirectUrl) {
+                    window.location.href = redirectUrl;
+                }
+            } else {
+                console.log("Free trial ended. Redirecting to subscription page...");
+                window.location.href = "https://alfieaikids.fun/checkout";
+            }
+        });
+    });
+}
+
+async function decreaseFreeTrial(userId) {
+    try {
+        const userProfileRef = doc(db, `userProfiles/${userId}`);
+        const userProfileSnapshot = await getDoc(userProfileRef);
+
+        if (userProfileSnapshot.exists()) {
+            const userProfile = userProfileSnapshot.data();
+            const currentFreeTrial = userProfile.freeTrial || 0;
+
+            if (currentFreeTrial > 0) {
+                const newFreeTrial = currentFreeTrial - 1;
+                await updateDoc(userProfileRef, { freeTrial: newFreeTrial });
+                console.log("Free trial decreased by 1.");
+                updateTrialCounter(newFreeTrial); // Call the counter update with the new value
+            } else {
+                console.log("Free trial already at 0.");
+                updateTrialCounter(0); // Ensure UI reflects 0 free trials
+            }
+        } else {
+            console.error("User profile does not exist.");
+        }
+    } catch (error) {
+        console.error("Error decreasing free trial:", error);
+    }
+}
+
+function updateTrialCounter(freeTrial) {
+    const trialCounters = document.querySelectorAll('.trial-counter');
+    trialCounters.forEach((counter) => {
+        // Check if freeTrial is 0 or less and display the correct message
+        counter.innerHTML = freeTrial > 0 
+            ? `🎉 You have ${freeTrial} free sessions left!` 
+            : `🚨 Your free trial has ended. Please <a href="https://alfieaikids.fun/checkout" target="_blank" style="color: #edff35; text-decoration: underline;">subscribe to continue!</a>`;
+    });
+}
+
+function blurRestrictedSections() {
+    const sectionsToRestrict = [
+        { selector: '.math-tutor', message: 'Math Tutor AI' },
+        { selector: '.english-tutor', message: 'English Tutor AI' },
+        { selector: '.parents-dashboard-img', message: 'Parent Dashboard' },
+        { selector: '.ranking-img', message: 'Ranking' },
+        { selector: '.bank-img', message: 'Alfie Central Bank' },
+    ];
+
+    sectionsToRestrict.forEach(({ selector, message }) => {
+        const element = document.querySelector(selector);
+        if (element) {
+            const wrapper = document.createElement('div');
+            wrapper.classList.add('blurred-wrapper');
+
+            const clonedElement = element.cloneNode(true);
+            clonedElement.classList.add('blurred');
+
+            const overlay = document.createElement('div');
+            overlay.classList.add('overlay-message');
+            overlay.innerHTML = `
+                🚨 ${message} is exclusively available to Premium users:<br><br>
+                <a href="https://alfieaikids.fun/checkout" target="_blank" style="color: #edff35; text-decoration: underline;">
+                    Subscribe/Upgrade
+                </a>
+            `;
+
+            wrapper.appendChild(clonedElement);
+            wrapper.appendChild(overlay);
+
+            element.parentNode.replaceChild(wrapper, element);
+        }
+    });
 }
 
 // Handle link click events for Math and English tutors

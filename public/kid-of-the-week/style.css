@@ -1,0 +1,262 @@
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+/* Import Material Icons */
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+
+/* General Styles */
+body {
+  font-family: 'Roboto', sans-serif;
+  background: linear-gradient(135deg, rgba(23, 212, 133, 0.3), rgb(114, 196, 161, 0.2));
+  margin: 0;
+  padding: 0;
+  color: #333;
+}
+
+.container {
+  max-width: 900px;
+  margin: 30px auto;
+  padding: 20px;
+  background: #ffffffde;
+  border-radius: 45px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  font-family: 'Fredoka One', 'Raleway', sans-serif !important; 
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: 300;
+  color: #444;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+h1::after {
+  content: '';
+  display: block;
+  width: 60px;
+  height: 3px;
+  background: #6a11cb;
+  margin: 10px auto;
+  border-radius: 2px;
+}
+
+h2 {
+  font-family: 'Fredoka One', 'Raleway', sans-serif !important; 
+  font-weight: 400;
+  font-size: 1.5rem;
+  color: #6a11cb;
+  margin-top: 30px;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+}
+
+h2::before {
+  content: 'dashboard';
+  font-family: 'Material Icons';
+  font-size: 1.5rem;
+  color: #6a11cb;
+  margin-right: 10px;
+}
+
+label {
+  font-family: 'Fredoka One', 'Raleway', sans-serif !important; 
+  font-weight: 400;
+}
+
+/* Forms and Inputs */
+.form {
+  margin-top: 20px;
+  padding: 20px;
+  background: #f9f9f9;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+input, select {
+  width: 90%;
+  padding: 10px;
+  margin: 10px 0;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+input:focus, select:focus {
+  border-color: #6a11cb;
+}
+
+button {
+  width: calc(50% - 10px);
+  background: #6a11cb;
+  color: #ffffff;
+  font-family: 'Roboto', sans-serif;
+  font-size: 1rem;
+  font-weight: 400;
+  padding: 10px;
+  margin: 5px 5px 0 0;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+button:hover {
+  background: #6b11cbdc;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+button:active {
+  background: #6a11cb;
+}
+
+/* Buttons with specific colors */
+button.red {
+  background: #dc3545;
+}
+
+button.red:hover {
+  background: #b02a37;
+}
+
+button.green {
+  background: #28a745;
+}
+
+button.green:hover {
+  background: #218838;
+}
+
+/* Goal List */
+#goalList p {
+  display: flex;
+  align-items: center;
+  font-size: 1rem;
+  margin: 10px 0;
+  background: #e3f2fd;
+  padding: 10px 15px;
+  border-radius: 8px;
+  border: 1px solid #bbdefb;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+#goalList p:hover {
+  background-color: #bbdefb;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#goalList p strong {
+  font-weight: 700;
+  color: #6a11cb;
+  margin-right: 10px;
+}
+
+#goalList p::before {
+  content: 'check_circle';
+  font-family: 'Material Icons';
+  font-size: 1.5rem;
+  color: #6a11cb;
+  margin-right: 10px;
+}
+
+/* Week End Display */
+#weekEndDisplay {
+  text-align: center;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #555;
+  margin-top: 10px;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+  h1 {
+    font-size: 2rem;
+  }
+
+  h2 {
+    font-size: 1.25rem;
+  }
+
+  input, select, button {
+    font-size: 0.95rem;
+  }
+
+  button {
+    width: 100%;
+    margin: 10px 0;
+  }
+}
+
+/* Modal Styles */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 10;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+  
+  .modal-content {
+    background-color: #ffffff;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    width: 300px;
+    text-align: center;
+  }
+  
+  .modal-content h2 {
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  .modal-content input {
+    width: 90%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+  }
+  
+  .modal-content button {
+    width: 100%;
+    background: #6a11cb;
+    color: #ffffff;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+  }
+  
+  .modal-content button:hover {
+    background: #6b11cbd7;
+  }
+  
+  .modal-content .close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  .modal-content .close:hover,
+  .modal-content .close:focus {
+    color: #000;
+    text-decoration: none;
+  }
+  

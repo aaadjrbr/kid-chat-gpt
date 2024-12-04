@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Son of the Week (Ranking)</title>
+  <link rel="icon" href="../alfie-ai.ico" type="image/x-icon">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Raleway:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="dashboard.js" defer></script>
+
+  <meta name="description" content="Alfie AI for Kids provides a safe, educational AI chatbot experience for children aged 5-12, enhancing learning and growth with parental controls." />
+  <meta name="keywords" content="AI for kids, safe AI learning, parental controls, educational AI, chatbots for children, technology in education" />
+  <link rel="canonical" href="https://www.alfieaiforkids.fun/" />
+  <meta property="og:title" content="Alfie AI for Kids - Safe AI Learning for Children" />
+
+  <meta property="og:description" content="Enhance your child's learning experience with Alfie AI, a safe, educational AI chatbot designed for kids aged 5-12 with parental controls." />
+  <meta property="og:image" content="https://firebasestorage.googleapis.com/v0/b/kids-chatgpt.appspot.com/o/logo-alfie.webp?alt=media&token=92d7d084-ce10-486d-b00d-30c0b2642456" />
+  <meta property="og:url" content="https://www.alfieaiforkids.fun/" />
+  <meta property="og:type" content="website" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Alfie AI for Kids - Safe AI Learning for Children" />
+  <meta name="twitter:description" content="A safe and educational chatbot experience for children aged 5-12, with parental control features to ensure peace of mind." />
+  <meta name="twitter:image" content="https://firebasestorage.googleapis.com/v0/b/kids-chatgpt.appspot.com/o/logo-alfie.webp?alt=media&token=92d7d084-ce10-486d-b00d-30c0b2642456" />
+
+  <meta name="robots" content="index, follow" />
+  
+</head>
+<!-- Google tag (gtag.js) --> 
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-WYMRF4LKM1"></script>
+<script> window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-WYMRF4LKM1');
+</script>
+
+<body>
+  <div class="container">
+    <h1>Kid of the Week - Dashboard <br><span style="font-size: 0.6em;">
+      <a href="./bank/bank-dashboard.html">Go to Alfie Central Bank (Dashboard)</a><br>
+      <a href="../profiles.html">Menu</a></span>
+    </h1>
+    <br>
+    <button class="go-back" onclick="location.href='../profiles.html';">Go Back</button>
+
+    <!-- Login and Logout Buttons -->
+    <div class="form" style="display: none;">
+      <button id="loginButton" class="blue">Login</button>
+      <button id="logoutButton" class="red" style="display: none;">Logout</button>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Login</h2>
+        <input type="email" id="email" placeholder="Email">
+        <input type="password" id="password" placeholder="Password">
+        <button id="loginSubmit" class="green">Login</button>
+      </div>
+    </div>
+
+    <!-- Add a new kid -->
+    <div class="form">
+      <h2>Add Kid</h2>
+      <input type="text" id="newKidName" placeholder="Kid's Name">
+      <button onclick="addKid()">Add Kid</button>
+    </div>
+
+    <!-- Select a kid and manage points -->
+    <div class="form">
+      <h2>Manage Points</h2>
+      <label for="kidSelect">Select Kid:</label><br>
+      <select id="kidSelect">
+        <option value="" disabled selected>Select a kid</option>
+      </select>
+      <input type="number" id="points" placeholder="Points">
+      <button onclick="addPoints()">Add Points</button>
+      <button onclick="deductPoints()">Deduct Points</button>
+    </div>
+
+    <!-- Remove a kid -->
+    <div class="form">
+      <h2>Remove Kid</h2>
+      <label for="removeKidSelect">Select Kid:</label><br>
+      <select id="removeKidSelect">
+        <option value="" disabled selected>Select a kid</option>
+      </select>
+      <button onclick="removeKid()">Remove Kid</button>
+    </div>
+
+    <!-- Manage Goals -->
+    <div class="form">
+      <h2>Manage Goals</h2>
+      <input type="text" id="goalName" placeholder="Goal Name (e.g., Christmas Present)">
+      <input type="number" id="goalPoints" placeholder="Points Needed to Achieve Goal">
+      <button onclick="addGoal()">Add Goal</button>
+      <div id="goalList"></div>
+    </div>
+
+    <!-- Set Week End Date -->
+    <div class="form">
+      <h2>Set Week End</h2>
+      <input type="date" id="weekEndDate">
+      <button onclick="setWeekEnd()">Set Week End</button>
+      <br><br>
+      <p id="weekEndDisplay"></p>
+    </div>
+
+    <!-- Reset Weekly Points -->
+    <div class="form">
+      <h2>Reset Weekly Points</h2>
+      <button onclick="resetWeeklyPoints()">Reset Weekly Points</button>
+    </div>
+
+    <!-- Reset Total Points -->
+    <div class="form">
+      <h2>Reset Total Points</h2>
+      <button onclick="resetTotalPoints()">Reset Total Points</button>
+    </div>
+
+  </div>
+</body>
+</html>

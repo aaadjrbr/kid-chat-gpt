@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alfie AI - Dashboard | Alfie Central Bank</title>
+  <link rel="icon" href="../../alfie-ai.ico" type="image/x-icon">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="parent-styles.css">
+
+  <meta name="description" content="Alfie AI for Kids provides a safe, educational AI chatbot experience for children aged 5-12, enhancing learning and growth with parental controls." />
+  <meta name="keywords" content="AI for kids, safe AI learning, parental controls, educational AI, chatbots for children, technology in education" />
+  <link rel="canonical" href="https://www.alfieaiforkids.fun/" />
+  <meta property="og:title" content="Alfie AI for Kids - Safe AI Learning for Children" />
+
+  <meta property="og:description" content="Enhance your child's learning experience with Alfie AI, a safe, educational AI chatbot designed for kids aged 5-12 with parental controls." />
+  <meta property="og:image" content="https://firebasestorage.googleapis.com/v0/b/kids-chatgpt.appspot.com/o/logo-alfie.webp?alt=media&token=92d7d084-ce10-486d-b00d-30c0b2642456" />
+  <meta property="og:url" content="https://www.alfieaiforkids.fun/" />
+  <meta property="og:type" content="website" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Alfie AI for Kids - Safe AI Learning for Children" />
+  <meta name="twitter:description" content="A safe and educational chatbot experience for children aged 5-12, with parental control features to ensure peace of mind." />
+  <meta name="twitter:image" content="https://firebasestorage.googleapis.com/v0/b/kids-chatgpt.appspot.com/o/logo-alfie.webp?alt=media&token=92d7d084-ce10-486d-b00d-30c0b2642456" />
+
+  <meta name="robots" content="index, follow" />
+  
+</head>
+<!-- Google tag (gtag.js) --> 
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-WYMRF4LKM1"></script>
+<script> window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-WYMRF4LKM1');
+</script>
+
+<body>
+  <div class="container">
+    <h1>Dashboard - Alfie Central Bank<br><br>
+    <a href="../dashboard.html">🎯 Ranking - Dashboard</a><br><br>
+    <a href="../../profiles.html">Menu</a>
+  </h1>
+
+    <div class="auth-section" style="display: none;">
+        <button id="sign-in-btn">Sign In</button>
+        <button id="sign-out-btn">Sign Out</button>
+    </div> 
+
+    <!-- Balances Section -->
+    <div class="balances-section">
+      <h2>💰 Kids' Balances</h2>
+      <div id="balances-list"></div>
+    </div>
+
+        <!-- Set Balance Section -->
+        <div class="set-balance-section">
+          <h2>Set Kid's Balance</h2>
+          <form id="set-balance-form">
+            <label for="kid-select">Select Kid:</label>
+            <select id="kid-select"></select>
+            <label for="new-balance">New Balance (USD):</label>
+            <input type="number" id="new-balance" required>
+            <button type="button" id="set-balance-btn">Set Balance</button>
+          </form>
+        </div>
+
+    <div class="history-section">
+    <!-- Filter by Month and Year -->
+          <div class="filter-section">
+            <h2>📝 Balance History</h2>
+            <label for="filter-month">Month:</label>
+            <select id="filter-month">
+              <!-- Options will be populated dynamically -->
+            </select>
+        
+            <label for="filter-year">Year:</label>
+            <select id="filter-year">
+              <!-- Options will be populated dynamically -->
+            </select>
+            <br/><br/>
+            <ul id="history-list"></ul>
+            <br/>
+          </div>
+    </div>          
+
+    <!-- Add Kid Section -->
+    <div class="add-section">
+      <h2>Add Kid</h2>
+      <form id="add-kid-form">
+        <label for="add-kid-name">Kid's Name:</label>
+        <input type="text" id="add-kid-name" required>
+        <label for="add-kid-balance">Starting Balance (USD):</label>
+        <input type="number" id="add-kid-balance" required>
+        <button type="button" id="add-kid-btn">➕ Add Kid</button>
+      </form>
+    </div>
+
+    <!-- Edit Section -->
+    <div class="edit-section">
+      <h2>Edit Kids</h2>
+      <form id="edit-kid-form">
+        <label for="edit-kid-select">Select Kid:</label>
+        <select id="edit-kid-select"></select>
+        <label for="new-kid-name">New Name:</label>
+        <input type="text" id="new-kid-name">
+        <button type="button" id="rename-kid-btn">✏️ Rename Kid</button>
+        <button type="button" id="remove-kid-btn">❌ Remove Kid</button>
+      </form>
+    </div>
+
+    <!-- Requests Section -->
+    <div class="requests-section" style="display: none;">
+      <h2>Money Requests</h2>
+      <div id="requests-list">No new requests</div>
+    </div>
+  </div>
+
+  <script src="parent-scripts.js" type="module"></script>
+</body>
+</html>

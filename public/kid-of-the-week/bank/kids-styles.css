@@ -1,0 +1,202 @@
+/* General Styling */
+body {
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #0d0d0d; /* Dark background for glowing effects */
+  color: #fff;
+  text-align: center;
+}
+
+.container {
+  max-width: 600px;
+  margin: auto;
+  padding: 20px;
+}
+
+/* Headings */
+h1, h2 {
+  font-weight: 500;
+  color: #ffffff; /* Neon cyan */
+  text-shadow: 0 0 18px #00ffff, 0 0 1px #00cccc, 0 0 8px #00aaaa;
+  margin-bottom: 10px;
+}
+
+span#balance-amount {
+  font-size: 24px;
+  padding: 10px;
+  width: 100%;
+  border: 1px solid #ffffff;
+  border-radius: 8px;
+  background: #000000 !important;
+  color: #ffffff;
+  box-shadow: none;
+  outline: none;
+  transition: 0.3s;
+}
+
+.balance-display {
+  background: linear-gradient(145deg, #2dd056, #238840); /* Gradient for depth */
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 
+    0 0 10px #00ffff, /* Neon glow */
+    0 4px 6px rgba(0, 0, 0, 0.3), /* Soft shadow */
+    inset 0 2px 4px rgba(255, 255, 255, 0.2); /* Inner glow for depth */
+  margin-bottom: 20px;
+  border: 2px solid #660099; /* Neon border */
+  transform: translateY(-2px); /* Slight elevation */
+  transition: transform 0.2s, box-shadow 0.2s; /* Smooth interaction */
+}
+
+/* Add hover effect to enhance 3D feel */
+.balance-display:hover {
+  transform: translateY(-5px); /* Pop-out effect */
+  box-shadow: 
+    0 0 15px #00ffff, 
+    0 6px 10px rgba(0, 0, 0, 0.4), 
+    inset 0 3px 5px rgba(255, 255, 255, 0.3);
+}
+
+.balance-display h2 {
+  color: #000000;
+  text-shadow: none;
+  font-weight: 600;
+  font-size: 1.6em;
+}
+
+/* Neon Glow Sections */
+.select-kid-section,
+.filter-section, 
+.history-section {
+  background: #000000ee; /* Dark card background */
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 0 0 10px #ff00ff, 0 0 20px #9900cc, 0 0 30px #660099;
+  margin-bottom: 20px;
+  border: 1px solid #660099; /* Neon border */
+}
+
+/* Dropdowns and Spans */
+select, span {
+  font-size: 18px;
+  padding: 10px;
+  width: 100%;
+  border: 1px solid #00ffff;
+  border-radius: 8px;
+  background: #000000; /* Match card background */
+  color: #fff;
+  box-shadow: 0 0 8px #00ffff, 0 0 16px #00cccc;
+  outline: none;
+  transition: 0.3s;
+}
+
+select:hover, select:focus {
+  border-color: #ff00ff;
+  box-shadow: 0 0 15px #ff00ff, 0 0 30px #9900cc;
+}
+
+/* Glowing Buttons */
+button {
+  font-size: 16px;
+  font-weight: bold;
+  padding: 12px 20px;
+  color: #fff;
+  background: linear-gradient(45deg, #ff00ff, #00ffff);
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 0 10px #ff00ff, 0 0 20px #00ffff;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+button:hover {
+  box-shadow: 0 0 20px #00ffff, 0 0 40px #ff00ff;
+  transform: scale(1.05);
+}
+
+/* History List */
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  background: #000000; /* Slightly lighter than section background */
+  border: 1px solid #ff00ff;
+  padding: 12px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  box-shadow: 0 0 6px #ff00ff, 0 0 14px #9900cc;
+  transition: 0.3s ease;
+}
+
+li:hover {
+  background: #1a1a1a;
+  box-shadow: 0 0 9px #00ffff, 0 0 22px #ff00ff;
+  cursor: pointer;
+}
+
+/* Filter Section */
+.filter-section {
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+}
+
+.filter-section label {
+  font-size: 14px;
+  font-weight: bold;
+  color: #ff00ff;
+  text-shadow: 0 0 5px #ff00ff, 0 0 10px #9900cc;
+}
+
+/* Logo Styling */
+.img-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+img {
+  width: 260px;
+  height: auto;
+  margin-bottom: -15px;
+  transition: transform 0.3s;
+}
+
+img:hover {
+  transform: scale(1.05) rotate(3deg);
+}
+
+/* Animated Glowing Borders */
+.select-kid-section,
+.balance-display,
+.filter-section,
+.history-section {
+  position: relative;
+  overflow: hidden;
+}
+
+.select-kid-section::before,
+.balance-display::before,
+.filter-section::before,
+.history-section::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, #ff00ff, #00ffff, #ff00ff);
+  z-index: -1;
+  filter: blur(20px);
+  opacity: 0.8;
+}
+
+a {
+  color: #fff;
+  font-family: 'Poppins', sans-serif;
+  text-decoration: none;
+}

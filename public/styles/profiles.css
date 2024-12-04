@@ -1057,11 +1057,44 @@ div#pin-verification-popup p a:hover {
     flex-direction: row; /* Default to side by side */
 }
 
+.centered-container3 {
+    display: flex; /* Enables Flexbox */
+    flex-direction: row; /* Default: Align items in a row (side by side) */
+    justify-content: center; /* Centers items horizontally */
+    align-items: center; /* Centers items vertically */
+    gap: 45px; /* Space between items */
+    margin: auto; /* Centers the container itself within its parent */
+    text-align: center; /* Ensures text inside child elements is centered */
+}
+
 @media (max-width: 768px) {
     .centered-container2 {
         flex-direction: column;
         gap: 30px;
         padding: 10px;
+    }
+
+    .centered-container3 {
+        display: flex; /* Enables Flexbox */
+        flex-direction: column; /* Aligns items in a column */
+        gap: 30px; /* Adds spacing between items */
+        justify-content: center; /* Centers content vertically */
+        align-items: center; /* Centers content horizontally */
+        margin: auto; /* Centers the container itself if it's inside another parent */
+        text-align: center; /* Centers text inside the items, if applicable */
+    }
+
+    .parents-dashboard-img, .ranking-img {
+        width: 60% !important;
+    }
+
+    .bank-img {
+        width: 65% !important;
+    }
+
+    .parents-dashboard-img, .ranking-img, .bank-img {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
     }
 }
 
@@ -1071,6 +1104,37 @@ div#pin-verification-popup p a:hover {
     transition: transform 0.3s ease;
     display: flex;
     margin: 15px auto;
+}
+
+.parents-dashboard-img {
+    width: 44%;
+    height: auto;
+    transition: transform 0.3s ease;
+    margin: 15px auto;
+    margin-left: 40px;
+    margin-right: 0;
+}
+
+.ranking-img {
+    width: 70%;
+    height: auto;
+    transition: transform 0.3s ease;
+    margin: 15px auto;
+    margin-left: -40px;
+    margin-right: 0;
+}
+
+.bank-img {
+    width: 57%;
+    height: auto;
+    transition: transform 0.3s ease;
+    margin: 15px auto;
+    margin-left: -80px;
+    margin-right: 0;
+}
+
+.parents-dashboard-img:hover, .ranking-img:hover, .bank-img:hover {
+    transform: scale(1.06);
 }
 
 .comparison-grid {
