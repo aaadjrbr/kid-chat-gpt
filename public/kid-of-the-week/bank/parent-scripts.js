@@ -229,49 +229,60 @@ document.getElementById("adjust-balance-btn").addEventListener("click", async ()
   if (selectedKid && !isNaN(adjustmentAmount) && adjustmentAmount > 0) {
     const kidDocRef = doc(db, `bank/${auth.currentUser.uid}/kids/${selectedKid}`);
 
-    await runTransaction(db, async (transaction) => {
-      const kidDoc = await transaction.get(kidDocRef);
-      if (!kidDoc.exists()) {
-        throw new Error("Kid document does not exist.");
-      }
+    try {
+      let success = false; // Track if the transaction was successful
+      await runTransaction(db, async (transaction) => {
+        const kidDoc = await transaction.get(kidDocRef);
+        if (!kidDoc.exists()) {
+          throw new Error("Kid document does not exist.");
+        }
 
-      const kidData = kidDoc.data();
-      const priorBalance = kidData.balance || 0;
-      const change = adjustmentType === "deposit" ? adjustmentAmount : -adjustmentAmount; // Add or Deduct
-      const newBalance = priorBalance + change;
+        const kidData = kidDoc.data();
+        const priorBalance = kidData.balance || 0;
+        const change = adjustmentType === "deposit" ? adjustmentAmount : -adjustmentAmount; // Add or Deduct
+        const newBalance = priorBalance + change;
 
-      if (newBalance < 0) {
-        throw new Error("Insufficient funds! Withdrawal would result in a negative balance.");
-      }
+        if (newBalance < 0) {
+          alert("Insufficient funds!");
+          return; // Stop the transaction
+        }
 
-      // Get current date
-      const now = new Date();
-      const year = now.getFullYear().toString();
-      const month = (now.getMonth() + 1).toString();
+        // If we reach here, proceed with the transaction
+        const now = new Date();
+        const year = now.getFullYear().toString();
+        const month = (now.getMonth() + 1).toString();
 
-      // Initialize history object
-      const history = kidData.history || {};
-      if (!history[year]) history[year] = {};
-      if (!history[year][month]) history[year][month] = [];
+        // Initialize history object
+        const history = kidData.history || {};
+        if (!history[year]) history[year] = {};
+        if (!history[year][month]) history[year][month] = [];
 
-      // Add new transaction
-      history[year][month].push({
-        timestamp: now.toISOString(),
-        change,
-        type: adjustmentType, // Deposit or Withdrawal
-        priorBalance,
+        // Add new transaction
+        history[year][month].push({
+          timestamp: now.toISOString(),
+          change,
+          type: adjustmentType, // Deposit or Withdrawal
+          priorBalance,
+        });
+
+        // Update kid's balance and history
+        transaction.update(kidDocRef, {
+          balance: newBalance,
+          history: history,
+        });
+
+        success = true; // Mark the transaction as successful
       });
 
-      // Update kid's balance and history
-      transaction.update(kidDocRef, {
-        balance: newBalance,
-        history: history,
-      });
-    });
-
-    alert("Balance adjusted successfully!");
-    fetchKids();
-    document.getElementById("adjustment-amount").value = '';
+      if (success) {
+        alert("Balance adjusted successfully!");
+        fetchKids();
+        document.getElementById("adjustment-amount").value = '';
+      }
+    } catch (error) {
+      console.error("Error adjusting balance:", error);
+      alert("Failed to adjust balance. Please try again.");
+    }
   } else {
     alert("Please select a kid, choose an action, and enter a valid amount.");
   }
