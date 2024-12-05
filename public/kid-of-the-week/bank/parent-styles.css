@@ -1,159 +1,169 @@
 /* General Styling */
 body {
-    font-family: 'Poppins', sans-serif;
-    margin: 0;
-    padding: 0;
-    background: linear-gradient(135deg, rgba(23, 212, 133, 0.3), rgb(114, 196, 161, 0.2));
-    color: #333;
-  }
-  
-  .container {
-    max-width: 600px;
-    margin: auto;
-    padding: 20px;
-  }
-  
-  h1 {
-    font-size: 24px;
-    font-weight: 600;
-    color: #6a11cb;
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  
-  h2 {
-    font-size: 20px;
-    font-weight: 600;
-    color: #6a11cb;
-    margin-bottom: 10px;
-  }
-  
-  /* Section Styling */
-  .balances-section, 
-  .add-section, 
-  .edit-section, 
-  .set-balance-section, 
-  .requests-section {
-    background: #fff;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
-  }
-  
-  #balances-list div, 
-  #requests-list div {
-    padding: 10px;
-    margin-top: 10px;
-    background: #f8f9fa;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-  }
-  
-  /* Form Styling */
-  form {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  
-  form label {
-    font-size: 14px;
-    font-weight: 600;
-  }
-  
-  form input, 
-  form select, 
-  form button {
-    font-family: 'Poppins', sans-serif;
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    outline: none;
-  }
-  
-  form input:focus, 
-  form select:focus {
-    border-color: #6a11cb;
-    box-shadow: 0 0 4px rgba(174, 0, 255, 0.5);
-  }
-  
-  form button {
-    background-color: #6a11cb;
-    color: #fff;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    border: none;
-  }
-  
-  form button:hover {
-    background-color: #6b11cbe3;
-  }
-  
-  /* Responsive Design */
-  @media (max-width: 768px) {
-    .container {
-      padding: 15px;
-    }
-  
-    h1 {
-      font-size: 20px;
-    }
-  
-    h2 {
-      font-size: 18px;
-    }
-  }
-  
-  /* Filter Section Styling */
-.filter-section {
-  justify-content: space-between;
-  align-items: center;
-  background: #fff;
-  padding: 10px;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  margin-bottom: 15px;
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(135deg, rgba(23, 212, 133, 0.3), rgb(114, 196, 161, 0.2));
+  color: #333;
 }
 
-.filter-section label {
+.container {
+  max-width: 600px;
+  margin: auto;
+  padding: 20px;
+}
+
+h1 {
+  font-size: 1.8em;
+  font-weight: 600;
+  color: #000000;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+h2 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #6a11cb;
+  margin-bottom: 10px;
+}
+
+/* Section Styling */
+.balances-section,
+.history-section, 
+.add-section, 
+.edit-section, 
+.set-balance-section, 
+.requests-section {
+  background: #ffffffe5;
+  padding: 15px;
+  border-radius: 25px;
+  border-left: 6px solid #6a11cb;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+#balances-list div, 
+#requests-list div {
+  padding: 10px;
+  margin-top: 10px;
+  background: #caffc9;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.deposit {
+  color: green; /* Green for deposits */
+}
+
+.withdraw {
+  color: red; /* Red for withdrawals */
+}
+
+
+/* Form Styling */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+form label {
   font-size: 14px;
   font-weight: 600;
-  margin-right: 10px;
 }
 
-.filter-section select {
-  padding: 8px;
-  font-size: 14px;
+form input, 
+form select, 
+form button {
+  font-family: 'Poppins', sans-serif;
+  padding: 10px;
+  font-size: 16px;
   border: 1px solid #ddd;
   border-radius: 5px;
   outline: none;
-  flex: 1;
+}
+
+form input:focus, 
+form select:focus {
+  border-color: #6a11cb;
+  box-shadow: 0 0 4px rgba(174, 0, 255, 0.5);
+}
+
+form button {
+  background-color: #6a11cb;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  border: none;
+}
+
+form button:hover {
+  background-color: #6b11cbe3;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+    padding: 15px;
+  }
+
+  h1 {
+    font-size: 20px;
+  }
+
+  h2 {
+    font-size: 18px;
+  }
+}
+
+/* Filter Section Styling */
+.filter-section {
+justify-content: space-between;
+align-items: center;
+background: #fff;
+padding: 10px;
+border-radius: 8px;
+margin-bottom: 15px;
+}
+
+.filter-section label {
+font-size: 14px;
+font-weight: 600;
+margin-right: 10px;
+}
+
+.filter-section select {
+padding: 8px;
+font-size: 14px;
+border: 1px solid #ddd;
+border-radius: 5px;
+outline: none;
+flex: 1;
 }
 
 .filter-section select:focus {
-  border-color: #6a11cb;
-  box-shadow: 0 0 4px rgba(212, 0, 255, 0.5);
+border-color: #6a11cb;
+box-shadow: 0 0 4px rgba(212, 0, 255, 0.5);
 }
 
 /* History Section Styling */
 .history-section ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+list-style: none;
+padding: 0;
+margin: 0;
 }
 
 .history-section li {
-  background: #f8f9fa;
-  border: 1px solid #ddd;
-  padding: 10px;
-  margin-top: 10px;
-  border-radius: 5px;
-  transition: background-color 0.3s ease;
+background: #f8f9fa;
+border: 1px solid #ddd;
+padding: 10px;
+margin-top: 10px;
+border-radius: 5px;
+transition: background-color 0.3s ease;
 }
 
 .history-section li:hover {
-  background-color: #eef5ff;
-  cursor: pointer;
+background-color: #eef5ff;
+cursor: pointer;
 }

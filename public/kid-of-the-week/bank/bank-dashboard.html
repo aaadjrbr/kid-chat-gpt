@@ -33,9 +33,41 @@
 
 <body>
   <div class="container">
-    <h1>Dashboard - Alfie Central Bank<br><br>
-    <a href="../dashboard.html">🎯 Ranking - Dashboard</a><br><br>
-    <a href="../../profiles.html">Menu</a>
+    <h1>Dashboard - Alfie Central Bank<br>
+  <span style="font-size: 0.8em;">
+    <a href="../dashboard.html" style="
+          display: inline-block; 
+      background-color: #6a11cb; /* Gradient-like purple */
+      color: #ffffff; /* White text for contrast */
+      text-decoration: none;
+      margin-top: 20px; 
+      padding: 10px 15px; 
+      border-radius: 5px; 
+      font-size: 16px; 
+      font-weight: bold; 
+      box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+      transition: all 0.3s ease; /* Smooth hover transition */
+    "
+    onmouseover="this.style.backgroundColor='#7d2add'; this.style.color='#ffffff';"
+    onmouseout="this.style.backgroundColor='#6a11cb'; this.style.color='#ffffff';">
+    🎯 Ranking - Dashboard</a><br>
+
+    <a href="../../profiles.html" style="      display: inline-block; 
+    background-color: #6a11cb; /* Gradient-like purple */
+    color: #ffffff; /* White text for contrast */
+    text-decoration: none;
+    margin-top: 20px; 
+    padding: 10px 15px; 
+    border-radius: 5px; 
+    font-size: 16px; 
+    font-weight: bold; 
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+    transition: all 0.3s ease; /* Smooth hover transition */
+  "
+  onmouseover="this.style.backgroundColor='#7d2add'; this.style.color='#ffffff';"
+  onmouseout="this.style.backgroundColor='#6a11cb'; this.style.color='#ffffff';">
+    Menu</a>
+  </span>
   </h1>
 
     <div class="auth-section" style="display: none;">
@@ -49,7 +81,7 @@
       <div id="balances-list"></div>
     </div>
 
-        <!-- Set Balance Section -->
+        <!-- Set Balance Section 
         <div class="set-balance-section">
           <h2>Set Kid's Balance</h2>
           <form id="set-balance-form">
@@ -59,12 +91,37 @@
             <input type="number" id="new-balance" required>
             <button type="button" id="set-balance-btn">Set Balance</button>
           </form>
-        </div>
+        </div>-->
+
+        <!-- New Adjust Balance Section -->
+        <div class="adjust-balance-section set-balance-section">
+          <h2>Adjust Kid's Balance</h2>
+          <form id="adjust-balance-form">
+            <label for="kid-select-adjust">Select Kid:</label>
+            <select id="kid-select-adjust"></select>
+            <label for="adjustment-type">Action (Deposit/Wihdrawl):</label>
+            <select id="adjustment-type" required>
+              <option value="deposit">Deposit 💵</option>
+              <option value="withdrawal">Withdrawal 💸</option>
+            </select>
+            <label for="adjustment-amount">Amount (USD):</label>
+            <input type="number" id="adjustment-amount" required>
+            <button type="button" id="adjust-balance-btn">✅ Apply Adjustment</button>
+          </form>
+        </div>        
 
     <div class="history-section">
     <!-- Filter by Month and Year -->
           <div class="filter-section">
             <h2>📝 Balance History</h2>
+            <form id="set-balance-form"> <!--Can remove later-->
+              <label for="kid-select">Select Kid:</label> <!--Can remove later-->
+              <select id="kid-select"></select> <!--Can remove later-->
+              <label for="new-balance" style="display: none;">New Balance (USD):</label> <!--Can remove later-->
+              <input type="number" id="new-balance" required style="display: none;"> <!--Can remove later-->
+              <button type="button" id="set-balance-btn" style="display: none;">Set Balance</button> <!--Can remove later-->
+            </form> <!--Can remove later-->
+            <br/>
             <label for="filter-month">Month:</label>
             <select id="filter-month">
               <!-- Options will be populated dynamically -->

@@ -95,10 +95,17 @@ function displayFilteredHistory(history) {
       const formattedDate = entryDate.toLocaleDateString();
       const formattedTime = entryDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
+      // Calculate the total balance after the transaction
+      const totalBalance = entry.priorBalance + entry.change;
+
+      // Create list item
       const listItem = document.createElement("li");
       listItem.textContent = `${formattedDate} ${formattedTime}: ${
-        entry.type === "add" ? "+" : "-"
-      }$${entry.change} (Prior: $${entry.priorBalance})`;
+        entry.type === "add" ? "Deposited 💰" : "Withdrew 💸"
+      } $${Math.abs(entry.change)} (Prior: $${entry.priorBalance}) - Total: $${totalBalance}`;
+
+      // Add a class based on transaction type
+      listItem.classList.add(entry.type === "add" ? "deposit" : "withdraw");
 
       historyList.appendChild(listItem);
     });

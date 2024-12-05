@@ -170,6 +170,16 @@ img:hover {
   transform: scale(1.05) rotate(3deg);
 }
 
+.deposit {
+  color: #37fc37; /* Green for deposits */
+  font-weight: bold; /* Optional: Bold text for deposits */
+}
+
+.withdraw {
+  color: red; /* Red for withdrawals */
+  font-weight: bold; /* Optional: Bold text for withdrawals */
+}
+
 /* Animated Glowing Borders */
 .select-kid-section,
 .balance-display,

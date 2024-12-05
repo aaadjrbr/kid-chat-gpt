@@ -8,6 +8,7 @@ import {
   addDoc,
   updateDoc,
   deleteDoc,
+  runTransaction, // Import runTransaction
 } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
 import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
 
@@ -48,22 +49,26 @@ function updateKidsUI(kids) {
   balancesList.innerHTML = '';
   kidSelect.innerHTML = '';
   editKidSelect.innerHTML = '';
+  
+  // Ensure kid-select-adjust exists
+  const adjustKidSelect = document.getElementById('kid-select-adjust');
+  if (adjustKidSelect) adjustKidSelect.innerHTML = '';
 
-  // Add default "Select a kid" option
+  // Add default "Select a kid" option for each dropdown
   const defaultOption = document.createElement('option');
   defaultOption.value = '';
   defaultOption.textContent = 'Select a kid';
   defaultOption.selected = true;
   defaultOption.disabled = true;
+
+  const defaultEditOption = defaultOption.cloneNode(true);
+  const defaultAdjustOption = defaultOption.cloneNode(true);
+
   kidSelect.appendChild(defaultOption);
-
-  const defaultEditOption = document.createElement('option');
-  defaultEditOption.value = '';
-  defaultEditOption.textContent = 'Select a kid';
-  defaultEditOption.selected = true;
-  defaultEditOption.disabled = true;
   editKidSelect.appendChild(defaultEditOption);
+  if (adjustKidSelect) adjustKidSelect.appendChild(defaultAdjustOption);
 
+  // Populate dropdowns and balances list
   kids.forEach((kid) => {
     // Balance List
     const balanceItem = document.createElement('div');
@@ -80,7 +85,17 @@ function updateKidsUI(kids) {
     option2.value = kid.id;
     option2.textContent = kid.name;
     editKidSelect.appendChild(option2);
+
+    // Add to adjust balance dropdown if it exists
+    if (adjustKidSelect) {
+      const option3 = document.createElement('option');
+      option3.value = kid.id;
+      option3.textContent = kid.name;
+      adjustKidSelect.appendChild(option3);
+    }
   });
+
+  console.log("Dropdowns updated with kids:", kids);
 }
 
 // Add a kid
@@ -145,55 +160,106 @@ document.getElementById("set-balance-btn").addEventListener("click", async () =>
   const newBalance = parseFloat(newBalanceInput.value);
 
   if (selectedKid && !isNaN(newBalance)) {
-    const kidDoc = doc(db, `bank/${auth.currentUser.uid}/kids/${selectedKid}`);
-    const kidSnapshot = await getDoc(kidDoc);
-    const kidData = kidSnapshot.exists() ? kidSnapshot.data() : {}; // Ensure kidData exists
-    const priorBalance = kidData.balance ?? 0; // Default to 0 if balance is missing
+    const kidDocRef = doc(db, `bank/${auth.currentUser.uid}/kids/${selectedKid}`);
 
-    // Calculate the change
-    const change = newBalance - priorBalance;
-    const type = change > 0 ? "add" : "deduct";
+    await runTransaction(db, async (transaction) => {
+      const kidDoc = await transaction.get(kidDocRef);
+      if (!kidDoc.exists()) {
+        throw new Error("Kid document does not exist.");
+      }
 
-    // Get current date details
-    const now = new Date();
-    const year = now.getFullYear().toString(); // Convert year to string for object key
-    const month = (now.getMonth() + 1).toString(); // Convert month to string
+      const kidData = kidDoc.data();
+      const priorBalance = kidData.balance || 0; // Default to 0 if missing
+      const change = newBalance - priorBalance;
+      const type = change > 0 ? "add" : "deduct";
 
-    // Safely initialize `history` as an object
-    let history = kidData.history;
-    if (!history || typeof history !== "object" || Array.isArray(history)) {
-      history = {}; // Force history to be an object
-    }
+      // Get current date
+      const now = new Date();
+      const year = now.getFullYear().toString();
+      const month = (now.getMonth() + 1).toString();
 
-    // Initialize year and month if not present
-    if (!history[year]) history[year] = {};
-    if (!history[year][month]) history[year][month] = [];
+      // Initialize history object
+      const history = kidData.history || {};
+      if (!history[year]) history[year] = {};
+      if (!history[year][month]) history[year][month] = [];
 
-    // Add new transaction
-    history[year][month].push({
-      timestamp: now.toISOString(),
-      change,
-      type,
-      priorBalance,
+      // Add new transaction
+      history[year][month].push({
+        timestamp: now.toISOString(),
+        change,
+        type,
+        priorBalance,
+      });
+
+      // Update kid's balance and history
+      transaction.update(kidDocRef, {
+        balance: newBalance,
+        history: history,
+      });
     });
 
-    // Log the update object for debugging
-    console.log("Update Object:", {
-      balance: newBalance,
-      history: history,
-    });
-
-    // Update Firestore
-    await updateDoc(kidDoc, {
-      balance: newBalance, // Ensure balance is valid
-      history: history, // Ensure history is properly structured
-    });
-
-    alert(`Balance updated successfully!`);
+    alert("Balance updated successfully!");
     fetchKids();
     newBalanceInput.value = '';
   } else {
-    alert('Please select a kid and enter a valid balance.');
+    alert("Please select a kid and enter a valid balance.");
+  }
+});
+
+document.getElementById("adjust-balance-btn").addEventListener("click", async () => {
+  ensureAuthenticated();
+  const selectedKid = document.getElementById("kid-select-adjust").value;
+  const adjustmentType = document.getElementById("adjustment-type").value; // Deposit or Withdrawal
+  const adjustmentAmount = parseFloat(document.getElementById("adjustment-amount").value);
+
+  if (selectedKid && !isNaN(adjustmentAmount) && adjustmentAmount > 0) {
+    const kidDocRef = doc(db, `bank/${auth.currentUser.uid}/kids/${selectedKid}`);
+
+    await runTransaction(db, async (transaction) => {
+      const kidDoc = await transaction.get(kidDocRef);
+      if (!kidDoc.exists()) {
+        throw new Error("Kid document does not exist.");
+      }
+
+      const kidData = kidDoc.data();
+      const priorBalance = kidData.balance || 0;
+      const change = adjustmentType === "deposit" ? adjustmentAmount : -adjustmentAmount; // Add or Deduct
+      const newBalance = priorBalance + change;
+
+      if (newBalance < 0) {
+        throw new Error("Insufficient funds! Withdrawal would result in a negative balance.");
+      }
+
+      // Get current date
+      const now = new Date();
+      const year = now.getFullYear().toString();
+      const month = (now.getMonth() + 1).toString();
+
+      // Initialize history object
+      const history = kidData.history || {};
+      if (!history[year]) history[year] = {};
+      if (!history[year][month]) history[year][month] = [];
+
+      // Add new transaction
+      history[year][month].push({
+        timestamp: now.toISOString(),
+        change,
+        type: adjustmentType, // Deposit or Withdrawal
+        priorBalance,
+      });
+
+      // Update kid's balance and history
+      transaction.update(kidDocRef, {
+        balance: newBalance,
+        history: history,
+      });
+    });
+
+    alert("Balance adjusted successfully!");
+    fetchKids();
+    document.getElementById("adjustment-amount").value = '';
+  } else {
+    alert("Please select a kid, choose an action, and enter a valid amount.");
   }
 });
 
@@ -282,10 +348,18 @@ async function fetchAndDisplayHistory() {
           const formattedDate = entryDate.toLocaleDateString();
           const formattedTime = entryDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
+          // Calculate the total balance after the transaction
+          const totalBalance = entry.priorBalance + entry.change;
+
+          // Create list item
           const listItem = document.createElement("li");
           listItem.textContent = `${formattedDate} ${formattedTime}: ${
-            entry.type === "add" ? "+" : "-"
-          }$${entry.change} (Prior: $${entry.priorBalance})`;
+            entry.type === "deposit" ? "Deposited 💰" : "Withdrew 💸"
+          } $${Math.abs(entry.change)} (Prior: $${entry.priorBalance}) - Total: $${totalBalance}`;
+
+          // Add a class based on transaction type
+          listItem.classList.add(entry.type === "deposit" ? "deposit" : "withdraw");
+
           historyList.appendChild(listItem);
         });
       }
@@ -326,8 +400,8 @@ document.getElementById("sign-out-btn")?.addEventListener("click", async () => {
 onAuthStateChanged(auth, (user) => {
   if (user) {
     bankRef = collection(db, `bank/${user.uid}/kids`);
-    populateDateFilters(); // Ensure filters are populated after login
-    fetchKids(); // Fetch kids for the authenticated user
+    populateDateFilters(); // Populate dropdowns for filtering
+    fetchKids(); // Fetch kids and update the UI
   } else {
     console.log("User signed out.");
     bankRef = null;
