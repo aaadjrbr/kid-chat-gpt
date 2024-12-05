@@ -101,14 +101,25 @@ function updateKidsUI(kids) {
 // Add a kid
 document.getElementById("add-kid-btn").addEventListener("click", async () => {
   ensureAuthenticated();
-  const name = addKidNameInput.value;
+  const name = addKidNameInput.value.trim(); // Ensure no trailing spaces
   const balance = parseFloat(addKidBalanceInput.value);
+
   if (name && !isNaN(balance)) {
-    await addDoc(bankRef, { name, balance, history: [] });
-    alert(`Added ${name} with a balance of $${balance}`);
-    fetchKids();
-    addKidNameInput.value = '';
-    addKidBalanceInput.value = '';
+    try {
+      // Add kid with default fields
+      await addDoc(bankRef, { 
+        name, 
+        balance: balance || 0, // Default to 0 if invalid
+        history: {}, // Initialize history as an empty object
+      });
+      alert(`Added ${name} with a balance of $${balance}`);
+      fetchKids(); // Refresh the list of kids
+      addKidNameInput.value = '';
+      addKidBalanceInput.value = '';
+    } catch (error) {
+      console.error("Error adding kid:", error);
+      alert("Failed to add the kid. Please try again.");
+    }
   } else {
     alert('Please enter a valid name and balance.');
   }
@@ -162,45 +173,50 @@ document.getElementById("set-balance-btn").addEventListener("click", async () =>
   if (selectedKid && !isNaN(newBalance)) {
     const kidDocRef = doc(db, `bank/${auth.currentUser.uid}/kids/${selectedKid}`);
 
-    await runTransaction(db, async (transaction) => {
-      const kidDoc = await transaction.get(kidDocRef);
-      if (!kidDoc.exists()) {
-        throw new Error("Kid document does not exist.");
-      }
+    try {
+      await runTransaction(db, async (transaction) => {
+        const kidDoc = await transaction.get(kidDocRef);
+        if (!kidDoc.exists()) {
+          throw new Error("Kid document does not exist.");
+        }
 
-      const kidData = kidDoc.data();
-      const priorBalance = kidData.balance || 0; // Default to 0 if missing
-      const change = newBalance - priorBalance;
-      const type = change > 0 ? "add" : "deduct";
+        const kidData = kidDoc.data();
+        const priorBalance = kidData.balance || 0; // Ensure priorBalance is valid
+        const change = newBalance - priorBalance;
+        const type = change > 0 ? "add" : "deduct";
 
-      // Get current date
-      const now = new Date();
-      const year = now.getFullYear().toString();
-      const month = (now.getMonth() + 1).toString();
+        // Get current date
+        const now = new Date();
+        const year = now.getFullYear().toString();
+        const month = (now.getMonth() + 1).toString();
 
-      // Initialize history object
-      const history = kidData.history || {};
-      if (!history[year]) history[year] = {};
-      if (!history[year][month]) history[year][month] = [];
+        // Ensure history is properly initialized
+        const history = kidData.history || {};
+        if (!history[year]) history[year] = {};
+        if (!history[year][month]) history[year][month] = [];
 
-      // Add new transaction
-      history[year][month].push({
-        timestamp: now.toISOString(),
-        change,
-        type,
-        priorBalance,
+        // Add new transaction
+        history[year][month].push({
+          timestamp: now.toISOString(),
+          change,
+          type,
+          priorBalance,
+        });
+
+        // Update kid's balance and history
+        transaction.update(kidDocRef, {
+          balance: newBalance,
+          history: history,
+        });
       });
 
-      // Update kid's balance and history
-      transaction.update(kidDocRef, {
-        balance: newBalance,
-        history: history,
-      });
-    });
-
-    alert("Balance updated successfully!");
-    fetchKids();
-    newBalanceInput.value = '';
+      alert("Balance updated successfully!");
+      fetchKids();
+      newBalanceInput.value = '';
+    } catch (error) {
+      console.error("Error updating balance:", error);
+      alert("Failed to update the balance. Please try again.");
+    }
   } else {
     alert("Please select a kid and enter a valid balance.");
   }
