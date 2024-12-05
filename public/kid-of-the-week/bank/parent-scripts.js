@@ -102,26 +102,24 @@ function updateKidsUI(kids) {
 document.getElementById("add-kid-btn").addEventListener("click", async () => {
   ensureAuthenticated();
   const name = addKidNameInput.value.trim(); // Ensure no trailing spaces
-  const balance = parseFloat(addKidBalanceInput.value);
 
-  if (name && !isNaN(balance)) {
+  if (name) {
     try {
-      // Add kid with default fields
-      await addDoc(bankRef, { 
-        name, 
-        balance: balance || 0, // Default to 0 if invalid
-        history: {}, // Initialize history as an empty object
+      // Add kid with a default balance of 0
+      await addDoc(bankRef, {
+        name,
+        balance: 0, // Default balance
+        history: {}, // Default empty history
       });
-      alert(`Added ${name} with a balance of $${balance}`);
+      alert(`Added ${name} with a balance of $0`);
       fetchKids(); // Refresh the list of kids
-      addKidNameInput.value = '';
-      addKidBalanceInput.value = '';
+      addKidNameInput.value = ''; // Clear input field
     } catch (error) {
       console.error("Error adding kid:", error);
       alert("Failed to add the kid. Please try again.");
     }
   } else {
-    alert('Please enter a valid name and balance.');
+    alert("Please enter a valid name.");
   }
 });
 
