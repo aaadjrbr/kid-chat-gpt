@@ -55,6 +55,8 @@
 
 <br/><br/><br/>
 
+
+<div id="user-profile-container" style="display: none;"> <!-- Div that hides stuff if no user exists -->
 <!-- Comparison Section -->
 <section id="comparison" class="comparison-section" data-aos="fade-up">
     <h2 class="section-title2"><i class="fas fa-robot"></i> AI Homework Helpers</h2>
@@ -110,6 +112,7 @@
      </div>
 </div>
 </section>
+</div> <!-- Div that hides stuff if no user exists -->
 
 <br/>
 <div style="padding: 20px;">
@@ -165,11 +168,12 @@
     <script src="scripts/firebase-config.js" type="module"></script>
     <script type="module">
         import { loadProfiles, addProfile, viewChatHistory, startNewChat, setupImageGallery, deleteProfileHandler, verifyUserPin, toggleOptionsWithPin } from './scripts/profiles.js';
-        import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
-        import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc, updateDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js";
+        import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js";
     
         // Initialize Firestore
         const db = getFirestore();
+        const auth = getAuth();
 
         window.viewChatHistory = viewChatHistory;
         window.startNewChat = startNewChat;
@@ -254,7 +258,62 @@
     
         // Use deleteProfileHandler for handling profile deletion
         document.getElementById('delete-profile-button').addEventListener('click', deleteProfileHandler);
-    
+  
+//Function to check if user exists
+async function checkAndDisplayProfiles() {
+    try {
+        console.log("Checking profiles...");
+
+        // Reference the container that holds the profiles
+        const profilesContainer = document.getElementById("user-profile-container");
+
+        if (!profilesContainer) {
+            console.error("Profiles container not found!");
+            return;
+        }
+
+        // Listen for auth state changes
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                const parentId = user.uid; // Get parent ID from authenticated user
+                const kidsRef = collection(db, `parents/${parentId}/kids`);
+                const querySnapshot = await getDocs(kidsRef);
+
+                if (querySnapshot.empty) {
+                    // No profiles found: Show the message
+                    profilesContainer.innerHTML = `
+                        <p style="text-align: center; font-size: 1.2em; color: #555; font-weight: bold; background: linear-gradient(135deg, #f9f9f9, #e0e0e0); padding: 20px; border-radius: 35px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                            No profiles found. Already added one? Refresh the page 🔄. 🚀✨
+                        </p>`;
+                    profilesContainer.style.display = "block";
+                } else {
+                    // Profiles exist: Display the default container content
+                    profilesContainer.style.display = "block";
+                }
+            } else {
+                // User is not authenticated: Redirect to login page
+                window.location.href = "login.html";
+            }
+        });
+    } catch (error) {
+        console.error("Error checking profiles:", error);
+
+        // Display an error message
+        const profilesContainer = document.getElementById("user-profile-container");
+        if (profilesContainer) {
+            profilesContainer.innerHTML = `
+                <p style="color: red; text-align: center;">
+                    Error checking profiles. Please try again later.
+                </p>`;
+            profilesContainer.style.display = "block";
+        }
+    }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    checkAndDisplayProfiles();
+});
+
 // Function to check user profile and apply blur
 async function applyBlurIfNecessary(userId) {
     try {

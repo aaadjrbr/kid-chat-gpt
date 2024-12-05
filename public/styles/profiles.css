@@ -1261,3 +1261,39 @@ div#pin-verification-popup p a:hover {
     border-style: solid;
     border-color: rgba(255, 255, 255, 0.85) transparent transparent transparent;
 }
+
+/* General container styles */
+#user-profile-container {
+    display: none; /* Hidden by default */
+}
+
+/* Paragraph styling inside the container */
+#user-profile-container p {
+    font-size: 1.2em;
+    color: #555;
+    text-align: center;
+    margin: 20px 0;
+}
+
+/* Links inside the container */
+#user-profile-container a {
+    text-decoration: none;
+    color: #007bff;
+    font-weight: bold;
+}
+
+#user-profile-container a:hover {
+    text-decoration: underline;
+}
+
+/* Error message styling */
+#user-profile-container p[style*="color: red"] {
+    font-size: 1.1em;
+    color: #e74c3c; /* Bright red for errors */
+}
+
+/* Welcome message customization */
+#user-profile-container p.welcome {
+    color: #2ecc71; /* Green for welcome messages */
+    font-weight: bold;
+}
