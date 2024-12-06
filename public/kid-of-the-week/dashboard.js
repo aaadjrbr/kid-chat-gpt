@@ -431,9 +431,9 @@ async function fetchWeekEnd() {
 
     if (weekEndSnap.exists()) {
       const data = weekEndSnap.data();
-      weekEndDisplay.innerText = `Week ends on: ${data.date}`;
+      weekEndDisplay.innerText = `⚠️ Week ends on: ${data.date}`;
     } else {
-      weekEndDisplay.innerText = "No week end date set.";
+      weekEndDisplay.innerText = "❌ No week end date set.";
     }
   } catch (error) {
     console.error("Error fetching week end date:", error.message);

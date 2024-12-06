@@ -224,10 +224,21 @@ button.green:active {
 /* Week End Display */
 #weekEndDisplay {
   text-align: center;
-  font-size: 1.1rem;
-  font-weight: 500;
-  color: #555;
-  margin-top: 10px;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #ffffff;
+  background: linear-gradient(135deg, #ff6f61, #d84315);
+  padding: 15px;
+  border-radius: 10px;
+  margin: 20px auto;
+  max-width: 500px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+#weekEndDisplay:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
 }
 
 /* Responsive Design */
@@ -317,3 +328,20 @@ button.green:active {
     text-decoration: none;
   }
   
+  /* Logo Styling */
+.img-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+img {
+  width: auto;
+  height: 60px;
+  margin-bottom: -15px;
+  transition: transform 0.3s;
+}
+
+img:hover {
+  transform: scale(1.05) rotate(3deg);
+}
