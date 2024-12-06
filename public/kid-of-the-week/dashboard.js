@@ -399,6 +399,10 @@ async function setWeekEnd() {
     return;
   }
 
+  // Format the date manually without using the Date object
+  const [year, month, day] = weekEndDate.split("-"); // Extract year, month, day
+  const formattedDateForAlert = `${month}/${day}/${year}`; // Format in MM/DD/YYYY
+
   const user = auth.currentUser;
   if (!user) {
     alert("You need to be logged in to set the week end date.");
@@ -407,8 +411,8 @@ async function setWeekEnd() {
 
   try {
     const weekEndRef = doc(db, `WeekSettings/${user.uid}`);
-    await setDoc(weekEndRef, { date: weekEndDate });
-    alert(`Week end date set to ${weekEndDate}`);
+    await setDoc(weekEndRef, { date: weekEndDate }); // Save as YYYY-MM-DD
+    alert(`Week end date set to ${formattedDateForAlert}`);
     fetchWeekEnd(); // Refresh the displayed week end date
   } catch (error) {
     console.error("Error setting week end date:", error.message);
@@ -421,7 +425,7 @@ async function fetchWeekEnd() {
   const user = auth.currentUser;
   if (!user) {
     console.log("User not logged in");
-    weekEndDisplay.innerText = "No week end date set.";
+    weekEndDisplay.innerText = "❌ No week end date set.";
     return;
   }
 
@@ -431,7 +435,13 @@ async function fetchWeekEnd() {
 
     if (weekEndSnap.exists()) {
       const data = weekEndSnap.data();
-      weekEndDisplay.innerText = `⚠️ Week ends on: ${data.date}`;
+
+      // Format the date manually to match the saved date format
+      const rawDate = data.date; // Assuming `data.date` is in YYYY-MM-DD format
+      const [year, month, day] = rawDate.split("-"); // Split into components
+      const formattedDate = `${month}/${day}/${year}`; // Convert to MM/DD/YYYY
+
+      weekEndDisplay.innerText = `⚠️ Week ends on: ${formattedDate}`;
     } else {
       weekEndDisplay.innerText = "❌ No week end date set.";
     }
