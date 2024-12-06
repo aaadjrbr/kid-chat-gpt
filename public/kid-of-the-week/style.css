@@ -345,3 +345,27 @@ img {
 img:hover {
   transform: scale(1.05) rotate(3deg);
 }
+
+.kid-card {
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 10px;
+  margin: 10px 0;
+  background-color: #f9f9f9;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+.kid-card p {
+  margin: 5px 0;
+}
+
+.title-p {
+  font-family: 'Fredoka One', 'Raleway', sans-serif !important;
+  font-weight: 400 !important;
+  font-size: 1.2em;
+  margin-bottom: 8px !important;
+}
+
+.week-p {
+  margin-bottom: 15px !important;
+}

@@ -100,6 +100,24 @@
       <button onclick="addKid()">Add Kid</button>
     </div>
 
+    <!-- See the kids and their points -->
+    <div class="form">
+      <h2>Kids and Points</h2>
+      <p>📌 To reset week/total points <a href="#reset-week-total">go here</a>.</p>
+      <div id="kidsDisplay">
+        <!-- Dynamically populated content will go here -->
+      </div>
+      <br><br>
+      <hr><br>
+      <!-- Remove a kid -->
+      <h2>Remove Kid</h2>
+      <label for="removeKidSelect">Select Kid:</label><br>
+      <select id="removeKidSelect">
+        <option value="" disabled selected>Select a kid</option>
+      </select>
+        <button onclick="removeKid()">❌ Remove Kid</button>
+    </div>
+
     <!-- Select a kid and manage points -->
     <div class="form">
       <h2>Manage Points</h2>
@@ -132,6 +150,7 @@
     </div>
 
     <!-- Reset Weekly Points -->
+<div id="reset-week-total">
     <div class="form">
       <h2>Reset Weekly Points</h2>
       <button onclick="resetWeeklyPoints()">Reset Weekly Points</button>
@@ -142,17 +161,7 @@
       <h2>Reset Total Points</h2>
       <button onclick="resetTotalPoints()">Reset Total Points</button>
     </div>
-
-    <br/><br/>
-        <!-- Remove a kid -->
-        <div class="form">
-          <h2>Remove Kid</h2>
-          <label for="removeKidSelect">Select Kid:</label><br>
-          <select id="removeKidSelect">
-            <option value="" disabled selected>Select a kid</option>
-          </select>
-          <button onclick="removeKid()">Remove Kid</button>
-        </div>
+</div>
 
   </div>
 </body>

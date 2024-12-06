@@ -114,15 +114,28 @@ async function fetchKids() {
     const kidsCollectionRef = collection(db, `Kids/${user.uid}/kids`);
     const kidsSnapshot = await getDocs(kidsCollectionRef);
 
-    // Reset the dropdowns
+    // Reset the dropdowns and display
     kidSelect.innerHTML = `<option value="" disabled selected>Select a kid</option>`;
     removeKidSelect.innerHTML = `<option value="" disabled selected>Select a kid</option>`;
+    const kidsDisplay = document.getElementById("kidsDisplay");
+    kidsDisplay.innerHTML = ""; // Clear current content
 
-    // Populate dropdowns with kid names
+    // Populate dropdowns and display kids with points
     kidsSnapshot.forEach((docSnap) => {
       const kid = docSnap.id;
+      const data = docSnap.data();
+
+      // Add to dropdowns
       kidSelect.innerHTML += `<option value="${kid}">${kid}</option>`;
       removeKidSelect.innerHTML += `<option value="${kid}">${kid}</option>`;
+
+      // Add to the kids display
+      kidsDisplay.innerHTML += `
+        <div class="kid-card">
+          <p class="title-p">${kid}</p>
+          <p class="week-p">Weekly Points: ${data.weeklyPoints || 0}</p>
+          <p class="total-p">Total Points: ${data.totalPoints || 0}</p>
+        </div>`;
     });
 
     console.log("Kids loaded successfully.");
@@ -294,7 +307,7 @@ function renderGoals(goals) {
   goalList.innerHTML = "<h3>Current Goals:</h3>";
 
   if (goals.length === 0) {
-    goalList.innerHTML += `<p>Your parents have not set any goals yet.</p>`;
+    goalList.innerHTML += `<p>You have not set any goals yet.</p>`;
   } else {
     goals.forEach((goal) => {
       goalList.innerHTML += `
@@ -334,6 +347,7 @@ async function addGoal() {
       alert(`Goal "${goalName}" with ${goalPoints} points added.`);
       document.getElementById("goalName").value = ""; // Clear the input
       document.getElementById("goalPoints").value = ""; // Clear the input
+      fetchGoals(); // Refresh the goal list
     }
   } catch (error) {
     console.error("Error adding goal:", error.message);
@@ -345,10 +359,8 @@ async function addGoal() {
 async function editGoal(goalName, currentPoints) {
   const newPoints = prompt(`Edit points for "${goalName}"`, currentPoints);
 
-  // Check if the user clicked "Cancel" or entered an invalid value
   if (newPoints === null) {
-    // User clicked "Cancel," stop the function execution
-    return;
+    return; // User clicked "Cancel," stop execution
   }
 
   if (newPoints.trim() === "" || isNaN(newPoints)) {
@@ -366,6 +378,7 @@ async function editGoal(goalName, currentPoints) {
     const goalRef = doc(db, `Goals/${user.uid}/userGoals/${goalName}`);
     await updateDoc(goalRef, { goalPoints: parseInt(newPoints) });
     alert(`Goal "${goalName}" updated.`);
+    fetchGoals(); // Refresh the goal list
   } catch (error) {
     console.error("Error updating goal:", error.message);
     alert("Failed to update goal. Please try again.");
@@ -380,10 +393,17 @@ async function removeGoal(goalName) {
     return;
   }
 
+  // Show confirmation dialog
+  const confirmDelete = confirm(`Are you sure you want to remove the goal "${goalName}"? This action cannot be undone.`);
+  if (!confirmDelete) {
+    return; // Exit the function if the user cancels
+  }
+
   try {
     const goalRef = doc(db, `Goals/${user.uid}/userGoals/${goalName}`);
     await deleteDoc(goalRef);
     alert(`Goal "${goalName}" removed.`);
+    fetchGoals(); // Refresh the goal list
   } catch (error) {
     console.error("Error removing goal:", error.message);
     alert("Failed to remove goal. Please try again.");
@@ -459,6 +479,12 @@ async function resetWeeklyPoints() {
     return;
   }
 
+  // Show confirmation dialog
+  const confirmReset = confirm("Are you sure you want to reset the weekly points for all kids? This action cannot be undone.");
+  if (!confirmReset) {
+    return; // Exit if the user cancels
+  }
+
   try {
     const kidsCollectionRef = collection(db, `Kids/${user.uid}/kids`);
     const kidsSnapshot = await getDocs(kidsCollectionRef);
@@ -469,6 +495,7 @@ async function resetWeeklyPoints() {
     });
 
     alert("All weekly points have been reset to zero.");
+    fetchKids(); // Refresh the points displayed for kids
   } catch (error) {
     console.error("Error resetting weekly points:", error.message);
     alert("Failed to reset weekly points. Please try again.");
@@ -483,18 +510,23 @@ async function resetTotalPoints() {
     return;
   }
 
+  // Show confirmation dialog
+  const confirmReset = confirm("Are you sure you want to reset the total points for all kids? This action cannot be undone.");
+  if (!confirmReset) {
+    return; // Exit if the user cancels
+  }
+
   try {
     const kidsCollectionRef = collection(db, `Kids/${user.uid}/kids`);
     const kidsSnapshot = await getDocs(kidsCollectionRef);
 
-    // Loop through each kid and reset their total points
     kidsSnapshot.forEach(async (docSnap) => {
       const kidRef = doc(db, `Kids/${user.uid}/kids/${docSnap.id}`);
       await updateDoc(kidRef, { totalPoints: 0 });
     });
 
     alert("All total points have been reset to zero.");
-    fetchKids(); // Refresh the kid list
+    fetchKids(); // Refresh the points displayed for kids
   } catch (error) {
     console.error("Error resetting total points:", error.message);
     alert("Failed to reset total points. Please try again.");
