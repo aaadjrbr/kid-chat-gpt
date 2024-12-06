@@ -16,10 +16,13 @@ body {
 .container {
   max-width: 900px;
   margin: 30px auto;
-  padding: 20px;
-  background: #ffffffde;
-  border-radius: 45px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 25px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(240, 240, 240, 0.8));
+  border-radius: 30px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2), inset 0 1px 3px rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
 }
 
 h1 {
@@ -27,7 +30,7 @@ h1 {
   text-align: center;
   font-size: 2.5rem;
   font-weight: 300;
-  color: #444;
+  color: #6a11cb;
   margin-bottom: 20px;
   position: relative;
 }
@@ -69,68 +72,122 @@ label {
 /* Forms and Inputs */
 .form {
   margin-top: 20px;
-  padding: 20px;
-  background: #f9f9f9;
-  border-radius: 10px;
-  border: 1px solid #ddd;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(240, 240, 240, 0.5));
+  border-radius: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2), 0 4px 6px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
 input, select {
   width: 90%;
-  padding: 10px;
-  margin: 10px 0;
+  font-family: 'Roboto', sans-serif;
+  padding: 12px 15px;
+  margin: 12px 0;
   font-size: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+  border: 1px solid rgba(200, 200, 200, 0.6);
+  border-radius: 10px;
+  background: linear-gradient(135deg, #ffffff, #f3f4f6);
+  box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.1), 0 4px 8px rgba(0, 0, 0, 0.1);
   outline: none;
-  transition: border-color 0.2s ease;
+  transition: all 0.3s ease;
+}
+
+input:hover, select:hover {
+  box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.1), 0 6px 10px rgba(0, 0, 0, 0.15);
 }
 
 input:focus, select:focus {
   border-color: #6a11cb;
+  box-shadow: 0 0 8px rgba(106, 17, 203, 0.5), 0 4px 8px rgba(0, 0, 0, 0.1);
+  background: linear-gradient(135deg, #f9f9ff, #f3f4f6);
 }
 
 button {
   width: calc(50% - 10px);
-  background: #6a11cb;
+  background: linear-gradient(135deg, #6a11cb, #2575fc);
   color: #ffffff;
   font-family: 'Roboto', sans-serif;
   font-size: 1rem;
-  font-weight: 400;
-  padding: 10px;
+  font-weight: 500;
+  padding: 12px;
   margin: 5px 5px 0 0;
   border: none;
-  border-radius: 5px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2), inset 0 0 2px rgba(255, 255, 255, 0.4);
+  transition: transform 0.2s ease, background 0.3s ease, box-shadow 0.3s ease;
 }
 
 button:hover {
-  background: #6b11cbdc;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  background: linear-gradient(135deg, #5b0fbb, #1b65dc);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3), inset 0 0 2px rgba(255, 255, 255, 0.5);
+  transform: translateY(-2px);
 }
 
 button:active {
-  background: #6a11cb;
+  background: linear-gradient(135deg, #6a11cb, #2575fc);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2), 0 4px 10px rgba(0, 0, 0, 0.2);
+  transform: translateY(2px);
 }
 
-/* Buttons with specific colors */
+/* Red Button */
 button.red {
-  background: #dc3545;
+  background: linear-gradient(135deg, #e63946, #dc3545);
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 12px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2), inset 0 0 2px rgba(255, 255, 255, 0.4);
+  transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
 }
 
 button.red:hover {
-  background: #b02a37;
+  background: linear-gradient(135deg, #c92d3c, #b02a37);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3), inset 0 0 3px rgba(255, 255, 255, 0.5);
+  transform: translateY(-2px);
 }
 
+button.red:active {
+  background: linear-gradient(135deg, #dc3545, #b02a37);
+  box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.2), 0 4px 10px rgba(0, 0, 0, 0.2);
+  transform: translateY(2px);
+}
+
+/* Green Button */
 button.green {
-  background: #28a745;
+  background: linear-gradient(135deg, #34d058, #28a745);
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 12px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2), inset 0 0 2px rgba(255, 255, 255, 0.4);
+  transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
 }
 
 button.green:hover {
-  background: #218838;
+  background: linear-gradient(135deg, #219a3c, #218838);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3), inset 0 0 3px rgba(255, 255, 255, 0.5);
+  transform: translateY(-2px);
 }
+
+button.green:active {
+  background: linear-gradient(135deg, #28a745, #218838);
+  box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.2), 0 4px 10px rgba(0, 0, 0, 0.2);
+  transform: translateY(2px);
+}
+
 
 /* Goal List */
 #goalList p {

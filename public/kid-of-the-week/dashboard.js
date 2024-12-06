@@ -7,7 +7,6 @@ import {
   updateDoc,
   deleteDoc,
   getDoc,
-  onSnapshot,
 } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
 import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
 
@@ -346,7 +345,13 @@ async function addGoal() {
 async function editGoal(goalName, currentPoints) {
   const newPoints = prompt(`Edit points for "${goalName}"`, currentPoints);
 
-  if (!newPoints || isNaN(newPoints)) {
+  // Check if the user clicked "Cancel" or entered an invalid value
+  if (newPoints === null) {
+    // User clicked "Cancel," stop the function execution
+    return;
+  }
+
+  if (newPoints.trim() === "" || isNaN(newPoints)) {
     alert("Please enter valid points.");
     return;
   }
