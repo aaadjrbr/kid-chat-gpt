@@ -58,6 +58,7 @@ body::before {
   padding: 20px;
   background: rgba(0, 0, 0, 0.8); /* Slight transparency for depth */
   border-radius: 12px;
+  border: 2px solid #fff;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
@@ -108,6 +109,7 @@ h1 {
   font-size: 2.5rem;
   font-weight: 700;
   color: #ffffff;
+  user-select: none;
   text-shadow: 0 0 18px #c300ff, 0 0 1px #00cccc, 0 0 8px #00aaaa;
   margin-bottom: 20px;
   position: relative;
@@ -128,6 +130,7 @@ h2 {
   font-size: 1.5rem;
   font-weight: 400;
   color: #ffffff;
+  user-select: none;
   text-shadow: 0 0 18px #c300ff, 0 0 1px #00cccc, 0 0 8px #00aaaa;
   margin-top: 30px;
   margin-bottom: 15px;
@@ -141,6 +144,11 @@ h2::before {
   color: #ffffff;
   margin-right: 5px;
   vertical-align: middle;
+}
+
+h3 {
+  user-select: none;
+  color: #ffffff;
 }
 
 p {
@@ -159,6 +167,7 @@ p {
     border-radius: 40px;
     padding: 15px;
     color: #000000;
+    user-select: none;
     margin-bottom: 20px;
     text-shadow: 2px 2px 2px rgba(255, 255, 255, 0.1); /* Shadow for a 3D illusion */
     transition: transform 0.2s ease, box-shadow 0.2s ease; /* Smooth hover animation */
@@ -184,10 +193,11 @@ p {
 }
 
 #weeklyRanking p, #totalRanking p {
+  width: 70%;
   display: flex;
   align-items: center;
   font-size: 1rem;
-  margin: 10px 0;
+  margin: 15px auto;
   background: #fafafa;
   color: #000000;
   padding: 10px 15px;
@@ -221,23 +231,25 @@ p {
   align-items: center;
   font-size: 1rem;
   margin: 10px 0;
-  color: #000000;
+  color: #fff;
   font-weight: 600;
-  background: #e3f2fd;
+  background-color: #000000;
   padding: 10px 15px;
   border-radius: 8px;
   border: 1px solid #bbdefb;
+  user-select: none;
   transition: background-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 #goalList p:hover {
-  background-color: #c95afd;
+  background: #fafafaf6;
+  color: #000000;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 #goalList p strong {
   font-weight: 700;
-  color: #6a11cb;
+  color: #ff7300;
   margin-right: 10px;
 }
 
@@ -245,7 +257,7 @@ p {
   content: 'check_circle';
   font-family: 'Material Icons';
   font-size: 1.5rem;
-  color: #6a11cb;
+  color: #ff7300;
   margin-right: 10px;
 }
 
