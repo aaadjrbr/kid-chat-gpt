@@ -197,6 +197,7 @@ h2 {
 }
 
 .title1 {
+    user-select: none;
     font-size: 2em;
     font-family: 'Fredoka', Helvetica;
     font-weight: 600;
@@ -1179,6 +1180,7 @@ div#pin-verification-popup p a:hover {
 }
   
 .section-title2 {
+    user-select: none;
     margin-top: -20px;
     font-size: 1.8em;
     font-family: 'Fredoka One', 'Raleway', sans-serif;
@@ -1197,8 +1199,8 @@ div#pin-verification-popup p a:hover {
 
 .section-title2:hover {
     text-shadow: 
-        3px 3px 6px rgba(0, 0, 0, 0.2), /* Increased shadow on hover */
-        6px 6px 12px rgba(0, 0, 0, 0.15); /* Adds depth on hover */
+        0px 0px 18px rgb(251, 255, 0), /* Increased shadow on hover */
+        6px 6px 12px rgba(251, 255, 0, 0.15); /* Adds depth on hover */
 }
 
 .section-title2::after {
@@ -1269,6 +1271,7 @@ div#pin-verification-popup p a:hover {
 
 /* Paragraph styling inside the container */
 #user-profile-container p {
+    user-select: none;
     font-size: 1.2em;
     color: #555;
     text-align: center;

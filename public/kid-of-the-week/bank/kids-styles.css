@@ -3,7 +3,7 @@ body {
   font-family: 'Poppins', sans-serif;
   margin: 0;
   padding: 0;
-  background-color: #0d0d0d; /* Dark background for glowing effects */
+  background: linear-gradient(135deg, rgb(139 24 255 / 94%), rgb(114, 196, 161, 0.2)); /* Dark background for glowing effects */
   color: #fff;
   text-align: center;
 }
@@ -12,6 +12,10 @@ body {
   max-width: 600px;
   margin: auto;
   padding: 20px;
+}
+
+h2, h1 {
+  user-select: none;
 }
 
 /* Headings */
@@ -69,12 +73,12 @@ span#balance-amount {
 .select-kid-section,
 .filter-section, 
 .history-section {
-  background: #000000ee; /* Dark card background */
+  background: #6908a2d9;
   padding: 20px;
   border-radius: 15px;
-  box-shadow: 0 0 10px #ff00ff, 0 0 20px #9900cc, 0 0 30px #660099;
+  box-shadow: 0 0 10px #5fc7ff, 0 0 20px #9900cc, 0 0 30px #660099;
   margin-bottom: 20px;
-  border: 1px solid #660099; /* Neon border */
+  border: 1px solid #660099;
 }
 
 /* Dropdowns and Spans */
@@ -93,7 +97,7 @@ select, span {
 
 select:hover, select:focus {
   border-color: #ff00ff;
-  box-shadow: 0 0 15px #ff00ff, 0 0 30px #9900cc;
+  box-shadow: 0 0 15px #ffffff, 0 0 30px #a807f3;
 }
 
 /* Glowing Buttons */
@@ -122,12 +126,12 @@ ul {
 }
 
 li {
-  background: #000000; /* Slightly lighter than section background */
-  border: 1px solid #ff00ff;
+  background: #000000;
+  border: 1px solid #ffffff;
   padding: 12px;
   margin-bottom: 10px;
   border-radius: 10px;
-  box-shadow: 0 0 6px #ff00ff, 0 0 14px #9900cc;
+  box-shadow: 0 0 6px #419fff, 0 0 14px #9900cc;
   transition: 0.3s ease;
 }
 
@@ -148,8 +152,8 @@ li:hover {
 .filter-section label {
   font-size: 14px;
   font-weight: bold;
-  color: #ff00ff;
-  text-shadow: 0 0 5px #ff00ff, 0 0 10px #9900cc;
+  color: #ffffff;
+  text-shadow: 0 0 18px #00ffff, 0 0 1px #00cccc, 0 0 8px #00aaaa;
 }
 
 /* Logo Styling */
