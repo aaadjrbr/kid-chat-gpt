@@ -84,7 +84,7 @@
 
 <!-- Comparison Section -->
 <section id="comparison" class="comparison-section" data-aos="fade-up">
-    <h2 class="section-title2">Alfie’s Achievement Center</h2>
+    <h2 class="section-title2"><i class="fas fa-dog"></i> Alfie’s Achievement Center</h2>
     <p style="text-align: center; font-size: 1.3em; color: #ffffff;">
         🚀✨ Help around and get points:
     </p>
@@ -334,7 +334,7 @@ async function applyBlurIfNecessary(userId) {
                 }
 
                 // Update trial counter using the new function
-                updateTrialCounter(freeTrial);
+                updateTrialCounter(freeTrial, isPremium);
 
                 // Apply blur logic if freeTrial is 0
                 if (freeTrial === 0) {
@@ -345,7 +345,7 @@ async function applyBlurIfNecessary(userId) {
                 attachFeatureClickListeners(userId, freeTrial);
             } else {
                 // If Premium, show unlimited access message
-                updateTrialCounter(Infinity); // Passing Infinity for Premium users
+                updateTrialCounter(Infinity, isPremium); // Passing Infinity for Premium users
             }
         } else {
             console.error("User profile does not exist!");
@@ -431,13 +431,18 @@ async function decreaseFreeTrial(userId) {
     }
 }
 
-function updateTrialCounter(freeTrial) {
+function updateTrialCounter(freeTrial, isPremium) {
     const trialCounters = document.querySelectorAll('.trial-counter');
     trialCounters.forEach((counter) => {
-        // Check if freeTrial is 0 or less and display the correct message
-        counter.innerHTML = freeTrial > 0 
-            ? `🎉 You have ${freeTrial} free sessions left!` 
-            : `🚨 Your free trial has ended. Please <a href="https://alfieaikids.fun/checkout" target="_blank" style="color: #edff35; text-decoration: underline;">subscribe to continue!</a>`;
+        if (isPremium) {
+            // Hide the message for premium users
+            counter.innerHTML = '';
+        } else {
+            // Display the correct message for non-premium users
+            counter.innerHTML = freeTrial > 0 
+                ? `🎉 You have ${freeTrial} free sessions left!` 
+                : `🚨 Your free trial has ended. Please <a href="https://alfieaikids.fun/checkout" target="_blank" style="color: #edff35; text-decoration: underline;">subscribe to continue!</a>`;
+        }
     });
 }
 
