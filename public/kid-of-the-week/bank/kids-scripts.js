@@ -1,5 +1,6 @@
-import { db, auth } from "./firebaseConfig.js";
-import { collection, doc, getDoc, getDocs } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
+import { db, auth, functions } from "./firebaseConfig.js"; // Include functions
+import { httpsCallable } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-functions.js";
+import { collection, doc, getDoc, getDocs, updateDoc } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
 
 // Firestore reference
@@ -46,7 +47,7 @@ function populateDateFilters() {
 async function fetchKids() {
   try {
     const snapshot = await getDocs(bankRef);
-    kidSelect.innerHTML = '<option value="">Select a kid</option>';
+    kidSelect.innerHTML = '<option value="">Select your name</option>';
     snapshot.forEach((doc) => {
       const kid = doc.data();
       const option = document.createElement("option");
@@ -56,7 +57,7 @@ async function fetchKids() {
     });
   } catch (error) {
     console.error("Error fetching kids:", error);
-    alert("Failed to fetch kids. Please try again.");
+    alert("❌ Failed to fetch names. Please try again.");
   }
 }
 
@@ -66,49 +67,13 @@ async function fetchKidData(kidId) {
     const kidDoc = await getDoc(doc(bankRef, kidId));
     if (kidDoc.exists()) {
       const kidData = kidDoc.data();
-      balanceAmount.textContent = `$${kidData.balance}`;
-      displayFilteredHistory(kidData.history || {});
+      balanceAmount.textContent = `$${kidData.balance}`; // Update the balance display
+      displayFilteredHistory(kidData.history || {}); // Update the history display
     } else {
-      alert("Kid data not found!");
+      alert("❌ Kid data not found!");
     }
   } catch (error) {
     console.error("Error fetching kid data:", error);
-  }
-}
-
-// Filter and display history by month and year
-function displayFilteredHistory(history) {
-  const selectedMonth = filterMonth.value;
-  const selectedYear = filterYear.value;
-
-  historyList.innerHTML = "";
-  const monthlyHistory = history[selectedYear]?.[selectedMonth] || [];
-
-  if (monthlyHistory.length === 0) {
-    historyList.innerHTML = "<li>No history for the selected period.</li>";
-  } else {
-    // Sort by timestamp (most recent first)
-    const sortedHistory = [...monthlyHistory].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-
-    sortedHistory.forEach((entry) => {
-      const entryDate = new Date(entry.timestamp);
-      const formattedDate = entryDate.toLocaleDateString();
-      const formattedTime = entryDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-      // Calculate the total balance after the transaction
-      const totalBalance = entry.priorBalance + entry.change;
-
-      // Create list item
-      const listItem = document.createElement("li");
-      listItem.textContent = `${formattedDate} ${formattedTime}: ${
-        entry.type === "add" ? "Deposited 💰" : "Withdrew 💸"
-      } $${Math.abs(entry.change)} (Prior: $${entry.priorBalance}) - Total: $${totalBalance}`;
-
-      // Add a class based on transaction type
-      listItem.classList.add(entry.type === "add" ? "deposit" : "withdraw");
-
-      historyList.appendChild(listItem);
-    });
   }
 }
 
@@ -133,6 +98,501 @@ filterYear.addEventListener("change", () => {
     fetchKidData(selectedKidId);
   }
 });
+
+async function processTransaction(transactionData) {
+  try {
+    const processTransactionFn = httpsCallable(functions, "processTransaction");
+
+    const result = await processTransactionFn(transactionData);
+
+    if (result.data.success) {
+      alert(result.data.message);
+      console.log("Transaction succeeded:", result.data);
+
+      // Refetch the kid's data to update the balance and history
+      const selectedKidId = kidSelect.value;
+      if (selectedKidId) {
+        await fetchKidData(selectedKidId);
+      }
+    } else {
+      alert("Transaction failed.");
+    }
+  } catch (error) {
+    console.error("Transaction failed:", error);
+    alert("Transaction failed: " + error.message);
+  }
+}
+
+function displayFilteredHistory(history) {
+  const selectedMonth = filterMonth.value;
+  const selectedYear = filterYear.value;
+
+  historyList.innerHTML = "";
+  const monthlyHistory = history[selectedYear]?.[selectedMonth] || [];
+
+  if (monthlyHistory.length === 0) {
+    historyList.innerHTML = "<li>❌ No history for the selected period.</li>";
+  } else {
+    // Sort by timestamp (most recent first)
+    const sortedHistory = [...monthlyHistory].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+    sortedHistory.forEach((entry) => {
+      const entryDate = new Date(entry.timestamp);
+      const formattedDate = entryDate.toLocaleDateString();
+      const formattedTime = entryDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+      // Calculate the total balance after the transaction
+      const totalBalance = entry.priorBalance + entry.change;
+
+      // Create list item
+      const listItem = document.createElement("li");
+      listItem.textContent = `${formattedDate} ${formattedTime}: ${
+        entry.type === "Transfer Sent" ? "Transfer Sent 📤" : entry.type === "Transfer Received" ? "Transfer Received 📥" : entry.type === "add" ? "Deposited 💰" : "Withdrew 💸"
+      } $${Math.abs(entry.change)} (Prior: $${entry.priorBalance}) - Total: $${totalBalance}`;
+
+      // Add a class based on transaction type
+      listItem.classList.add(entry.type === "Transfer Sent" ? "transfer-sent" : entry.type === "Transfer Received" ? "transfer-received" : entry.type === "add" ? "deposit" : "withdraw");
+
+      historyList.appendChild(listItem);
+    });
+  }
+}
+
+// DOM Elements
+const scanQrButton = document.getElementById("scan-qr");
+const closeQrReaderButton = document.getElementById("close-qr-reader");
+const qrReaderDiv = document.getElementById("qr-reader");
+
+// QR Code Reader Functionality
+let selectedCameraId = null; // Global variable to store the selected camera ID
+let html5QrCode = null; // Global QR scanner instance
+
+async function startQrScanner(selectedPayerKidId) {
+  if (typeof Html5Qrcode === "undefined") {
+    console.error("Html5Qrcode library is not loaded!");
+    alert("QR scanner library is not available. Please reload the page.");
+    return;
+  }
+
+  try {
+    // Prevent duplicate scanner instances
+    if (html5QrCode) {
+      console.warn("QR Scanner is already initialized.");
+      return;
+    }
+
+    // Initialize Html5Qrcode instance once
+    html5QrCode = new Html5Qrcode("qr-reader");
+
+    // Check if the camera has already been selected
+    if (!selectedCameraId) {
+      const cameras = await Html5Qrcode.getCameras();
+
+      if (cameras.length === 0) {
+        alert("❌ No cameras found on this device.");
+        return;
+      }
+
+      if (cameras.length === 1) {
+        selectedCameraId = cameras[0].id; // Automatically select the only available camera
+      } else {
+        const cameraOptions = cameras.map((camera, index) => `${index + 1}: ${camera.label}`);
+        const choice = prompt(
+          `📷 Multiple cameras found:\n${cameraOptions.join("\n")}\n\nEnter the number of the camera you want to use:`
+        );
+
+        const selectedIndex = parseInt(choice, 10) - 1;
+        if (isNaN(selectedIndex) || selectedIndex < 0 || selectedIndex >= cameras.length) {
+          alert("❌ Invalid selection. Please try again.");
+          return;
+        }
+
+        selectedCameraId = cameras[selectedIndex].id;
+      }
+    }
+
+    // Start the QR scanner
+    qrReaderDiv.style.display = "block"; // Show QR reader div
+    closeQrReaderButton.style.display = "inline"; // Show close button
+
+    await html5QrCode.start(
+      { deviceId: { exact: selectedCameraId } },
+      { fps: 10, qrbox: 250 },
+      async (decodedText) => {
+        console.log("QR code scanned:", decodedText);
+        handleScannedData(decodedText, selectedPayerKidId);
+        await html5QrCode.stop();
+        html5QrCode = null; // Reset the instance
+        qrReaderDiv.style.display = "none";
+        closeQrReaderButton.style.display = "none";
+      },
+      (errorMessage) => {
+        // Suppress repetitive warnings about "No MultiFormat Readers"
+        if (!errorMessage.includes("No MultiFormat Readers were able to detect the code")) {
+          console.warn("QR code scanning error:", errorMessage);
+        }
+      }
+    );
+
+    closeQrReaderButton.addEventListener(
+      "click",
+      async () => {
+        if (html5QrCode) {
+          await html5QrCode.stop();
+          html5QrCode = null; // Reset the instance
+        }
+        qrReaderDiv.style.display = "none"; // Hide QR reader div
+        closeQrReaderButton.style.display = "none"; // Hide close button
+      },
+      { once: true } // Ensure the listener is added only once
+    );
+  } catch (error) {
+    console.error("Error initializing QR scanner:", error);
+    alert("❌ Failed to start QR scanner. Please check your camera permissions.");
+    if (html5QrCode) {
+      await html5QrCode.stop();
+      html5QrCode = null;
+    }
+  }
+}
+
+scanQrButton.addEventListener("click", () => {
+  startQrScanner();
+});
+
+function showScanPopup(message, confirmCallback, cancelCallback) {
+  // Create the overlay
+  const overlay = document.createElement("div");
+  overlay.classList.add("scan-popup-overlay");
+
+  // Create the popup container
+  const popupContainer = document.createElement("div");
+  popupContainer.classList.add("scan-popup-container");
+
+  // Create the message div
+  const messageDiv = document.createElement("div");
+  messageDiv.classList.add("scan-popup-message");
+  messageDiv.innerHTML = message; // Use innerHTML to render HTML content
+  popupContainer.appendChild(messageDiv);
+
+  // Create the button container
+  const buttonContainer = document.createElement("div");
+  buttonContainer.classList.add("scan-popup-buttons");
+
+  // Create the confirm button
+  const confirmButton = document.createElement("button");
+  confirmButton.textContent = "✅ Confirm";
+  confirmButton.classList.add("scan-popup-button", "confirm");
+  confirmButton.addEventListener("click", () => {
+    // Remove both the overlay and the popup container
+    document.body.removeChild(overlay);
+    document.body.removeChild(popupContainer);
+    if (confirmCallback) confirmCallback();
+  });
+
+  // Create the cancel button
+  const cancelButton = document.createElement("button");
+  cancelButton.textContent = "❌ Cancel";
+  cancelButton.classList.add("scan-popup-button", "cancel");
+  cancelButton.addEventListener("click", () => {
+    // Remove both the overlay and the popup container
+    document.body.removeChild(overlay);
+    document.body.removeChild(popupContainer);
+    if (cancelCallback) cancelCallback();
+  });
+
+  // Append buttons to the button container
+  buttonContainer.appendChild(confirmButton);
+  buttonContainer.appendChild(cancelButton);
+
+  // Append button container to the popup container
+  popupContainer.appendChild(buttonContainer);
+
+  // Append the overlay and popup container to the body
+  document.body.appendChild(overlay);
+  document.body.appendChild(popupContainer);
+}
+
+async function handleScannedData(decodedText) {
+  let transactionData;
+
+  try {
+    transactionData = JSON.parse(decodedText);
+  } catch (error) {
+    console.error("Invalid QR code data:", error);
+    showScanPopup("❌ Invalid QR code scanned. Please try again.");
+    return;
+  }
+
+  const { to, toName, receiverParentId, amount, timestamp } = transactionData;
+
+  if (!to || !toName || !receiverParentId || !amount || !timestamp) {
+    showScanPopup("❌ Scanned data is incomplete. Please try again.");
+    return;
+  }
+
+  try {
+    // Fetch all kids under the current parent
+    const snapshot = await getDocs(bankRef);
+
+    if (snapshot.empty) {
+      alert("⚠️ No kids found. Cannot proceed.");
+      return;
+    }
+
+    const kidsList = [];
+    snapshot.forEach((doc) => {
+      const kid = doc.data();
+      kidsList.push({ id: doc.id, name: kid.name });
+    });
+
+    // Display a prompt to select the payer
+    const numberedList = kidsList
+      .map((kid, index) => `${index + 1}. ${kid.name}`)
+      .join("\n");
+
+    const choice = prompt(
+      `🤑 Who is paying? Enter the number corresponding to the kid:\n\n${numberedList}`
+    );
+
+    const selectedIndex = parseInt(choice, 10) - 1;
+    if (isNaN(selectedIndex) || selectedIndex < 0 || selectedIndex >= kidsList.length) {
+      alert("❌ Invalid selection. Please try again.");
+      return;
+    }
+
+    const payerId = kidsList[selectedIndex].id;
+    const payerName = kidsList[selectedIndex].name;
+
+    // Prevent self-payment if the payer and receiver are the same
+    if (payerId === to) {
+      alert("❌ Payer and receiver cannot be the same. Please select a different payer.");
+      return;
+    }
+
+    // Add payer information to transactionData
+    transactionData.from = payerId;
+    transactionData.fromName = payerName;
+
+    console.log("Transaction Data with Names:", transactionData);
+
+    // Confirm and process the transaction
+    showScanPopup(
+      `👤 <strong>Payee:</strong> ${toName} (${to})<br>
+       🤑 <strong>Payer:</strong> ${payerName} (${payerId})<br>
+       💸 <strong>Amount:</strong> $${amount.toFixed(2)}<br><br>
+       Are you sure you want to complete this transaction?`,
+      () => {
+        processTransaction(transactionData)
+          .then(() => {
+            showScanPopup("🎉 Payment completed successfully!");
+          })
+          .catch((err) => {
+            console.error("Transaction failed:", err);
+            showScanPopup("❌ Payment failed. Please try again.");
+          });
+      },
+      () => {
+        showScanPopup("❌ Payment cancelled.");
+      }
+    );
+  } catch (error) {
+    console.error("Error fetching payer options:", error);
+    alert("❌ Failed to fetch payer information. Please try again.");
+  }
+}
+
+const generateQrButton = document.getElementById("generate-qr");
+const qrCodeContainer = document.getElementById("qr-code");
+
+generateQrButton.addEventListener("click", async () => {
+  const selectedKidId = kidSelect.value; // Receiver kid ID
+  const selectedKidName = kidSelect.options[kidSelect.selectedIndex]?.textContent; // Receiver kid name
+  const amount = prompt("💸 Enter the amount to request:");
+
+  if (amount === null) {
+    alert("⛔👋 QR Code generation cancelled.");
+    return;
+  }
+
+  if (!selectedKidId) {
+    alert("⚠️ Please select the receiver's name first.");
+    return;
+  }
+
+  if (!amount || isNaN(amount) || parseFloat(amount) <= 0) {
+    alert("⚠️ Please enter a valid positive amount.");
+    return;
+  }
+
+  try {
+    const parentId = auth.currentUser.uid; // Current logged-in user's parentId
+    const kidDoc = await getDoc(doc(db, `bank/${parentId}/kids/${selectedKidId}`));
+
+    if (!kidDoc.exists) {
+      alert("❌ Receiver not found.");
+      return;
+    }
+
+    const receiverParentId = parentId; // Use the authenticated user's parentId
+    const receiverName = kidDoc.data().name; // Fetch the name from Firestore
+
+    if (!receiverParentId || !receiverName) {
+      console.error("Receiver's data is incomplete.");
+      alert("❌ Receiver information is missing.");
+      return;
+    }
+
+    // Transaction data for QR code
+    const transactionData = {
+      to: selectedKidId,
+      toName: receiverName, // Receiver's name
+      amount: parseFloat(amount),
+      receiverParentId: receiverParentId,
+      timestamp: Date.now(),
+    };
+    console.log("Transaction Data for QR Code:", transactionData);
+
+    // Generate and display the QR code
+    const qrCodeContainer = document.getElementById("qr-code-container");
+
+    // Clear the container for fresh content
+    qrCodeContainer.innerHTML = "";
+
+    // Create a canvas for the QR code
+    const qrCodeCanvas = document.createElement("canvas");
+    qrCodeCanvas.id = "qr-code";
+    qrCodeCanvas.style.display = "block";
+    qrCodeContainer.appendChild(qrCodeCanvas); // Append the canvas to the container
+
+    // Add a loading message
+    const loader = document.createElement("div");
+    loader.textContent = "🔄 Generating QR Code...";
+    loader.style.fontSize = "18px";
+    loader.style.fontWeight = "bold";
+    loader.style.textAlign = "center";
+    qrCodeContainer.appendChild(loader);
+
+    // Generate the QR code
+    setTimeout(() => {
+      loader.remove(); // Remove the loading message
+      QRCode.toCanvas(
+        qrCodeCanvas,
+        JSON.stringify(transactionData),
+        {
+          errorCorrectionLevel: "H",
+          color: {
+            dark: "#6908a2d9", // Purple color for QR code
+            light: "#FFFFFF", // White background
+          },
+        },
+        (error) => {
+          if (error) {
+            console.error("QR code generation error:", error);
+            alert("❌🔄 Failed to generate QR code. Please try again.");
+            qrCodeCanvas.style.display = "none"; // Hide the canvas if an error occurs
+            return;
+          }
+
+          console.log("🎉✅ QR code generated successfully!");
+
+          // Add download and share options
+          const qrCodeDataUrl = qrCodeCanvas.toDataURL("image/png");
+
+          // Download link
+          const downloadLink = document.createElement("a");
+          downloadLink.href = qrCodeDataUrl;
+          downloadLink.download = `qr-code-${selectedKidName || "unknown"}.png`;
+          downloadLink.textContent = "⬇️ Download QR Code";
+          downloadLink.style.display = "block";
+          downloadLink.style.textAlign = "center";
+          qrCodeContainer.appendChild(downloadLink);
+
+          // Share button
+          const shareButton = document.createElement("button");
+          shareButton.textContent = "📤 Share QR Code";
+          shareButton.style.display = "block";
+          shareButton.style.marginTop = "10px";
+          shareButton.classList.add("share-qr-button");
+
+          shareButton.addEventListener("click", async () => {
+            try {
+              if (navigator.share) {
+                const response = await fetch(qrCodeDataUrl);
+                const qrCodeBlob = await response.blob();
+
+                await navigator.share({
+                  title: "Payment Request QR Code",
+                  text: `Requesting $${transactionData.amount.toFixed(
+                    2
+                  )} for ${selectedKidName || "Unknown"}`,
+                  files: [
+                    new File(
+                      [qrCodeBlob],
+                      `qr-code-${selectedKidName || "unknown"}.png`,
+                      { type: "image/png" }
+                    ),
+                  ],
+                });
+              } else {
+                alert("📤 Sharing not supported on this device.");
+              }
+            } catch (err) {
+              console.error("❌ Sharing failed:", err);
+              alert("❌ Sharing failed. Please try again.");
+            }
+          });
+
+          qrCodeContainer.appendChild(shareButton);
+
+          // Add a close button
+          const closeButton = document.createElement("button");
+          closeButton.textContent = "❌ Close QR Code";
+          closeButton.style.marginTop = "10px";
+          closeButton.addEventListener("click", () => {
+            qrCodeContainer.innerHTML = ""; // Clear the container
+          });
+          qrCodeContainer.appendChild(closeButton);
+        }
+      );
+    }, 1500);
+  } catch (error) {
+    console.error("Error generating QR code:", error);
+    alert("❌ Failed to generate QR code. Please try again.");
+  }
+});
+
+// Define selectPayer function to allow user to select the payer
+async function selectPayer() {
+  const snapshot = await getDocs(bankRef);
+
+  if (snapshot.empty) {
+    alert("⚠️ No kids found. Please add a kid first.");
+    return null;
+  }
+
+  let kidsList = [];
+  snapshot.forEach((doc, index) => {
+    const kid = doc.data();
+    kidsList.push({ id: doc.id, name: kid.name });
+  });
+
+  const numberedList = kidsList
+    .map((kid, index) => `${index + 1}. ${kid.name}`)
+    .join("\n");
+
+  const choice = prompt(
+    `🤑 Who is paying? Enter the number corresponding to the kid:\n\n${numberedList}`
+  );
+
+  const selectedIndex = parseInt(choice, 10) - 1;
+  if (isNaN(selectedIndex) || selectedIndex < 0 || selectedIndex >= kidsList.length) {
+    alert("❌ Invalid selection. Please try again.");
+    return null;
+  }
+
+  return kidsList[selectedIndex];
+}
 
 // Initialize App After Authentication
 onAuthStateChanged(auth, (user) => {

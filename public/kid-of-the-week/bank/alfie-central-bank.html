@@ -56,6 +56,22 @@
     <!-- Display Balance -->
     <div class="balance-display">
       <h2>💸 Balance: <span id="balance-amount">$0</span></h2>
+      <br/>
+      <hr>
+
+      <h2 style="font-family: 'Passion One', serif; font-size: 2em; font-weight: 400;">💳 Payment Request</h2>
+      <br/>
+      
+    <!-- Generate QR Code -->
+      <button id="generate-qr">Generate QR Code (Receive Money)</button>
+      <div id="qr-code-container">
+        <canvas id="qr-code" style="margin-top: 10px; display: none;" width="300" height="300"></canvas>
+      </div>
+      <br/>
+      <!-- Scan QR Code -->
+      <button id="scan-qr">Scan QR Code (Pay)</button><br/><br/>
+      <button id="close-qr-reader" style="display: none;">❌ Close QR Reader</button>
+      <div id="qr-reader" style="width: 300px; height: 300px; margin-top: 10px; display: none;"></div>
     </div>
 
     <!-- Filter History -->
@@ -86,7 +102,8 @@
   </div>
 
   <br/><br/>
-
+  <script src="../../scripts/html5-qrcode.min.js"></script>
+  <script src="../../scripts/qrcode.min.js"></script>
   <script src="kids-scripts.js" type="module"></script>
 </body>
 </html>
