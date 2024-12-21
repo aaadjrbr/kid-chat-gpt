@@ -402,26 +402,24 @@ async function handleScannedData(decodedText) {
   }
 }
 
+// DOM Elements
 const generateQrButton = document.getElementById("generate-qr");
-const qrCodeContainer = document.getElementById("qr-code");
+const qrCodeContainer = document.getElementById("qr-code-container");
 
 generateQrButton.addEventListener("click", async () => {
   const selectedKidId = kidSelect.value; // Receiver kid ID
   const selectedKidName = kidSelect.options[kidSelect.selectedIndex]?.textContent; // Receiver kid name
-  const amount = prompt("💸 Enter the amount to request:");
-
-  if (amount === null) {
-    alert("⛔👋 QR Code generation cancelled.");
-    return;
-  }
 
   if (!selectedKidId) {
-    alert("⚠️ Please select the receiver's name first.");
+    showPopup("⚠️ Please select the receiver's name first.");
     return;
   }
 
+  // Ask for the amount in a popup
+  const amount = await showInputPopup("💸 Enter the amount to request:");
+
   if (!amount || isNaN(amount) || parseFloat(amount) <= 0) {
-    alert("⚠️ Please enter a valid positive amount.");
+    showPopup("⚠️ Please enter a valid positive amount.");
     return;
   }
 
@@ -430,7 +428,7 @@ generateQrButton.addEventListener("click", async () => {
     const kidDoc = await getDoc(doc(db, `bank/${parentId}/kids/${selectedKidId}`));
 
     if (!kidDoc.exists) {
-      alert("❌ Receiver not found.");
+      showPopup("❌ Receiver not found.");
       return;
     }
 
@@ -439,7 +437,7 @@ generateQrButton.addEventListener("click", async () => {
 
     if (!receiverParentId || !receiverName) {
       console.error("Receiver's data is incomplete.");
-      alert("❌ Receiver information is missing.");
+      showPopup("❌ Receiver information is missing.");
       return;
     }
 
@@ -453,114 +451,192 @@ generateQrButton.addEventListener("click", async () => {
     };
     console.log("Transaction Data for QR Code:", transactionData);
 
-    // Generate and display the QR code
-    const qrCodeContainer = document.getElementById("qr-code-container");
-
-    // Clear the container for fresh content
-    qrCodeContainer.innerHTML = "";
-
-    // Create a canvas for the QR code
-    const qrCodeCanvas = document.createElement("canvas");
-    qrCodeCanvas.id = "qr-code";
-    qrCodeCanvas.style.display = "block";
-    qrCodeContainer.appendChild(qrCodeCanvas); // Append the canvas to the container
-
-    // Add a loading message
-    const loader = document.createElement("div");
-    loader.textContent = "🔄 Generating QR Code...";
-    loader.style.fontSize = "18px";
-    loader.style.fontWeight = "bold";
-    loader.style.textAlign = "center";
-    qrCodeContainer.appendChild(loader);
-
-    // Generate the QR code
-    setTimeout(() => {
-      loader.remove(); // Remove the loading message
-      QRCode.toCanvas(
-        qrCodeCanvas,
-        JSON.stringify(transactionData),
-        {
-          errorCorrectionLevel: "H",
-          color: {
-            dark: "#6908a2d9", // Purple color for QR code
-            light: "#FFFFFF", // White background
-          },
-        },
-        (error) => {
-          if (error) {
-            console.error("QR code generation error:", error);
-            alert("❌🔄 Failed to generate QR code. Please try again.");
-            qrCodeCanvas.style.display = "none"; // Hide the canvas if an error occurs
-            return;
-          }
-
-          console.log("🎉✅ QR code generated successfully!");
-
-          // Add download and share options
-          const qrCodeDataUrl = qrCodeCanvas.toDataURL("image/png");
-
-          // Download link
-          const downloadLink = document.createElement("a");
-          downloadLink.href = qrCodeDataUrl;
-          downloadLink.download = `qr-code-${selectedKidName || "unknown"}.png`;
-          downloadLink.textContent = "⬇️ Download QR Code";
-          downloadLink.style.display = "block";
-          downloadLink.style.textAlign = "center";
-          qrCodeContainer.appendChild(downloadLink);
-
-          // Share button
-          const shareButton = document.createElement("button");
-          shareButton.textContent = "📤 Share QR Code";
-          shareButton.style.display = "block";
-          shareButton.style.marginTop = "10px";
-          shareButton.classList.add("share-qr-button");
-
-          shareButton.addEventListener("click", async () => {
-            try {
-              if (navigator.share) {
-                const response = await fetch(qrCodeDataUrl);
-                const qrCodeBlob = await response.blob();
-
-                await navigator.share({
-                  title: "Payment Request QR Code",
-                  text: `Requesting $${transactionData.amount.toFixed(
-                    2
-                  )} for ${selectedKidName || "Unknown"}`,
-                  files: [
-                    new File(
-                      [qrCodeBlob],
-                      `qr-code-${selectedKidName || "unknown"}.png`,
-                      { type: "image/png" }
-                    ),
-                  ],
-                });
-              } else {
-                alert("📤 Sharing not supported on this device.");
-              }
-            } catch (err) {
-              console.error("❌ Sharing failed:", err);
-              alert("❌ Sharing failed. Please try again.");
-            }
-          });
-
-          qrCodeContainer.appendChild(shareButton);
-
-          // Add a close button
-          const closeButton = document.createElement("button");
-          closeButton.textContent = "❌ Close QR Code";
-          closeButton.style.marginTop = "10px";
-          closeButton.addEventListener("click", () => {
-            qrCodeContainer.innerHTML = ""; // Clear the container
-          });
-          qrCodeContainer.appendChild(closeButton);
-        }
-      );
-    }, 1500);
+    // Show the QR code in a popup
+    showQrCodePopup(transactionData, selectedKidName);
   } catch (error) {
     console.error("Error generating QR code:", error);
-    alert("❌ Failed to generate QR code. Please try again.");
+    showPopup("❌ Failed to generate QR code. Please try again.");
   }
 });
+
+// Function to show a simple message popup
+function showPopup(message) {
+  const overlay = document.createElement("div");
+  overlay.classList.add("popup-overlay");
+
+  const popupContainer = document.createElement("div");
+  popupContainer.classList.add("popup-container");
+
+  const messageDiv = document.createElement("div");
+  messageDiv.classList.add("popup-message");
+  messageDiv.textContent = message;
+  popupContainer.appendChild(messageDiv);
+
+  const closeButton = document.createElement("button");
+  closeButton.classList.add("popup-close-button");
+  closeButton.textContent = "❌ Close";
+  closeButton.addEventListener("click", () => {
+    document.body.removeChild(overlay);
+  });
+  popupContainer.appendChild(closeButton);
+
+  overlay.appendChild(popupContainer);
+  document.body.appendChild(overlay);
+}
+
+// Function to show an input popup
+function showInputPopup(message) {
+  return new Promise((resolve) => {
+    const overlay = document.createElement("div");
+    overlay.classList.add("popup-overlay");
+
+    const popupContainer = document.createElement("div");
+    popupContainer.classList.add("popup-container");
+
+    const messageDiv = document.createElement("div");
+    messageDiv.classList.add("popup-message");
+    messageDiv.textContent = message;
+    popupContainer.appendChild(messageDiv);
+
+    const input = document.createElement("input");
+    input.type = "number";
+    input.placeholder = "Enter amount";
+    input.classList.add("popup-input");
+    popupContainer.appendChild(input);
+
+    const buttonContainer = document.createElement("div");
+    buttonContainer.classList.add("popup-button-container");
+
+    const confirmButton = document.createElement("button");
+    confirmButton.classList.add("popup-confirm-button");
+    confirmButton.textContent = "✅ Confirm";
+    confirmButton.addEventListener("click", () => {
+      const amount = input.value.trim();
+      document.body.removeChild(overlay);
+      resolve(amount);
+    });
+    buttonContainer.appendChild(confirmButton);
+
+    const cancelButton = document.createElement("button");
+    cancelButton.classList.add("popup-cancel-button");
+    cancelButton.textContent = "❌ Cancel";
+    cancelButton.addEventListener("click", () => {
+      document.body.removeChild(overlay);
+      resolve(null);
+    });
+    buttonContainer.appendChild(cancelButton);
+
+    popupContainer.appendChild(buttonContainer);
+    overlay.appendChild(popupContainer);
+    document.body.appendChild(overlay);
+  });
+}
+
+// Function to show the QR code in a popup
+function showQrCodePopup(transactionData, selectedKidName) {
+  const overlay = document.createElement("div");
+  overlay.classList.add("qr-popup-overlay");
+
+  const popupContainer = document.createElement("div");
+  popupContainer.classList.add("qr-popup-container");
+
+  const qrCodeCanvas = document.createElement("canvas");
+  qrCodeCanvas.id = "qr-code";
+  qrCodeCanvas.classList.add("qr-code-canvas");
+
+  // Add a loading message
+  const loader = document.createElement("div");
+  loader.classList.add("qr-popup-loader");
+  loader.textContent = "🔄 Generating QR Code...";
+  popupContainer.appendChild(loader);
+
+  // Generate the QR code
+  setTimeout(() => {
+    loader.remove(); // Remove the loading message
+    QRCode.toCanvas(
+      qrCodeCanvas,
+      JSON.stringify(transactionData),
+      {
+        errorCorrectionLevel: "H",
+        color: {
+          dark: "#6908a2d9", // Purple color for QR code
+          light: "#FFFFFF", // White background
+        },
+      },
+      (error) => {
+        if (error) {
+          console.error("QR code generation error:", error);
+          showPopup("❌ Failed to generate QR code. Please try again.");
+          return;
+        }
+
+        console.log("🎉 QR code generated successfully!");
+
+        // Add download and share options
+        const qrCodeDataUrl = qrCodeCanvas.toDataURL("image/png");
+
+        // Download link
+        const downloadLink = document.createElement("a");
+        downloadLink.href = qrCodeDataUrl;
+        downloadLink.download = `qr-code-${selectedKidName || "unknown"}.png`;
+        downloadLink.textContent = "⬇️ Download QR Code";
+        downloadLink.classList.add("qr-popup-download-link");
+        popupContainer.appendChild(downloadLink);
+
+        // Share button
+        const shareButton = document.createElement("button");
+        shareButton.textContent = "📤 Share QR Code";
+        shareButton.classList.add("qr-popup-share-button");
+
+        shareButton.addEventListener("click", async () => {
+          try {
+            if (navigator.share) {
+              const response = await fetch(qrCodeDataUrl);
+              const qrCodeBlob = await response.blob();
+
+              await navigator.share({
+                title: "Payment Request QR Code",
+                text: `Requesting $${transactionData.amount.toFixed(
+                  2
+                )} for ${selectedKidName || "Unknown"}`,
+                files: [
+                  new File(
+                    [qrCodeBlob],
+                    `qr-code-${selectedKidName || "unknown"}.png`,
+                    { type: "image/png" }
+                  ),
+                ],
+              });
+            } else {
+              showPopup("📤 Sharing not supported on this device.");
+            }
+          } catch (err) {
+            console.error("❌ Sharing failed:", err);
+            showPopup("❌ Sharing failed. Please try again.");
+          }
+        });
+
+        popupContainer.appendChild(shareButton);
+
+        // Add a close button
+        const closeButton = document.createElement("button");
+        closeButton.textContent = "❌ Close";
+        closeButton.classList.add("qr-popup-close-button");
+        closeButton.addEventListener("click", () => {
+          document.body.removeChild(overlay);
+        });
+        popupContainer.appendChild(closeButton);
+      }
+    );
+  }, 1500);
+
+  // Append the canvas to the popup container
+  popupContainer.appendChild(qrCodeCanvas);
+
+  // Append the overlay and popup container to the body
+  overlay.appendChild(popupContainer);
+  document.body.appendChild(overlay);
+}
 
 // Define selectPayer function to allow user to select the payer
 async function selectPayer() {
