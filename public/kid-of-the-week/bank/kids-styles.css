@@ -37,6 +37,7 @@ span#balance-amount {
   box-shadow: none;
   outline: none;
   transition: 0.3s;
+  line-height: 2.3;
 }
 
 button#generate-qr, button#scan-qr {
@@ -217,6 +218,7 @@ li:hover {
 }
 
 .filter-section label {
+  user-select: none;
   font-size: 14px;
   font-weight: bold;
   color: #ffffff;
@@ -228,6 +230,35 @@ li:hover {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.qr-icon-img {
+  display: flex;
+  flex-direction: row; /* Default: image and text in a row */
+  align-items: center; /* Vertically center the content */
+  justify-content: center; /* Horizontally center the content */
+  text-align: center; /* Center-align text */
+}
+
+.qr-image {
+  width: 50px;
+  height: 50px;
+  margin-right: 10px; /* Space between the image and text */
+}
+
+/* Media Query for Small Screens */
+@media (max-width: 600px) {
+  .qr-icon-img {
+    flex-direction: column; /* Stack image and text vertically */
+  }
+  .qr-image {
+    margin-right: 0; /* Remove margin when stacked */
+    margin-bottom: 10px; /* Add margin below the image */
+  }
+
+  .balance-display h2 {
+    margin-top: 0;
+  }
 }
 
 img {

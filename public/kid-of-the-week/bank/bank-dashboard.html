@@ -34,6 +34,18 @@
 <body>
   <div class="container">
     <h1>Dashboard - Alfie Central Bank<br>
+  
+<!-- Modal Structure -->
+<div id="name-modal" class="modal">
+  <div class="modal-content">
+    <h2 id="modal-title">🐶 Please insert the parent name:</h2>
+    <input type="text" id="parent-name-input" placeholder="Enter parent name" />
+    <p id="modal-message" style="color: red; display: none;"></p>
+    <button id="save-name-btn">Save</button>
+    <button id="close-modal-btn" style="display: none;">Close</button> <!-- Hidden by default -->
+  </div>
+</div>
+
   <span style="font-size: 0.8em;">
     <a href="../dashboard.html" style="
           display: inline-block; 
@@ -70,6 +82,12 @@
   </span>
   </h1>
 
+  <!-- Welcome Message -->
+<div id="welcome-message" style="display: none; text-align: center; font-size: 1.5rem; margin: 20px 0;">
+  🐶 Welcome back, <span id="parent-name-display"></span>!
+  <p style="color: #000000ad; font-size: 14px; font-weight: 400;">💡 Need to change/edit name? <a href="../../edit-profile.html">Go here</a></p>
+</div>
+
     <div class="auth-section" style="display: none;">
         <button id="sign-in-btn">Sign In</button>
         <button id="sign-out-btn">Sign Out</button>
@@ -95,7 +113,7 @@
 
         <!-- New Adjust Balance Section -->
         <div class="adjust-balance-section set-balance-section">
-          <h2>Adjust Kid's Balance</h2>
+          <h2>💳 Adjust Kid's Balance</h2>
           <form id="adjust-balance-form">
             <label for="kid-select-adjust">Select Kid:</label>
             <select id="kid-select-adjust"></select>
@@ -139,7 +157,7 @@
 
     <!-- Add Kid Section -->
     <div class="add-section">
-      <h2>Add Kid</h2>
+      <h2>🆕 Add Kid</h2>
       <form id="add-kid-form">
         <label for="add-kid-name">Kid's Name:</label>
         <input type="text" id="add-kid-name" required>
@@ -149,7 +167,7 @@
 
     <!-- Edit Section -->
     <div class="edit-section">
-      <h2>Edit Kids</h2>
+      <h2>⚙️ Edit Kids</h2>
       <form id="edit-kid-form">
         <label for="edit-kid-select">Select Kid:</label>
         <select id="edit-kid-select"></select>

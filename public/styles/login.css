@@ -113,7 +113,12 @@ input#agreeTerms {
     color: #721c24;
 }
 
+#forgot-password-link, a#i-remember {
+    font-size: 1em;
+}
+
 a {
+    font-family: "Fredoka", sans-serif;
     font-size: 0.9em;
     color: rgb(0, 89, 255);
     text-decoration: none;
@@ -291,11 +296,11 @@ footer a {
 }
 
 footer a:hover {
-    color: #08d9d6; /* Consistent neon blue */
+    color: yellow;
 }
 
 footer {
-    background-color: #212529;
+    background: linear-gradient(to bottom right, #7b2cbf, #9d4edd, #5a189a);
     padding: 15px;
 }
 
@@ -303,4 +308,9 @@ footer p {
     color: #ffffff;
     font-family: "Fredoka", sans-serif;
     font-size: 0.9em;
+}
+
+em {
+    font-size: 0.9em;
+    color: #333333bd;
 }

@@ -5,6 +5,7 @@ import {
   doc,
   getDocs,
   getDoc,
+  setDoc,
   addDoc,
   updateDoc,
   deleteDoc,
@@ -28,7 +29,7 @@ const historyList = document.getElementById("history-list");
 // Authentication Check
 function ensureAuthenticated() {
   if (!auth.currentUser) {
-    alert("You need to be authenticated to perform this action.");
+    console.log("You need to be authenticated to perform this action.");
     throw new Error("User not authenticated.");
   }
 }
@@ -401,6 +402,137 @@ async function fetchAndDisplayHistory() {
   }
 }
 
+// Function to show the modal
+function showModal() {
+  const modal = document.getElementById("name-modal");
+  modal.style.display = "block";
+}
+
+// Function to show the modal with a message
+function showModalWithMessage(message, isError = true) {
+  const modalMessage = document.getElementById("modal-message");
+  const closeModalBtn = document.getElementById("close-modal-btn");
+  const saveNameBtn = document.getElementById("save-name-btn"); // Get the "Save" button
+  const parentNameInput = document.getElementById("parent-name-input"); // Get the input field
+  const modalTitle = document.getElementById("modal-title"); // Get the <h2> element
+
+  modalMessage.textContent = message;
+  modalMessage.style.color = isError ? "red" : "green";
+  modalMessage.style.display = "block";
+
+  // Show the "Close" button only if the message is "Name saved successfully!"
+  if (message === "Name saved successfully!") {
+    closeModalBtn.style.display = "block"; // Show the "Close" button
+    saveNameBtn.style.display = "none"; // Hide the "Save" button
+    parentNameInput.style.display = "none"; // Hide the input field
+    modalTitle.style.display = "none"; // Hide the <h2> element
+  } else {
+    closeModalBtn.style.display = "none"; // Hide the "Close" button
+    saveNameBtn.style.display = "block"; // Show the "Save" button
+    parentNameInput.style.display = "block"; // Show the input field
+    modalTitle.style.display = "block"; // Show the <h2> element
+  }
+
+  showModal();
+}
+
+// Function to display the welcome message
+function displayWelcomeMessage(parentName) {
+  console.log("Displaying welcome message for:", parentName); // Debugging log
+  const welcomeMessageDiv = document.getElementById("welcome-message");
+  const parentNameDisplay = document.getElementById("parent-name-display");
+
+  if (parentName) {
+    parentNameDisplay.textContent = parentName; // Set the parent's name
+    welcomeMessageDiv.style.display = "block"; // Show the welcome message
+  } else {
+    welcomeMessageDiv.style.display = "none"; // Hide the welcome message if no name
+  }
+}
+
+// Function to check if the name field exists in the userProfiles collection
+async function checkUserProfileName() {
+  ensureAuthenticated();
+
+  // Use the authenticated user's UID as the parentId
+  const parentId = auth.currentUser.uid; // Replace with the actual parent ID
+  const userProfileDocRef = doc(db, `userProfiles/${parentId}`);
+
+  try {
+    console.log("Fetching user profile document..."); // Debugging log
+    const userProfileDoc = await getDoc(userProfileDocRef);
+
+    if (!userProfileDoc.exists()) {
+      console.log("User profile document does not exist."); // Debugging log
+      showModal(); // Show the modal if the document doesn't exist
+    } else {
+      const parentName = userProfileDoc.data().name;
+      console.log("Fetched parent name:", parentName); // Debugging log
+
+      // Check if the `name` field is missing
+      if (!parentName) {
+        console.log("Name field is missing in the document."); // Debugging log
+        showModal(); // Show the modal if the name field is missing
+      } else {
+        // If the name exists, display the welcome message
+        displayWelcomeMessage(parentName);
+      }
+    }
+  } catch (error) {
+    console.error("Error checking user profile:", error);
+    showModalWithMessage("Failed to check user profile. Please try again."); // Show error message in modal
+  }
+}
+
+// Event listener for the "Save" button in the modal
+document.getElementById("save-name-btn").addEventListener("click", async () => {
+  const parentNameInput = document.getElementById("parent-name-input");
+  const parentName = parentNameInput.value.trim();
+
+  if (parentName) {
+    console.log("Saving parent name:", parentName); // Debugging log
+
+    // Use the authenticated user's UID as the parentId
+    const parentId = auth.currentUser.uid; // Replace with the actual parent ID
+    const userProfileDocRef = doc(db, `userProfiles/${parentId}`);
+
+    try {
+      // Update or create the document with the `name` field
+      await setDoc(
+        userProfileDocRef,
+        { name: parentName },
+        { merge: true } // Merge to avoid overwriting other fields
+      );
+
+      console.log("Name saved successfully!"); // Debugging log
+
+      // Show success message inside the modal
+      showModalWithMessage("Name saved successfully!", false);
+
+      // Clear the input field
+      parentNameInput.value = "";
+
+      // Display the welcome message
+      displayWelcomeMessage(parentName);
+    } catch (error) {
+      console.error("Error saving parent name:", error);
+      showModalWithMessage("Failed to save parent name. Please try again.");
+    }
+  } else {
+    console.log("Invalid parent name entered."); // Debugging log
+    showModalWithMessage("Please enter a valid name.");
+  }
+});
+
+// Event listener for the "Close" button in the modal
+document.getElementById("close-modal-btn").addEventListener("click", () => {
+  const modal = document.getElementById("name-modal");
+  modal.style.display = "none"; // Hide the modal
+});
+
+// Call the check function when the page loads or when needed
+checkUserProfileName();
+
 // Sign In Example
 document.getElementById("sign-in-btn")?.addEventListener("click", async () => {
   const email = prompt("Enter your email:");
@@ -427,9 +559,13 @@ document.getElementById("sign-out-btn")?.addEventListener("click", async () => {
 // Initial Auth Check
 onAuthStateChanged(auth, (user) => {
   if (user) {
+    console.log("User is authenticated:", user.uid); // Debugging log
     bankRef = collection(db, `bank/${user.uid}/kids`);
     populateDateFilters(); // Populate dropdowns for filtering
     fetchKids(); // Fetch kids and update the UI
+
+    // Check the user profile name after authentication
+    checkUserProfileName();
   } else {
     console.log("User signed out.");
     bankRef = null;
