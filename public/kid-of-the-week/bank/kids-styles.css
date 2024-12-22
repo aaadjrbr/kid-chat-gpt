@@ -273,12 +273,12 @@ img:hover {
 }
 
 .transfer-sent {
-  color: red; /* Red for withdrawals */
+  color: rgb(255, 208, 0); /* Red for withdrawals */
   font-weight: bold; /* Optional: Bold text for withdrawals */
 }
 
 .transfer-received {
-  color: #37fc37; /* Green for deposits */
+  color: #37fcec; /* Green for deposits */
   font-weight: bold; /* Optional: Bold text for deposits */
 }
 
@@ -328,6 +328,8 @@ canvas#qr-code {
   margin: auto;
   border-radius: 35px;
   margin-top: 20px !important;
+  width: 90% !important;
+  height: auto !important;
 }
 
 /* Responsive QR Reader and Video */
@@ -354,6 +356,8 @@ video {
 /* Popup Container */
 .scan-popup-container {
   position: fixed;
+  word-break: break-word;
+  font-size: 14px;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -375,6 +379,10 @@ video {
   height: 100%;
   background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent black */
   z-index: 999; /* Below the popup container */
+}
+
+.scan-popup-container em {
+  font-size: 0.8em;
 }
 
 /* Message Div */

@@ -386,10 +386,13 @@ async function handleScannedData(decodedText) {
 
     // Confirm and process the transaction
     showScanPopup(
-      `👤 <strong>Payee:</strong> ${toName} (${to})<br>
-       🤑 <strong>Payer:</strong> ${payerName} (${payerId})<br>
+      `Check the details before sending:<br><br>
+      🎯 <strong>Receiver:</strong> ${toName}<br>
+       <em>Receiver ID: (${to})</em><br>
+       ✉️ <strong>Sender:</strong> ${payerName}<br>
+       <em>Sender ID: (${payerId})</em><br><br>
        💸 <strong>Amount:</strong> $${amount.toFixed(2)}<br><br>
-       Are you sure you want to complete this transaction?`,
+       ❓ Are you sure you want to complete this transaction?`,
       () => {
         processTransaction(transactionData)
           .then(() => {
@@ -412,7 +415,6 @@ async function handleScannedData(decodedText) {
 
 // DOM Elements
 const generateQrButton = document.getElementById("generate-qr");
-const qrCodeContainer = document.getElementById("qr-code-container");
 
 generateQrButton.addEventListener("click", async () => {
   const selectedKidId = kidSelect.value; // Receiver kid ID
@@ -586,7 +588,7 @@ function showQrCodePopup(transactionData, selectedKidName) {
         // Download link
         const downloadLink = document.createElement("a");
         downloadLink.href = qrCodeDataUrl;
-        downloadLink.download = `qr-code-${selectedKidName || "unknown"}.png`;
+        downloadLink.download = `alfie-bank-qr-code-${selectedKidName || "unknown"}.png`;
         downloadLink.textContent = "⬇️ Download QR Code";
         downloadLink.classList.add("qr-popup-download-link");
         popupContainer.appendChild(downloadLink);
@@ -603,14 +605,14 @@ function showQrCodePopup(transactionData, selectedKidName) {
               const qrCodeBlob = await response.blob();
 
               await navigator.share({
-                title: "Payment Request QR Code",
+                title: "Alfie Central Bank - Payment Request QR Code",
                 text: `Requesting $${transactionData.amount.toFixed(
                   2
                 )} for ${selectedKidName || "Unknown"}`,
                 files: [
                   new File(
                     [qrCodeBlob],
-                    `qr-code-${selectedKidName || "unknown"}.png`,
+                    `alfie-bank-qr-code-${selectedKidName || "unknown"}.png`,
                     { type: "image/png" }
                   ),
                 ],
@@ -644,38 +646,6 @@ function showQrCodePopup(transactionData, selectedKidName) {
   // Append the overlay and popup container to the body
   overlay.appendChild(popupContainer);
   document.body.appendChild(overlay);
-}
-
-// Define selectPayer function to allow user to select the payer
-async function selectPayer() {
-  const snapshot = await getDocs(bankRef);
-
-  if (snapshot.empty) {
-    alert("⚠️ No kids found. Please add a kid first.");
-    return null;
-  }
-
-  let kidsList = [];
-  snapshot.forEach((doc, index) => {
-    const kid = doc.data();
-    kidsList.push({ id: doc.id, name: kid.name });
-  });
-
-  const numberedList = kidsList
-    .map((kid, index) => `${index + 1}. ${kid.name}`)
-    .join("\n");
-
-  const choice = prompt(
-    `🤑 Who is paying? Enter the number corresponding to the kid:\n\n${numberedList}`
-  );
-
-  const selectedIndex = parseInt(choice, 10) - 1;
-  if (isNaN(selectedIndex) || selectedIndex < 0 || selectedIndex >= kidsList.length) {
-    alert("❌ Invalid selection. Please try again.");
-    return null;
-  }
-
-  return kidsList[selectedIndex];
 }
 
 // Initialize App After Authentication
