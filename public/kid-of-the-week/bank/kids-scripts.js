@@ -147,11 +147,19 @@ function displayFilteredHistory(history) {
       // Create list item
       const listItem = document.createElement("li");
       listItem.textContent = `${formattedDate} ${formattedTime}: ${
-        entry.type === "Transfer Sent" ? "Transfer Sent 📤" : entry.type === "Transfer Received" ? "Transfer Received 📥" : entry.type === "add" ? "Deposited 💰" : "Withdrew 💸"
+        entry.type === "Transfer Sent" ? "Transfer Sent 📤" :
+        entry.type === "Transfer Received" ? "Transfer Received 📥" :
+        entry.type === "deposit" || entry.type === "add" ? "Deposited 💰" : // Handle "add" as deposit
+        "Withdrew 💸"
       } $${Math.abs(entry.change)} (Prior: $${entry.priorBalance}) - Total: $${totalBalance}`;
 
       // Add a class based on transaction type
-      listItem.classList.add(entry.type === "Transfer Sent" ? "transfer-sent" : entry.type === "Transfer Received" ? "transfer-received" : entry.type === "add" ? "deposit" : "withdraw");
+      listItem.classList.add(
+        entry.type === "Transfer Sent" ? "transfer-sent" :
+        entry.type === "Transfer Received" ? "transfer-received" :
+        entry.type === "deposit" || entry.type === "add" ? "deposit" : // Handle "add" as deposit
+        "withdraw"
+      );
 
       historyList.appendChild(listItem);
     });

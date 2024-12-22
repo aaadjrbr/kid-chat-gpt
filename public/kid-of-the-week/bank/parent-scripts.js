@@ -181,7 +181,7 @@ document.getElementById("set-balance-btn").addEventListener("click", async () =>
         const kidData = kidDoc.data();
         const priorBalance = kidData.balance || 0; // Ensure priorBalance is valid
         const change = newBalance - priorBalance;
-        const type = change > 0 ? "add" : "deduct";
+        const type = change > 0 ? "deposit" : "withdrawal"; // Use "deposit" instead of "add"
 
         // Get current date
         const now = new Date();
@@ -197,7 +197,7 @@ document.getElementById("set-balance-btn").addEventListener("click", async () =>
         history[year][month].push({
           timestamp: now.toISOString(),
           change,
-          type,
+          type, // Use "deposit" or "withdrawal"
           priorBalance,
         });
 
@@ -239,9 +239,12 @@ document.getElementById("adjust-balance-btn").addEventListener("click", async ()
 
         const kidData = kidDoc.data();
         const priorBalance = kidData.balance || 0;
+
+        // Determine the change based on the adjustment type
         const change = adjustmentType === "deposit" ? adjustmentAmount : -adjustmentAmount; // Add or Deduct
         const newBalance = priorBalance + change;
 
+        // Ensure the balance does not go below zero for withdrawals
         if (newBalance < 0) {
           alert("Insufficient funds!");
           return; // Stop the transaction
