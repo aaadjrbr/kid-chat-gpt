@@ -510,3 +510,14 @@ div.popup-container button:hover, div.qr-popup-container:hover,
 .popup-button-container {
   margin-top: 20px;
 }
+
+/* Neon Pink/Blue Horizontal Rule */
+hr.neon-gradient {
+  border: none;
+  height: 3px;
+  background: linear-gradient(90deg, #ffffffd0, #3333ff); /* Pink to Blue Gradient */
+  box-shadow: 0 0 10px #ff00cc, 0 0 20px #3333ff, 0 0 30px #ff00cc; /* Neon Glow Effect */
+  margin: 35px auto;
+  width: 90%;
+  border-radius: 15px;
+}
