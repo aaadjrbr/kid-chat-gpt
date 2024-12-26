@@ -381,32 +381,99 @@ function saveAsPDF() {
 // Display explanation with formatting for MathJax rendering
 function displayExplanation(explanation) {
     const outputContainer = document.getElementById('outputContainer');
-    outputContainer.innerHTML = "";
+    outputContainer.innerHTML = ""; // Clear previous content
 
     const lines = explanation.split('\n');
+    let currentList = null; // Track the current list element
+    let currentIndent = 0; // Track the indentation level for nested lists
+    let isStepItem = false; // Track if the current list item is a step
+
     lines.forEach((line) => {
-        const lineElement = document.createElement('div');
-        lineElement.className = "step";
+        // Skip empty lines
+        if (line.trim() === "") return;
 
-        line = line.replace(/\*\*(.*?)\*\*/g, '<strong class="emphasis">$1</strong>');
-        line = line.replace(/\*(.*?)\*/g, '<em>$1</em>');
-        line = line.replace(/\\\[(.*?)\\\]/g, (_, expr) => `\\[${expr}\\]`);
-        line = line.replace(/\\\((.*?)\\\)/g, (_, expr) => `\\(${expr}\\)`);
+        // Handle headings (e.g., ### Step 1)
+        if (line.startsWith("### ")) {
+            const heading = document.createElement('div');
+            heading.className = "step-header";
+            heading.textContent = line.replace("### ", "");
+            outputContainer.appendChild(heading);
+        }
+        // Handle separators (e.g., ---)
+        else if (line.trim() === "---") {
+            const separator = document.createElement('hr');
+            separator.className = "explanation-separator";
+            outputContainer.appendChild(separator);
+        }
+        // Handle bullet points or lists (e.g., - item or indented items)
+        else if (line.startsWith("- ") || line.match(/^\s*-\s/) || line.match(/^\d+\.\s/)) {
+            const indentLevel = line.match(/^\s*/)[0].length; // Calculate indentation level
+            const listItemText = line.replace(/^\s*-\s|^\d+\.\s/, "").trim(); // Remove bullet/number
 
-        lineElement.innerHTML = line.startsWith("```") && line.endsWith("```")
-            ? `<pre><code>${line.slice(3, -3).trim()}</code></pre>`
-            : line;
-        outputContainer.appendChild(lineElement);
+            // Create a new list if indentation level changes or no list exists
+            if (!currentList || indentLevel !== currentIndent) {
+                currentList = document.createElement('ul');
+                currentList.className = isStepItem ? "explanation-list-steps" : "explanation-list";
+                outputContainer.appendChild(currentList);
+                currentIndent = indentLevel;
+            }
+
+            // Create list item
+            const listItem = document.createElement('li');
+
+            // Check if the list item is a step (contains ** or has specific formatting)
+            if (line.includes("**")) {
+                listItem.className = "step-item"; // Add a class for steps
+                isStepItem = true; // This is a step
+            } else {
+                isStepItem = false; // This is a regular list item
+            }
+
+            listItem.innerHTML = listItemText
+                .replace(/\*\*(.*?)\*\*/g, '<strong class="emphasis">$1</strong>') // Bold with emphasis
+                .replace(/\*(.*?)\*/g, '<em>$1</em>'); // Italics
+            currentList.appendChild(listItem);
+        }
+        // Handle code blocks (e.g., ```code```)
+        else if (line.startsWith("```") && line.endsWith("```")) {
+            const codeBlock = document.createElement('pre');
+            codeBlock.className = "explanation-code";
+            codeBlock.textContent = line.slice(3, -3).trim();
+            outputContainer.appendChild(codeBlock);
+        }
+        // Handle final answer or conclusion
+        else if (line.startsWith("Final Answer:")) {
+            const finalAnswer = document.createElement('div');
+            finalAnswer.className = "step final-answer";
+            finalAnswer.innerHTML = line
+                .replace(/\*\*(.*?)\*\*/g, '<strong class="emphasis">$1</strong>'); // Bold with emphasis
+            outputContainer.appendChild(finalAnswer);
+        }
+        // Default text (steps)
+        else {
+            // If there's an active list, close it
+            if (currentList) {
+                currentList = null;
+                currentIndent = 0;
+                isStepItem = false; // Reset step item flag
+            }
+            const step = document.createElement('div');
+            step.className = "step";
+            step.innerHTML = line
+                .replace(/\*\*(.*?)\*\*/g, '<strong class="emphasis">$1</strong>') // Bold with emphasis
+                .replace(/\*(.*?)\*/g, '<em>$1</em>'); // Italics
+            outputContainer.appendChild(step);
+        }
     });
 
-    // Re-add the "Save as PDF" button to outputContainer
+    // Re-add the "Save as PDF" button
     const saveButton = document.createElement('button');
     saveButton.className = 'action-button secondary';
     saveButton.textContent = 'Save as PDF 📄';
     saveButton.onclick = saveAsPDF;
-
     outputContainer.appendChild(saveButton);
 
+    // Render MathJax for math expressions
     MathJax.typesetPromise([outputContainer]).catch((err) => {
         outputContainer.innerHTML += "<div class='error'>There was an issue rendering math symbols. Please try again.</div>";
     });

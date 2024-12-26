@@ -159,8 +159,7 @@ h1 {
     max-width: 600px;
     background-color: #fff; /* White background for paper look */
     border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* Softer shadow */
-    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.233);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), inset 0 2px 5px rgba(0, 0, 0, 0.233); /* Combined shadows */
     font-size: 1em;
     color: #333;
     font-family: "Open Sans", sans-serif;
@@ -170,22 +169,20 @@ h1 {
 /* Individual Step Styling */
 .step {
     margin-bottom: 30px;
-    font-size: 1em;
-    line-height: 1.9;
-    border-left: 5px solid #560badbf;
+    font-size: 1.2em;
+    line-height: 1.8;
+    border-bottom: 2px solid #560bad47;
     padding-left: 10px;
     color: #7b2cbf;
     font-weight: 600;
-    background: #e7e7e769;
-    box-shadow: inset 0 2px 5px rgb(0 0 0 / 8%);
-    /* padding: 10px; */
-    border-radius: 8px;
+    padding: 10px;
+    margin-top: 35px;
 }
 
 /* Header Styling for Steps */
 .step-header {
     font-size: 1.2em;
-    color: #333; /* Darker, more readable color */
+    color: #7b2cbf; /* Darker, more readable color */
     font-weight: 500;
     margin-bottom: 6px;
     line-height: 1.7;
@@ -195,12 +192,12 @@ h1 {
 .emphasis {
     font-weight: 700;
     color: #ffffff;
-    /* background-color: #f9f9f9; */
-    padding: 3px;
+    padding: 5px;
     border-radius: 8px;
     background: linear-gradient(to bottom right, #7b2cbf, #b5179e);
     margin-right: 3px;
     font-size: 0.9em;
+    line-height: 2.5;
 }
 
 /* Important Notes or Additional Tips */
@@ -211,6 +208,136 @@ h1 {
     border-left: 4px solid #b0bec5; /* Neutral color for notes */
     font-weight: bold;
     color: #333;
+    margin: 10px 0;
+}
+
+/* Separator for sections (e.g., ---) */
+.explanation-separator {
+    border: 0;
+    height: 1px;
+    background-color: #ddd;
+    margin: 20px 0;
+}
+
+/* Styling for steps (explanation-list) */
+.explanation-list {
+    margin-left: 20px;
+    list-style-type: none; /* No bullets for steps */
+    color: #7b2cbf; /* Purple text color */
+    font-weight: 500; /* Medium font weight */
+    border-left: 5px solid #560badbf; /* Left border */
+    border-radius: 8px; /* Rounded corners */
+    background: #e7e7e769; /* Light background */
+    padding: 12px 45px; /* Padding */
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.08); /* Inner shadow */
+    margin-bottom: 20px; /* Spacing between sections */
+}
+
+.explanation-list li.step-item {
+    margin-bottom: 10px;
+    font-weight: bold; /* Bold text for steps */
+}
+
+/* Styling for step items (explanation-list-steps) */
+.explanation-list-steps {
+    margin-left: 20px;
+    margin-top: -15px;
+    color: #7b2cbf;
+    font-weight: 500;
+    border-radius: 8px;
+    padding: 12px 45px;
+    margin-bottom: 20px;
+    line-height: 1.8;
+}
+
+.explanation-list-steps li.step-item {
+    margin-bottom: 10px;
+    font-weight: bold; /* Bold text for steps */
+}
+
+/* Styling for examples (example-list) */
+.example-list {
+    margin-left: 20px;
+    list-style-type: none; /* No bullets for steps */
+    color: #7b2cbf; /* Purple text color */
+    font-weight: 500; /* Medium font weight */
+    border-left: 5px solid #560badbf; /* Left border */
+    border-radius: 8px; /* Rounded corners */
+    background: #e7e7e769; /* Light background */
+    padding: 12px 45px; /* Padding */
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.08); /* Inner shadow */
+    margin-bottom: 20px; /* Spacing between sections */
+}
+
+.example-list li {
+    margin-bottom: 10px;
+    color: #333; /* Default text color for examples */
+}
+
+/* Nested List Styling */
+.example-list .example-list {
+    margin-left: 20px; /* Add indentation for nested example lists */
+    list-style-type: circle; /* Change bullet style for nested example lists */
+}
+
+/* Hide bullets for list items with the .emphasis class */
+.explanation-list li .emphasis {
+    list-style-type: none; /* Remove the bullet */
+    margin-left: -20px; /* Adjust indentation to align with other list items */
+}
+
+/* Nested List Styling */
+.explanation-list .explanation-list {
+    margin-left: 20px; /* Add indentation for nested lists */
+    list-style-type: circle; /* Change bullet style for nested lists */
+}
+
+/* Code Block Styling */
+.explanation-code {
+    background-color: #e9ecef;
+    padding: 10px;
+    border-radius: 4px;
+    font-family: "Courier New", monospace;
+    margin: 10px 0;
+}
+
+/* Styling for steps (list items with .step-item) */
+.explanation-list li.step-item {
+    list-style-type: none;
+    margin-left: -20px;
+    font-weight: 600;
+    color: #7b2cbf;
+}
+
+/* Styling for examples (regular list items) */
+.explanation-list li:not(.step-item) {
+    list-style-type: disc; /* Keep bullet */
+    color: #333; /* Default text color */
+}
+
+/* Final answer styling */
+.final-answer {
+    font-weight: bold;
+    color: #27ae60;
+    margin-top: 20px;
+}
+
+/* List styling for bullet points */
+.explanation-list {
+    margin-left: 20px;
+    list-style-type: disc;
+}
+
+.explanation-list li {
+    margin-bottom: 10px;
+}
+
+/* Code block styling */
+.explanation-code {
+    background-color: #e9ecef;
+    padding: 10px;
+    border-radius: 4px;
+    font-family: "Courier New", monospace;
     margin: 10px 0;
 }
 
