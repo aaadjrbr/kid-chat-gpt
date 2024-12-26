@@ -235,7 +235,7 @@ h1 {
 
 .explanation-list li.step-item {
     margin-bottom: 10px;
-    font-weight: bold; /* Bold text for steps */
+    font-weight: 600; /* Bold text for steps */
 }
 
 /* Styling for step items (explanation-list-steps) */
@@ -271,7 +271,7 @@ h1 {
 
 .example-list li {
     margin-bottom: 10px;
-    color: #333; /* Default text color for examples */
+    color: #7b2cbf; /* Purple text color */
 }
 
 /* Nested List Styling */
