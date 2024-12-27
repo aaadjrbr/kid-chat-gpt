@@ -241,13 +241,15 @@ h1 {
 /* Styling for step items (explanation-list-steps) */
 .explanation-list-steps {
     margin-left: 20px;
-    margin-top: -15px;
-    color: #7b2cbf;
+    margin-top: -10px;
+    color: #ffffff;
     font-weight: 500;
     border-radius: 8px;
     padding: 12px 45px;
     margin-bottom: 20px;
     line-height: 1.8;
+    background: linear-gradient(to right, #480ca8, #560badd9);
+    box-shadow: inset 0 2px 5px rgb(255 255 255 / 54%);
 }
 
 .explanation-list-steps li.step-item {
