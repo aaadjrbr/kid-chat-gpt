@@ -313,8 +313,8 @@ h1 {
 
 /* Styling for examples (regular list items) */
 .explanation-list li:not(.step-item) {
-    list-style-type: disc; /* Keep bullet */
-    color: #333; /* Default text color */
+    list-style-type: disc;
+    color: #7b2cbf;
 }
 
 /* Final answer styling */
