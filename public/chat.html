@@ -60,14 +60,13 @@
         </a>
         <br/><br/>
         <div id="kid-name-display"><span id="kid-name"></span><span class="cursor">|</span></div>
-        <h2 style="font-size: 1.2em; font-weight: 500; margin-bottom: 0; color: #696767; text-align: center;">This bar shows your limit for talking to Alfie:</h2>
-        <p style="text-align: center;"><a href="./checkout.html">Want more time with Alfie? Get more tokens here!</a></p>
-        
+        <h2 style="font-size: 1.2em; font-weight: 500; color: #696767; text-align: center; margin-bottom: -10px;">This bar shows your limit for talking to Alfie:</h2>
         <div id="token-container">
             <span id="token-count"></span> <!-- Add this to display the token count -->
             <div id="token-bar"></div>
         </div>
-        <h2 style="font-size: 1em; font-weight: 500; margin-bottom: 0; color: #696767; text-align: center;">Your user status:</h2>
+        <p style="text-align: center; margin-top: -10px; font-size: 0.9em;"><a href="./checkout.html">Want more time with Alfie? Get more tokens here!</a></p>
+        <h2 style="margin-top: 25px; font-size: 1em; font-weight: 500; margin-bottom: 0; color: #696767; text-align: center;">Your user status:</h2>
         <br/>
         <div class="badge1"></div>
 
@@ -77,17 +76,19 @@
                 Edit ✏️
             </button>
         </div>
-        <div id="bg-controls" style="display: none; text-align: center;">
+        <div id="bg-controls" class="parent-container" style="display: none; text-align: center;">
             <input type="file" id="bg-upload" accept="image/*" />
-            <button id="upload-bg" style="font-size: 16px; background: none; border: none; cursor: pointer;">📷</button>
-            <button id="delete-bg" style="font-size: 16px; background: none; border: none; cursor: pointer;">❌</button>
+            <button id="upload-bg" style="cursor: pointer;"><span class="material-icons">image</span></button>
+            <button id="delete-bg" style="cursor: pointer;"><span class="material-icons">delete</span></button>
         </div>                                        
     </div>
     <!-- Button to open full screen -->
     <button id="openFullScreenButton" class="open-fullscreen-button">Start talking to Alfie 🐶</button>
 <div id="fullScreenDiv" class="full-screen-div">
     <div id="chat-container">
-        <button id="closeButton" class="close-button">Exit Full Screen</button>
+        <button id="closeButton" class="close-button">Exit Full Screen <span class="material-icons">
+            fullscreen
+            </span></button>
         <div id="messages"></div>
         <div id="input-container">
             <div id="typing-indicator" class="typing-indicator">

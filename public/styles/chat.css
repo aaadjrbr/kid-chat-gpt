@@ -11,8 +11,8 @@ body {
     margin: 0;
     color: #333;
     background-image: 
-        linear-gradient(rgba(0, 0, 255, 0.2) 1px, transparent 1px), /* Horizontal lines */
-        linear-gradient(90deg, rgba(255, 0, 0, 0.081) 1px, transparent 1px); /* Vertical margin line */
+        linear-gradient(rgba(0, 0, 255, 0.151) 1px, transparent 1px), /* Horizontal lines */
+        linear-gradient(90deg, rgba(255, 0, 0, 0.055) 1px, transparent 1px); /* Vertical margin line */
        /* radial-gradient(circle, rgba(25, 98, 255, 0.12) 2px, transparent 3px);  Circles at intersections */
     background-size: 100% 50px, 50px 100%, 50px 50px; /* Line and dot alignment */
     background-position: 25px 25px; /* Offset dots to line intersections */
@@ -66,18 +66,37 @@ button, input {
     display: none;
 }
 
+.parent-container {
+    display: flex;
+    flex-direction: row; /* Horizontal layout */
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+}
+
 /* Style for the buttons with emojis */
 #upload-bg, #delete-bg {
     font-size: 16px;
-    background: none;
+    background: #6a11cb80 !important;
     border: none;
+    border-radius: 50%; /* Makes the button a circle */
     cursor: pointer;
-    transition: transform 0.2s ease;
+    width: 50px; /* Ensure it’s a square to form a circle */
+    height: 50px; /* Match width for a perfect circle */
+    color: #ffff;
+    align-items: center; /* Centers the icon vertically */
+    justify-content: center; /* Centers the icon horizontally */
+    transition: transform 0.2s ease; /* Optional animation */
+    margin: 5px; /* Adds spacing between buttons */
+}
+
+#upload-bg span.material-icons:hover, #delete-bg span.material-icons:hover {
+    color: #ffff;
 }
 
 /* Add a hover effect to make the buttons more interactive */
 #upload-bg:hover, #delete-bg:hover {
     transform: scale(1.2);
+    color: #ffff;
 }
 
 /* Pencil button toggle */
@@ -815,6 +834,7 @@ select.voice-select:focus {
 
 /* Token count text */
 #token-count {
+    user-select: none;
     text-align: center;
     font-size: 1em;
     color: #ffffff;
@@ -1046,28 +1066,61 @@ button#remove-image-btn {
 /* Button to open full screen */
 .open-fullscreen-button {
     margin: auto;
-    font-family: "Fredoka", sans-serif;
-    font-size: 1.4em;
-    font-weight: 600;
-    background: #ffffffce;
-    border-radius: 25px;
-    padding: 12px;
-    color: #6a11cb;
-    border: none;
+    text-align: center;
+    display: flex;
     cursor: pointer;
-    z-index: 1000; /* Ensure it's above other elements */
-    display: block; /* Visible by default */
-    margin-bottom: 25px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+    font-family: 'Fredoka One', 'Raleway', sans-serif;
+    font-weight: 500;
+    color: #ffffff;
+    background-image: url('https://firebasestorage.googleapis.com/v0/b/kids-chatgpt.appspot.com/o/static%2Falfie-bg-button.webp?alt=media&token=5916041f-c045-494f-8ac8-f13af15b5392'); /* Replace with your image path */
+    background-size: cover;
+    background-position: center;
+    border: 2px solid #fffffff3;
+    padding: 15px;
+    font-size: 1.1em;
+    border-radius: 35px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2), inset 0 -3px 5px rgba(0, 0, 0, 0.15);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Moving star effects */
+.open-fullscreen-button::before,
+.open-fullscreen-button::after {
+    content: '';
+    position: absolute;
+    width: 200%;
+    height: 200%;
+    top: -50%;
+    left: -50%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.61) 6%, transparent 4%) repeat;
+    background-size: 20px 20px;
+    pointer-events: none;
+    opacity: 0.5;
+    animation: moveStars 6s linear infinite;
+}
+
+.open-fullscreen-button::after {
+    background-size: 25px 25px; /* Slightly different size for variety */
+    opacity: 0.3;
+    animation-duration: 8s; /* Different speed for more variation */
+}
+
+@keyframes moveStars {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    25% { transform: translate(10px, -10px) rotate(45deg); }
+    50% { transform: translate(-15px, 15px) rotate(90deg); }
+    75% { transform: translate(20px, -20px) rotate(135deg); }
+    100% { transform: translate(0, 0) rotate(360deg); }
 }
 
 /* Hover effect */
 .open-fullscreen-button:hover {
-    background: #6a11cb;
-    color: #ffffff;
-    transform: scale(1.05); /* Slightly enlarge on hover */
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* More pronounced shadow */
+    transform: scale(1.05) translateY(-3px); /* Lifted effect on hover */
+    box-shadow: 
+        0 8px 15px rgba(0, 0, 0, 0.3),      /* Enhanced outer shadow */
+        inset 0 -4px 8px rgba(255, 255, 255, 0.3); /* Inner light highlight for depth */
 }
 
 /* Active effect */
@@ -1110,6 +1163,9 @@ button#remove-image-btn {
 }
 
 .close-button {
+    display: flex;
+    justify-content: center;
+    align-items: center; /* Centers vertically */
     background: linear-gradient(145deg, rgb(128, 11, 182), rgb(127, 11, 180)) !important;
     border: none;
     padding: 8px;
@@ -1118,10 +1174,8 @@ button#remove-image-btn {
 }
 
 /* Hover effect with deeper gradient and lift */
-.close-button:hover {
-    background: linear-gradient(145deg, rgba(128, 11, 182, 0.877), rgba(126, 11, 180, 0.712)) !important;
+.close-button:hover, .close-button span.material-icons:hover {
     color: #ffffff;
-    box-shadow: 0 8px 15px rgba(106, 17, 203, 0.5), inset 0 2px 5px rgba(255, 255, 255, 0.3);
 }
 
 /* Active state for "pressed" look */
