@@ -773,8 +773,8 @@ select.voice-select:focus {
     font-weight: 500;
     box-shadow: 0 8px 15px rgba(107, 17, 203, 0.356), inset 0 2px 5px rgba(255, 255, 255, 0.3) !important;
     cursor: pointer;
-    padding: 15px;
-    border-radius: 25px;
+    padding: 8px;
+    border-radius: 15px;
     transition: all 0.3s ease;
 }
 
@@ -1047,17 +1047,17 @@ button#remove-image-btn {
 .open-fullscreen-button {
     margin: auto;
     font-family: "Fredoka", sans-serif;
-    font-size: 1.7em;
+    font-size: 1.4em;
     font-weight: 600;
     background: #ffffffce;
-    border-radius: 35px;
+    border-radius: 25px;
     padding: 12px;
     color: #6a11cb;
     border: none;
     cursor: pointer;
     z-index: 1000; /* Ensure it's above other elements */
     display: block; /* Visible by default */
-    margin-bottom: 35px;
+    margin-bottom: 25px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
     transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
 }
@@ -1112,7 +1112,7 @@ button#remove-image-btn {
 .close-button {
     background: linear-gradient(145deg, rgb(128, 11, 182), rgb(127, 11, 180)) !important;
     border: none;
-    padding: 5px;
+    padding: 8px;
     color: #ffffff;
     cursor: pointer;
 }
