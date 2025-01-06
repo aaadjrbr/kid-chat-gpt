@@ -19,15 +19,21 @@ export async function displayChatHistoryByDay(parentId, kidId, year, month, day,
     kidName = getKidNameFromURL();  
 
     // Convert the selected day to a start and end timestamp
-    const startOfDay = new Date(`${year}-${month}-${String(day).padStart(2, '0')}T00:00:00`);
-    const endOfDay = new Date(`${year}-${month}-${String(day).padStart(2, '0')}T23:59:59`);
+    const startDate = new Date(Date.UTC(year, month - 1, day, 0, 0, 0)); // Month is 0-indexed
+    const endDate = new Date(Date.UTC(year, month - 1, day, 23, 59, 59));
+
+    // Validate date objects
+    if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+        console.error("Invalid date range provided:", year, month, day);
+        return; // or throw an error, or handle as appropriate
+    }
 
     const chatSessionsRef = collection(db, `parents/${parentId}/kids/${kidId}/chatSessions`);
     
     let q = query(
         chatSessionsRef,
-        where("dateStarted", ">=", startOfDay),
-        where("dateStarted", "<=", endOfDay),
+        where("dateStarted", ">=", startDate),
+        where("dateStarted", "<=", endDate),
         orderBy("dateStarted", "desc"),
         limit(SESSIONS_PER_PAGE + 1) // Fetch one extra session to check if more exist
     );
@@ -38,34 +44,39 @@ export async function displayChatHistoryByDay(parentId, kidId, year, month, day,
     }
 
     // Execute the query
-    const chatSnapshot = await getDocs(q);
-    const historyContainer = document.getElementById('history-container');
-    historyContainer.innerHTML = ''; // Clear previous results
+    try {
+        const chatSnapshot = await getDocs(q);
+        const historyContainer = document.getElementById('history-container');
+        historyContainer.innerHTML = ''; // Clear previous results
 
-    if (chatSnapshot.empty) {
-        historyContainer.innerHTML += '<p>❌ No chat history available for this day.</p>';
-        return;
+        if (chatSnapshot.empty) {
+            historyContainer.innerHTML += '<p>❌ No chat history available for this day.</p>';
+            return;
+        }
+
+        // Update lastVisible for pagination
+        if (chatSnapshot.docs.length > SESSIONS_PER_PAGE) {
+            lastVisible = chatSnapshot.docs[SESSIONS_PER_PAGE - 1]; // Set lastVisible for pagination
+        } else {
+            lastVisible = null; // No more sessions, disable next button
+        }
+
+        // Get only the first `SESSIONS_PER_PAGE` items
+        const chatSessions = chatSnapshot.docs.slice(0, SESSIONS_PER_PAGE).map(doc => ({
+            id: doc.id,
+            ...doc.data()
+        }));
+
+        // Cache the data for future use
+        const cacheKey = `${parentId}_${kidId}_${year}_${month}_${day}`;
+        sessionStorage.setItem(cacheKey, JSON.stringify(chatSessions));
+
+        // Display the fetched sessions
+        renderChatHistory(chatSessions, parentId, kidId, year, month, day, page);
+    } catch (error) {
+        console.error("Error fetching chat sessions:", error);
+        // Handle error appropriately, e.g., show user-friendly message
     }
-
-    // Update lastVisible for pagination
-    if (chatSnapshot.docs.length > SESSIONS_PER_PAGE) {
-        lastVisible = chatSnapshot.docs[SESSIONS_PER_PAGE - 1]; // Set lastVisible for pagination
-    } else {
-        lastVisible = null; // No more sessions, disable next button
-    }
-
-    // Get only the first `SESSIONS_PER_PAGE` items
-    const chatSessions = chatSnapshot.docs.slice(0, SESSIONS_PER_PAGE).map(doc => ({
-        id: doc.id,
-        ...doc.data()
-    }));
-
-    // Cache the data for future use
-    const cacheKey = `${parentId}_${kidId}_${year}_${month}_${day}`;
-    sessionStorage.setItem(cacheKey, JSON.stringify(chatSessions));
-
-    // Display the fetched sessions
-    renderChatHistory(chatSessions, parentId, kidId, year, month, day, page);
 }
 
 // Function to load chat messages for a specific chat session
