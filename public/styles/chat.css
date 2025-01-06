@@ -104,7 +104,7 @@ button, input {
     height: 80vh;
     overflow: auto;
     position: relative;
-    margin-top: -15px;
+    margin-top: 20px;
 }
 
 /* Modern 3D Resizer Handle for Vertical Resizing */
@@ -812,6 +812,19 @@ select.voice-select:focus {
     box-shadow: 0 8px 15px rgba(106, 17, 203, 0.3), inset 0 4px 8px rgba(255, 255, 255, 0.2);
 }
 
+/* Token count text */
+#token-count {
+    text-align: center;
+    font-size: 1em;
+    color: #ffffff;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    margin-bottom: -30px;
+    margin-top: 5px;
+    font-weight: 500;
+}
+
 /* User Badge Styling */
 .badge {
     cursor: pointer;
@@ -1027,4 +1040,71 @@ button#remove-image-btn {
     background: none;
     border: none;
     margin-top: 4px;
+}
+
+/* Button to open full screen */
+.open-fullscreen-button {
+    margin: auto;
+    font-family: "Fredoka", sans-serif;
+    font-size: 1.7em;
+    font-weight: 600;
+    background: #ffffffce;
+    border-radius: 35px;
+    padding: 12px;
+    color: #6a11cb;
+    border: none;
+    cursor: pointer;
+    z-index: 1000; /* Ensure it's above other elements */
+    display: block; /* Visible by default */
+    margin-bottom: 35px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+}
+
+/* Hover effect */
+.open-fullscreen-button:hover {
+    background: #6a11cb;
+    color: #ffffff;
+    transform: scale(1.05); /* Slightly enlarge on hover */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* More pronounced shadow */
+}
+
+/* Active effect */
+.open-fullscreen-button:active {
+    transform: scale(1.02); /* Slight shrink on click */
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1); /* Lighter shadow */
+}
+
+/* Focus effect */
+.open-fullscreen-button:focus {
+    outline: none; /* Remove default outline */
+    box-shadow: 0 0 5px #6a11cb; /* Glow effect on focus */
+}
+
+/* Initial state of the full-screen div */
+#fullScreenDiv {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw; /* Full viewport width */
+    height: 100dvh; /* Use dynamic viewport height */
+    background: none;
+    opacity: 0; /* Hidden initially */
+    pointer-events: none; /* Disable interactions */
+    transition: opacity 0.3s ease; /* Smooth transition */
+    z-index: 999; /* Below the button */
+    overflow: auto; /* Enable scrolling if content overflows */
+}
+
+/* Show the full-screen div when active */
+#fullScreenDiv.active {
+    opacity: 1;
+    pointer-events: auto; /* Enable interactions */
+}
+
+.close-button {
+    background: #d6d6d6;
+    border: none;
+    padding: 5px;
+    color: rgb(128, 11, 182);
 }

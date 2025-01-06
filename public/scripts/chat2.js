@@ -196,3 +196,32 @@ function stopResize() {
     window.removeEventListener('mouseup', stopResize);
     window.removeEventListener('touchend', stopResize);
 }
+
+//Full Screen Stuff
+
+// Get references to the button, full-screen div, and close button
+const openFullScreenButton = document.getElementById('openFullScreenButton');
+const fullScreenDiv = document.getElementById('fullScreenDiv');
+const closeButton = document.getElementById('closeButton');
+
+// Function to close the chat
+function closeChat() {
+    fullScreenDiv.classList.remove('active'); // Remove the active class
+    openFullScreenButton.style.display = 'block'; // Show the "Open Chat" button
+}
+
+// Toggle full-screen mode when the "Open Chat" button is clicked
+openFullScreenButton.addEventListener('click', function() {
+    fullScreenDiv.classList.toggle('active'); // Toggle the active class
+    openFullScreenButton.style.display = 'none'; // Hide the "Open Chat" button
+});
+
+// Close the chat when the close button is clicked
+closeButton.addEventListener('click', closeChat);
+
+// Close the chat when the "Esc" key is pressed
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape' && fullScreenDiv.classList.contains('active')) {
+        closeChat(); // Call the closeChat function
+    }
+});

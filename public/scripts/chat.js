@@ -699,6 +699,7 @@ async function sendMessage() {
                 userTokens -= 20;
                 await updateTokensInFirestore(); // Update Firestore after deducting tokens
                 console.log('20 tokens deducted for image upload');
+                updateTokenBar(); // Refresh the token bar
             } else {
                 displayMessage("Oops! You don't have enough tokens to upload the image.", "bot");
                 return;
@@ -758,6 +759,7 @@ async function sendMessage() {
             userTokens -= 1;
             await updateTokensInFirestore(); // Update Firestore with new token count
             console.log('1 token deducted for user message:', userTokens);
+            updateTokenBar(); // Refresh the token bar
         } else {
             displayMessage("🌟 Oopsie! Looks like you're out of magic tokens! 🪄✨ Refresh the page and send me a message to see when you can chat again! 😊💬", "bot");
             return;
@@ -774,8 +776,6 @@ async function sendMessage() {
 
         try {
             // Display typing indicator for bot response
-            //displayTypingMessage("Thinking...", 'bot');
-
             showTypingIndicator(); // Show typing indicator while bot processes
 
             // Fetch bot response
@@ -785,14 +785,6 @@ async function sendMessage() {
 
             // Ensure that the response is always a string
             botResponse = botResponse || "Oops! I couldn't think of a response. Try again later.";
-
-// Deduct 1 token for the bot response
-// if (userTokens > 0) {
-//     userTokens -= 1;
-//     await updateTokensInFirestore(); // Update Firestore with the new token count
-//     console.log('1 token deducted for bot response:', userTokens);
-// }
-
 
             // Push bot response to the conversation context
             conversationContext.push({ role: "assistant", content: botResponse });
@@ -960,6 +952,7 @@ function getNextResetTime() {
 
 function updateTokenBar() {
     const tokenBar = document.getElementById('token-bar');
+    const tokenCount = document.getElementById('token-count'); // Get the token count element
     let tokenPercentage;
 
     // Gold, Premium, and Free users all have a set token limit now
@@ -967,6 +960,9 @@ function updateTokenBar() {
 
     tokenPercentage = (userTokens / tokenLimit) * 100;
     tokenBar.style.width = `${tokenPercentage}%`;
+
+    // Update the token count text
+    tokenCount.textContent = `${userTokens} / ${tokenLimit}`; // Display remaining tokens
 
     if (userTokens <= 0) {
         tokenBar.style.backgroundColor = 'red';

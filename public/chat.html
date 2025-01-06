@@ -55,15 +55,23 @@
 
 <body>
     <div class="hello-container">
+        <br/>
         <div id="kid-name-display"><span id="kid-name"></span><span class="cursor">|</span></div>
+        <h2 style="font-size: 1.2em; font-weight: 500; margin-bottom: 0; color: #696767; text-align: center;">This bar shows your limit for talking to Alfie:</h2>
+        <p style="text-align: center;"><a href="./checkout.html">Want more time with Alfie? Get more tokens here!</a></p>
+        
         <div id="token-container">
+            <span id="token-count"></span> <!-- Add this to display the token count -->
             <div id="token-bar"></div>
         </div>
+        <h2 style="font-size: 1em; font-weight: 500; margin-bottom: 0; color: #696767; text-align: center;">Your user status:</h2>
+        <br/>
         <div class="badge1"></div>
 
         <div id="pencil-toggle" style="text-align: center;">
+            <h2 style="font-size: 1.2em; font-weight: 500; margin-bottom: 0; color: #696767;">Change your chat background:</h2>
             <button id="toggle-bg-controls" style="font-size: 24px; background: none; border: none; cursor: pointer;">
-                Chat background ✏️
+                Edit ✏️
             </button>
         </div>
 
@@ -73,11 +81,14 @@
             <button id="delete-bg" style="font-size: 16px; background: none; border: none; cursor: pointer;">❌</button>
         </div>                                        
     </div>
-
+    <!-- Button to open full screen -->
+    <button id="openFullScreenButton" class="open-fullscreen-button">Start talking to Alfie 🐶</button>
+<div id="fullScreenDiv" class="full-screen-div">
     <div id="chat-container">
         <a class="custom-btn btn-6" style="text-align: center; text-decoration: none;" href="./profiles.html">
             <span>Go back</span>
         </a>
+        <button id="closeButton" class="close-button">Exit Full Screen</button>
         <div id="messages"></div>
         <div id="input-container">
             <div id="typing-indicator" class="typing-indicator">
@@ -122,21 +133,18 @@
         </div>                         
     </div>
 
-    <!-- Resizer handle for horizontal resizing -->
-    <p style="text-align: center; color: #696767; font-size: 0.8em; margin-bottom: 8px;">
-        Drag the bar to make the chat box bigger or smaller. 👇
-    </p>
-    <div id="resizer"></div>
+        <!-- Resizer handle for horizontal resizing -->
+        <p style="text-align: center; color: #696767; font-size: 0.8em; margin-bottom: 8px;">
+            Drag the bar to make the chat box bigger or smaller. 👇
+        </p>
+        <div id="resizer"></div>
+</div>
+
     <br/>
     <img src="https://firebasestorage.googleapis.com/v0/b/kids-chatgpt.appspot.com/o/logo-alfie.webp?alt=media&token=92d7d084-ce10-486d-b00d-30c0b2642456" style="width: 120px; height: auto; text-align: center; display: flex; margin: auto;"> 
     <p style="text-align: center; color: #696767; font-size: 0.8em; margin-bottom: 8px;">
         Alfie AI can make mistakes. Check important info.
     </p>
-        <br>
-    <p style="padding: 10px; text-align: center; color: #696767; font-size: 0.8em; margin-bottom: 8px; margin-top: -25px;">
-        Alfie is continually improving and may occasionally struggle to interpret more complex images or make errors when analyzing them.
-    </p>
-    <br/>
 
     <!-- Old behavior for textarea -->
     <script>
