@@ -16,7 +16,23 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
-    
+    <script type="text/javascript" id="MathJax-script" async
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.0/es5/tex-mml-chtml.js">
+    </script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']], // Define inline math delimiters
+                displayMath: [['$$', '$$'], ['\\[', '\\]']] // Define block math delimiters
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre'], // Skip rendering inside certain tags
+                ignoreHtmlClass: 'tex2jax_ignore', // Ignore elements with this class
+                processHtmlClass: 'tex2jax_process' // Only process elements with this class
+            }
+        };
+    </script>
+        
 
     <meta name="description" content="Alfie AI for Kids provides a safe, educational AI chatbot experience for children aged 5-12, enhancing learning and growth with parental controls." />
     <meta name="keywords" content="AI for kids, safe AI learning, parental controls, educational AI, chatbots for children, technology in education" />

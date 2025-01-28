@@ -513,7 +513,7 @@ export async function requestSimplerExplanation() {
     // Add a simpler explanation request to session messages
     sessionMessages.push({
         role: "user",
-        content: "Could you explain it more simply in steps? Yet keeping the steps of how to achieve the result without simply telling me the answer. The 'why' and 'how' I get to the result is important."
+        content: "Could you explain it more simply in more steps? I didn't understand. Yet keeping the steps of how to achieve the result without simply telling me the answer. The 'why' and 'how' I get to the result is important."
     });
 
     // Call the tutor explanation logic but without deducting a token
