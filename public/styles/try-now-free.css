@@ -1,10 +1,10 @@
 :root {
     --space: 1rem;
-    --bg: #301f3f;
+    --bg: #09090b;
     --fg: #e3e3e3;
     --surface-1: #101012;
-    --surface-2: #8A2BE2;
-    --surface-3: #8A2BE2;
+    --surface-2: #27272a;
+    --surface-3: #4A148C;
     --ease-out: cubic-bezier(0.5, 1, 0.89, 1);
     --ease-in-out: cubic-bezier(0.45, 0, 0.55, 1);
   }
@@ -81,7 +81,7 @@
     border-radius: 25px;
     place-items: center;
     aspect-ratio: 4/5;
-    border: 2px solid var(--surface-2);
+    border: 1px solid var(--surface-2);
     isolation: isolate;
     transition: border-color 200ms var(--ease-out);
     user-select: none;
@@ -92,7 +92,7 @@
       inset: 0;
       background: radial-gradient(
         circle at bottom left,
-        transparent 10%,
+        transparent 45%,
         var(--surface-1)
       );
       pointer-events: none;
