@@ -11,8 +11,8 @@ body {
     margin: 0;
     color: #333;
     background-image: 
-        linear-gradient(rgba(0, 0, 255, 0.151) 1px, transparent 1px), /* Horizontal lines */
-        linear-gradient(90deg, rgba(255, 0, 0, 0.055) 1px, transparent 1px); /* Vertical margin line */
+        linear-gradient(rgba(0, 0, 255, 0) 1px, transparent 1px), /* Horizontal lines */
+        linear-gradient(90deg, rgba(255, 0, 0, 0) 1px, transparent 1px); /* Vertical margin line */
        /* radial-gradient(circle, rgba(25, 98, 255, 0.12) 2px, transparent 3px);  Circles at intersections */
     background-size: 100% 50px, 50px 100%, 50px 50px; /* Line and dot alignment */
     background-position: 25px 25px; /* Offset dots to line intersections */
@@ -577,6 +577,7 @@ button#toggle-bg-controls {
 }
 
 #kid-name-display {
+    user-select: none;
     font-size: 1.7em;
     text-align: center;
     font-family: "Fredoka", sans-serif;

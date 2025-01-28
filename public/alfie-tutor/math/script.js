@@ -291,10 +291,31 @@ export async function getMathTutorExplanation(deductTokenFlag = true) {
     outputContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
     // Modify math prompt to handle square root symbol
-    const processedPrompt = mathPrompt.replace(/√(\d+)/g, 'Math.sqrt($1)');
+    const processedPrompt = mathPrompt
+    // Handle square roots (convert √ to \sqrt)
+    .replace(/√(\d+|\([^)]*\))/g, '\\sqrt{$1}')
+  
+    // Handle exponents (convert ^ to ^{...})
+    .replace(/(\w+)\^(\d+|\([^)]*\))/g, '$1^{$2}')
+  
+    // Handle fractions (convert / to \frac{...}{...})
+    .replace(/(\d+|[a-zA-Z]+)\/(\d+|[a-zA-Z]+)/g, '\\frac{$1}{$2}')
+  
+    // Add multiplication dots (only between numbers and variables)
+    .replace(/(\d)([a-zA-Z])/g, '$1\\cdot $2')
+  
+    // Remove literal braces (optional, if your renderer doesn't handle them)
+    .replace(/[{}]/g, '')
+  
+    // Handle \boxed{} (ensure it's properly formatted)
+    .replace(/\\boxed\{([^}]+)\}/g, '\\boxed{$1}');
 
+    
     // Send message to session memory
-    sessionMessages.push({ role: "user", content: processedPrompt });
+    sessionMessages.push({
+        role: "user",
+        content: `Explain the math problem step-by-step: ${processedPrompt}`
+    });
 
     try {
         const response = await getMathTutorResponse({

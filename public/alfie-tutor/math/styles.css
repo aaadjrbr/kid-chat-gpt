@@ -285,7 +285,7 @@ h1 {
 /* Hide bullets for list items with the .emphasis class */
 .explanation-list li .emphasis {
     list-style-type: none; /* Remove the bullet */
-    margin-left: -20px; /* Adjust indentation to align with other list items */
+   /* margin-left: -20px;  Adjust indentation to align with other list items */
 }
 
 /* Nested List Styling */
@@ -489,3 +489,8 @@ h1 {
         transform: rotate(-45deg) translate(200%, 200%);
     }
 }
+
+.katex { 
+    font-size: 1.1em;
+    margin: 0 0.2em;
+  }
